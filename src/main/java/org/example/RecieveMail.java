@@ -2,7 +2,7 @@ package org.example;
 import javax.mail.*;
 import java.util.Properties;
 
-public class RevieveMail {
+public class RecieveMail {
     public void fetchEmails() {
         // Gmail hesap bilgileri
         String host = "pop.gmail.com";
