@@ -68,11 +68,17 @@ import java.util.Properties;
 
 public class MailManagement extends CheckMail {
 
+
+
+
     public static void sendPlainTextEmail(String from, String to, String subject, String message, boolean debug) {
 
+        String host = getCheckUSERNAME();
+        System.out.println("Oluşturulan host: "+ host);
+
         Properties prop = new Properties();
-        prop.put("mail.smtp.host", getHOST());
-        prop.put("mail.smtp.port", getPORT());
+        prop.put("mail.smtp.host",host);
+        prop.put("mail.smtp.port","587");
         prop.put("mail.smtp.auth", "true");
         prop.put("mail.smtp.starttls.enable", "true");
 
@@ -105,9 +111,9 @@ public class MailManagement extends CheckMail {
     }
     public void fetchEmails() {
         // Gmail hesap bilgileri
-        String host = "imap.gmail.com";
-        String username = "iamtheone.javaproje@gmail.com"; // Gmail adresinizi buraya yazın
-        String password = "dnhz mqsf buou dfxd"; // Gmail şifrenizi buraya yazın
+        String host = getHOST();
+        String username = getUSERNAME(); // Gmail adresinizi buraya yazın
+        String password = getPASSWORD(); // Gmail şifrenizi buraya yazın
 
         try {
             // Mail sunucusuna bağlanmak için gerekli özellikler
