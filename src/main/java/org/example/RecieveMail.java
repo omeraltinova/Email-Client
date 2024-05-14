@@ -16,7 +16,7 @@ public class RecieveMail {
             props.setProperty("mail.imap.host", host);
             props.setProperty("mail.imap.port", "993");
             props.setProperty("mail.imap.ssl.enable", "true");
-            props.setProperty("mail.debug", "true"); // Hata ayıklama bilgilerini etkinleştir
+            //props.setProperty("mail.debug", "true"); // Hata ayıklama bilgilerini etkinleştir
 
             // Session oluştur
             Session session = Session.getDefaultInstance(props, new Authenticator() {
@@ -27,7 +27,7 @@ public class RecieveMail {
             });
 
             // Debug için konsolda detaylı bilgi çıktısı al
-            session.setDebug(true);
+            //session.setDebug(true);
 
             // Mail sunucusuna bağlan
             Store store = session.getStore("imap");
