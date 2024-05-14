@@ -5,9 +5,7 @@ public class Main {
         System.out.println("MMMMmmmherbaaaa ARkadaşlarrrr ");
         CheckMail check = new CheckMail();
         check.isEmailLegal("as@hotmail.com");
-//        MailManagement mm = new MailManagement();
-//       mm.fetchEmails();
-        RecieveMail rm = new RecieveMail();
-        rm.fetchEmails();
+        MailManagement mm = new MailManagement();
+        mm.fetchEmails();
     }
 }
