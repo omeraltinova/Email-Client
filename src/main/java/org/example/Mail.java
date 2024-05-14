@@ -2,8 +2,8 @@ package org.example;
 
 public class Mail{
 
-    private static String USERNAME = "";
-    private static String PASSWORD = "";
+    private static String USERNAME = "iamtheone.javaproje@gmail.com";
+    private static String PASSWORD = "dnhz mqsf buou dfxd";
     private static String HOST = "smtp.gmail.com";
     private static String PORT = "587";
     private static String NAME = ""; // Kullanıcı ismi
