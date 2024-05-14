@@ -62,6 +62,7 @@
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -104,22 +105,27 @@ public class MailManagement extends Mail {
     }
     public void fetchEmails() {
         // Gmail hesap bilgileri
-        String host = "pop.gmail.com";
+        String host = "imap.gmail.com";
         String username = "iamtheone.javaproje@gmail.com"; // Gmail adresinizi buraya yazın
         String password = "dnhz mqsf buou dfxd"; // Gmail şifrenizi buraya yazın
 
         try {
             // Mail sunucusuna bağlanmak için gerekli özellikler
             Properties props = new Properties();
-            props.setProperty("mail.pop3.host", host);
-            props.setProperty("mail.pop3.port", "995");
-            props.setProperty("mail.pop3.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-            props.setProperty("mail.pop3.socketFactory.fallback", "false");
+            props.setProperty("mail.imap.host", host);
+            props.setProperty("mail.imap.port", "993");
+            props.setProperty("mail.imap.ssl.enable", "true");
 
             // Session oluştur
-            Session session = Session.getDefaultInstance(props);
+            Session session = Session.getDefaultInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+            //session.setDebug(true);
             // Mail sunucusuna bağlan
-            Store store = session.getStore("pop3");
+            Store store = session.getStore("imap");
             store.connect(host, username, password);
 
             // Inbox klasörüne eriş
@@ -136,7 +142,22 @@ public class MailManagement extends Mail {
                 System.out.println("Konu: " + message.getSubject());
                 System.out.println("Gönderen: " + message.getFrom()[0]);
                 System.out.println("İçerik: " + message.getContent().toString());
+                Object content = message.getContent();
+                if (content instanceof String) {
+                    // İçerik metin tipinde ise direkt olarak alınabilir
+                    System.out.println("İçerik: " + (String) content);
+                }
+                else if (content instanceof Multipart)
+                {
+                    // Multipart içeriği işleme
+                    handleMultipart((Multipart) content);
+                }
+                else {
+                    // Diğer durumlarda, içeriği dönüştürme veya işleme yöntemlerinize göre işlem yapılabilir
+                    System.out.println("İçerik: " + content.toString());
+                }
             }
+
 
             // Bağlantıyı kapat
             inbox.close(false);
@@ -145,4 +166,28 @@ public class MailManagement extends Mail {
             e.printStackTrace();
         }
     }
+    private static void handleMultipart(Multipart multipart) throws MessagingException, IOException, IOException {
+        for (int i = 0; i < multipart.getCount(); i++) {
+            BodyPart bodyPart = multipart.getBodyPart(i);
+            String contentType = bodyPart.getContentType();
+            System.out.println("Parça " + (i + 1) + " - İçerik Tipi: " + contentType);
+            if (bodyPart.isMimeType("text/plain")) {
+                System.out.println("Düz Metin İçerik: " + bodyPart.getContent());
+            }
+            else if (bodyPart.isMimeType("text/html")) {
+                System.out.println("HTML İçerik: " + bodyPart.getContent());
+            }
+            else if (bodyPart.getContent() instanceof Multipart)
+            {
+                // Multipart içeren parçaları ayrıştır
+                handleMultipart((Multipart) bodyPart.getContent());
+            }
+            else
+            {
+                System.out.println("Diğer İçerik: " + bodyPart.getContent());
+            }
+        }
+    }
+
 }
+
