@@ -3,8 +3,7 @@ package org.example;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CheckMail {
-//    private String email;
+public class CheckMail extends Mail{
     public boolean isEmailLegal(String email)
     {
         String patternString = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
@@ -21,5 +20,19 @@ public class CheckMail {
             return(true);
         }
 
+
+    }
+
+    public static String findPort(String email){
+        int startIndex = email.indexOf("@");
+
+        return("true");
+    }
+
+    public static String findServer(String email){
+        return("31");
+    }
+
+    public void setFile(){
     }
 }

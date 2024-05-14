@@ -6,9 +6,9 @@ import java.util.Properties;
 public class RecieveMail {
     public void fetchEmails() {
         // Gmail hesap bilgileri
-        String host = "imap.gmail.com";
-        String username = "iamtheone.javaproje@gmail.com"; // Gmail adresinizi buraya yazın
-        String password = "dnhz mqsf buou dfxd"; // Gmail şifrenizi buraya yazın
+        String host = "outlook.office365.com";
+        String username = "ruhicenet123_javaproje@outlook.com"; // Gmail adresinizi buraya yazın
+        String password = "RuhiBaba123_Java"; // Gmail şifrenizi buraya yazın
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("email_contents.txt"))) {
             // Mail sunucusuna bağlanmak için gerekli özellikler

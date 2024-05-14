@@ -2,12 +2,16 @@ package org.example;
 
 public class Mail{
 
-    private static String USERNAME = "iamtheone.javaproje@gmail.com";
-    private static String PASSWORD = "dnhz mqsf buou dfxd";
-    private static String HOST = "smtp.gmail.com";
+
+    static CheckMail checker = new CheckMail();
+
+
+    private static String USERNAME = "ruhicenet123_javaproje@outlook.com";
+    private static String PASSWORD = "RuhiBaba123_Java";
+    private static String HOST = "smtp-mail.outlook.com";
     private static String PORT = "587";
     private static String NAME = ""; // Kullanıcı ismi
-    private static String IMAGE = ""; // Kullanıcı profil fotosu dosya yolu
+    private static String IMAGE = "profile-photos/default-picture.png"; // Kullanıcı profil fotosu dosya yolu
 
 
 
@@ -63,6 +67,6 @@ public class Mail{
         Mail.USERNAME=USERNAME;
         Mail.PASSWORD=PASSWORD;
         Mail.HOST=HOST;
-        Mail.PORT =PORT;
+        Mail.PORT=PORT;
     }
 }

@@ -66,7 +66,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
-public class MailManagement extends Mail {
+public class MailManagement extends CheckMail {
 
     public static void sendPlainTextEmail(String from, String to, String subject, String message, boolean debug) {
 
