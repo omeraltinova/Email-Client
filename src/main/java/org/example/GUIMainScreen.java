@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GUIMainScreen implements ActionListener {
+public class GUIMainScreen {
     //Panels
     JPanel selectMenu1;
     JPanel receivedMailPanel;
@@ -36,28 +36,27 @@ public class GUIMainScreen implements ActionListener {
         selectMenu1.add(sent);
         selectMenu1.setLayout(null);
         received.setBounds(10,10,200,30);
-        received.addActionListener(this); //tıklayınca açılması için
+        //received.addActionListener(this); //tıklayınca açılması için
         sent.setBounds(10,50,200,30);
-        sent.addActionListener(this); //tıklayınca açılması için
+        //sent.addActionListener(this); //tıklayınca açılması için
         //Alınan e-postaların gözükeceği yer
         receivedMailPanel=new JPanel();
         mainScreen.add(receivedMailPanel);
         receivedMailPanel.setLayout(new BoxLayout(receivedMailPanel,BoxLayout.Y_AXIS));
-        receivedMailPanel.setVisible(false);
+        receivedMailPanel.setVisible(true);
         receivedMailPanel.setBackground(Color.gray);
         receivedMailPanel.setBounds(220,0,400,680);
-        receivedScroll=new JScrollPane(receivedMailPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        mainScreen.add(receivedScroll);
-        receivedScroll.setVisible(false);
-        receivedScroll.setBounds(220,0,400,680);
-        Dimension buttonSize = new Dimension(200, 50);
-        for(int i=0;i<200;i++){
-            JButton button = new JButton("buton"+"\n" + (i + 1));
-            button.setMaximumSize(buttonSize);
-            button.setMinimumSize(buttonSize);
-            button.setPreferredSize(buttonSize);
-            receivedMailPanel.add(button);
-        }
+        //-----------------------------
+        String[] columnNames = {"ID", "Sender", "Subject"};
+        Object[][] data = {
+                {1, "alice@example.com", "Meeting Reminder"},
+                {2, "bob@example.com", "Project Update"},
+                {3, "charlie@example.com", "Invitation"}
+        };
+        JTable table = new JTable(data, columnNames);
+        JScrollPane scrollPane = new JScrollPane(table);
+        receivedMailPanel.add(scrollPane);
+        //------------------------------
         //Gönderilen e-postaların gözükeceği yer
         sentMailPanel=new JPanel();
         mainScreen.add(sentMailPanel);
@@ -67,7 +66,7 @@ public class GUIMainScreen implements ActionListener {
         sentMailPanel.setBounds(220,0,400,680);
     }
 
-    @Override
+   /* @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==received){
             sentMailPanel.setVisible(false);
@@ -79,5 +78,5 @@ public class GUIMainScreen implements ActionListener {
             receivedMailPanel.setVisible(false);
             sentMailPanel.setVisible(true);
         }
-    }
+    }*/
 }
