@@ -37,3 +37,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Kişisel verilerin GitHub'a gitmemesi için ###
+/Accounts/*.txt
+/attachments/
+/emails/*txt

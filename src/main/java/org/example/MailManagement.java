@@ -1,63 +1,5 @@
-   package org.example;
-//
-//    import jakarta.mail.Authenticator;
-//    import jakarta.mail.Message;
-//    import jakarta.mail.MessagingException;
-//    import jakarta.mail.Multipart;
-//    import jakarta.mail.PasswordAuthentication;
-//    import jakarta.mail.Session;
-//    import jakarta.mail.Transport;
-//    import jakarta.mail.internet.InternetAddress;
-//    import jakarta.mail.internet.MimeBodyPart;
-//    import jakarta.mail.internet.MimeMessage;
-//    import jakarta.mail.internet.MimeMultipart;
-//    import java.util.Date;
-//    import java.util.List;
-//    import java.util.Properties;
-//
-//    public class MailManagement extends Mail{
-//
-//        public static void sendPlainTextEmail(String from, String to, String subject, String message, boolean debug) {
-//
-//            Properties prop = new Properties();
-//            prop.put("mail.smtp.host", getHOST());
-//            prop.put("mail.smtp.port", getPORT());
-//            prop.put("mail.smtp.auth", "true");
-//            prop.put("mail.smtp.starttls.enable", "true");
-//
-//
-//            Authenticator authenticator = new Authenticator() {
-//                protected PasswordAuthentication getPasswordAuthentication() {
-//                    return new PasswordAuthentication(getUSERNAME(), getPASSWORD());
-//                }
-//            };
-//
-//            Session session = Session.getInstance(prop, authenticator);
-//            session.setDebug(debug);
-//
-//            try {
-//
-//    // create a message with headers
-//                MimeMessage msg = new MimeMessage(session);
-//                msg.setFrom(new InternetAddress(from));
-//                InternetAddress[] address = {new InternetAddress(to)};
-//                msg.setRecipients(Message.RecipientType.TO, address);
-//                msg.setSubject(subject);
-//                msg.setText(message);
-//                msg.setSentDate(new Date());
-//
-//    // send the message
-//                Transport.send(msg);
-//
-//            } catch (MessagingException mex) {
-//                mex.printStackTrace();
-//                Exception ex = null;
-//                if ((ex = mex.getNextException()) != null) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }
-//    }
+package org.example;
+
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -68,14 +10,21 @@ import java.util.Properties;
 
 import static org.example.Mail.*;
 
-   public class MailManagement extends CheckMail {
+   public class MailManagement extends Mail {
 
-
+       private static String MANAGE_USERNAME = getUSERNAME();
+       private static String MANAGE_PASSWORD = getPASSWORD();
+       private static String MANAGE_HOST = getHOST(); //SMTP HOST
+       private static String MANAGE_PORT = getPORT(); //SMTP PORT
+       private static String MANAGE_IMAP_HOST = getImapHost();
+       private static String MANAGE_IMAP_PORT = getImapPort();
 
 
     public static void sendPlainTextEmail(String from, String to, String subject, String message, boolean debug) {
 
-        String host = getCheckUSERNAME();
+        String host = getHOST();
+        String password = getPASSWORD();
+        //System.out.println("Şifre + " + password);
         System.out.println("Oluşturulan host: "+ host);
 
         Properties prop = new Properties();
@@ -86,7 +35,7 @@ import static org.example.Mail.*;
 
         Authenticator authenticator = new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(getUSERNAME(), getPASSWORD());
+                return new PasswordAuthentication(getUSERNAME(), password);
             }
         };
 
@@ -197,5 +146,28 @@ import static org.example.Mail.*;
         }
     }
 
-}
+       public static String getManageUsername() {
+           return MANAGE_USERNAME;
+       }
+
+       public static String getManagePassword() {
+           return MANAGE_PASSWORD;
+       }
+
+       public static String getManageHost() {
+           return MANAGE_HOST;
+       }
+
+       public static String getManagePort() {
+           return MANAGE_PORT;
+       }
+
+       public static String getManageImapHost() {
+           return MANAGE_IMAP_HOST;
+       }
+
+       public static String getManageImapPort() {
+           return MANAGE_IMAP_PORT;
+       }
+   }
 
