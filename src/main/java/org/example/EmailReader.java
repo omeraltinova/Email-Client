@@ -22,7 +22,7 @@ public class EmailReader {
                     // Dosya ise ve ismi .txt ile bitiyorsa (e-posta dosyaları)
                     if (file.isFile() && file.getName().endsWith(".txt")) {
                         // Dosyayı oku ve e-posta bilgilerini ayrıştır
-                        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));) {
                             Map<String, String> emailData = new HashMap<>();
                             String line;
                             StringBuilder contentBuilder = new StringBuilder();
@@ -37,13 +37,14 @@ public class EmailReader {
                                     contentBuilder.append(line.substring(8));
                                 }
                                 else if (line.startsWith("Düz Metin İçerik: ")) {
+                                    // "Düz Metin İçerik: " ile başlayan satır varsa, içeriği al ve geri kalan tüm satırları da içeriğe ekle
                                     contentBuilder.append(line.substring(18)).append("\n");
 
                                     // Sonrasında gelen tüm satırları okuyun ve içeriğe ekleyin
                                     while ((line = reader.readLine()) != null) {
-                                        // Belirli bir ifadeye kadar olan satırları kontrol edin
+                                        // "Parça" ile başlayan satıra kadar olan satırları kontrol edin
                                         if (line.startsWith("Parça")) {
-                                            break; // Belirli ifadeye ulaşıldığında döngüyü sonlandırın
+                                            break; // "Parça" ile başlayan satıra ulaşıldığında döngüyü sonlandırın
                                         }
                                         contentBuilder.append(line).append("\n");
                                     }
