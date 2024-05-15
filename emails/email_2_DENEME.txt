@@ -1,0 +1,8 @@
+Konu: DENEME
+Gönderen: Burak Asarcikli <asarcikli31@gmail.com>
+Parça 1 - İçerik Tipi: TEXT/PLAIN; charset=UTF-8
+Düz Metin İçerik: SDASDASDADASDA
+
+Parça 2 - İçerik Tipi: TEXT/HTML; charset=UTF-8
+HTML İçerik: <div dir="ltr">SDASDASDADASDA</div>
+

@@ -66,7 +66,9 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
-public class MailManagement extends CheckMail {
+import static org.example.Mail.*;
+
+   public class MailManagement extends CheckMail {
 
 
 

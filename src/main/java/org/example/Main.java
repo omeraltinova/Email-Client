@@ -10,9 +10,9 @@ public class Main {
         RecieveMail rm = new RecieveMail();
         rm.fetchEmails();
 
-        MailManagement m1 = new MailManagement();
-
-        m1.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","test","test",true);
+//        MailManagement m1 = new MailManagement();
+//
+//        m1.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","test","test",true);
 
         //Ana ekranı çağırmak için
         GUIMainScreen anaEkran=new GUIMainScreen();
