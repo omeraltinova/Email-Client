@@ -16,7 +16,7 @@ public class Main {
 
 //        MailManagement m1 = new MailManagement();
 //
-          check.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","test","test",true);
+          //check.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","Test maili","Bu bir test mailidir!",true); //MAIL ATMAYIN SUNUCU SPAM ALGILADI KAPAKLI!
 
         //Ana ekranı çağırmak için
 //        GUIMainScreen anaEkran=new GUIMainScreen();
