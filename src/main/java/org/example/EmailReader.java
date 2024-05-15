@@ -27,6 +27,7 @@ public class EmailReader {
                             Map<String, String> emailData = new HashMap<>();
                             String line;
                             StringBuilder contentBuilder = new StringBuilder();
+
                             while ((line = reader.readLine()) != null) {
                                 // "Konu: " ile başlayan satır varsa, konu başlığını al
                                 if (line.startsWith("Konu: ")) {

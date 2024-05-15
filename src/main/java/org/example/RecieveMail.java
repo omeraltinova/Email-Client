@@ -1,6 +1,7 @@
 package org.example;
 import javax.mail.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class RecieveMail {
@@ -51,7 +52,8 @@ public class RecieveMail {
                 String subject = message.getSubject().replaceAll("[^a-zA-Z0-9\\s]", "");
                 File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
+                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile), StandardCharsets.UTF_8));
+                ) {
                     writer.write("Konu: " + message.getSubject() + "\n");
                     writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                     Object content = message.getContent();
