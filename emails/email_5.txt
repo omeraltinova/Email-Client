@@ -1,8 +1,0 @@
-Konu: Pdf gönderme denemesi 
-Gönderen: "Muhammet Burak Asarcıklı" <brkasarcikli@outlook.com>
-Parça 1 - İçerik Tipi: 
-TEXT/PLAIN; charset=utf-8
-Düz Metin İçerik: Bakalım nasıl olacak
-
-Parça 2 - İçerik Tipi: 
-APPLICATION/PDF; name="Çalışma Soruları-6.pdf"
