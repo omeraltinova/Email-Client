@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class EmailReader {
@@ -22,7 +23,7 @@ public class EmailReader {
                     // Dosya ise ve ismi .txt ile bitiyorsa (e-posta dosyaları)
                     if (file.isFile() && file.getName().endsWith(".txt")) {
                         // Dosyayı oku ve e-posta bilgilerini ayrıştır
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
                             Map<String, String> emailData = new HashMap<>();
                             String line;
                             StringBuilder contentBuilder = new StringBuilder();

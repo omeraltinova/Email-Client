@@ -22,7 +22,7 @@ public class Main {
 //        GUIMainScreen anaEkran=new GUIMainScreen();
 
 //            CHATGPT UI
-            List<Map<String, String>> emails = EmailReader.readEmails("emails");
+                List<Map<String, String>> emails = EmailReader.readEmails("emails");
             SwingUtilities.invokeLater(() -> {
                 EmailViewerGUI viewer = new EmailViewerGUI(emails);
                 viewer.setVisible(true);
