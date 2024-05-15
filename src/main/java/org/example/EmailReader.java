@@ -33,13 +33,27 @@ public class EmailReader {
                                 } else if (line.startsWith("Gönderen: ")) {
                                     // "Gönderen: " ile başlayan satır varsa, gönderen bilgilerini al
                                     emailData.put("Gönderen", line.substring(10));
-                                } else if (line.startsWith("İçerik: ")) {
-                                    // "İçerik: " ile başlayan satır varsa, içeriği al ve geri kalan tüm satırları da içeriğe ekle
-                                    contentBuilder.append(line.substring(8)).append("\n");
-                                } else {
-                                    // Diğer satırları da içeriğe ekle
-                                    contentBuilder.append(line).append("\n");
+                                }else if(line.startsWith("İçerik: ")){
+                                    contentBuilder.append(line.substring(8));
                                 }
+                                else if (line.startsWith("Düz Metin İçerik: ")) {
+                                    contentBuilder.append(line.substring(18)).append("\n");
+
+                                    // Sonrasında gelen tüm satırları okuyun ve içeriğe ekleyin
+                                    while ((line = reader.readLine()) != null) {
+                                        // Belirli bir ifadeye kadar olan satırları kontrol edin
+                                        if (line.startsWith("Parça")) {
+                                            break; // Belirli ifadeye ulaşıldığında döngüyü sonlandırın
+                                        }
+                                        contentBuilder.append(line).append("\n");
+                                    }
+                                }else if(line.contains("name=")){
+                                        contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
+                                }
+//                                else {
+//                                    // Diğer satırları da içeriğe ekle
+//                                    contentBuilder.append(line).append("\n");
+//                                }
                             }
                             // İçeriği tamamlayıp içeriğe ekle
                             emailData.put("İçerik", contentBuilder.toString());
@@ -55,15 +69,5 @@ public class EmailReader {
         return emailList;
     }
 
-    public static void main(String[] args) {
-        // emails dizinindeki e-postaları oku ve listele
-        List<Map<String, String>> emails = readEmails("emails");
-        // E-postaları ekrana yazdır
-        for (Map<String, String> email : emails) {
-            System.out.println("Konu: " + email.get("Konu"));
-            System.out.println("Gönderen: " + email.get("Gönderen"));
-            System.out.println("İçerik: " + email.get("İçerik"));
-            System.out.println("--------------------------");
-        }
-    }
 }
+

@@ -49,7 +49,7 @@ public class RecieveMail {
             for (int i = 0; i < messages.length; i++) {
                 Message message = messages[i];
                 String subject = message.getSubject().replaceAll("[^a-zA-Z0-9\\s]", "");
-                File emailFile = new File(emailDir, "email_" + (i + 1) + "_" + subject + ".txt");
+                File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(emailFile))) {
                     writer.write("Konu: " + message.getSubject() + "\n");
@@ -82,7 +82,7 @@ public class RecieveMail {
         for (int i = 0; i < multipart.getCount(); i++) {
             BodyPart bodyPart = multipart.getBodyPart(i);
             String contentType = bodyPart.getContentType();
-            writer.write("Parça " + (i + 1) + " - İçerik Tipi: " + contentType + "\n");
+            writer.write("Parça " + (i + 1) + " - İçerik Tipi: \n" + contentType + "\n");
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
                 saveAttachment(bodyPart);
             } else if (bodyPart.isMimeType("text/plain")) {

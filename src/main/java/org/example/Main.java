@@ -11,8 +11,8 @@ public class Main {
        // System.out.println(check.isEmailLegal("as@hotmail.com")); //Bende hata gösterdiği için yoruma aldım
 //        MailManagement mm = new MailManagement();
 //       mm.fetchEmails();
-//        RecieveMail rm = new RecieveMail();
-//        rm.fetchEmails();
+        RecieveMail rm = new RecieveMail();
+        rm.fetchEmails();
 
 //        MailManagement m1 = new MailManagement();
 //
@@ -22,11 +22,11 @@ public class Main {
         GUIMainScreen anaEkran=new GUIMainScreen();
 
 //            CHATGPT UI
-//            List<Map<String, String>> emails = EmailReader.readEmails("emails");
-//            SwingUtilities.invokeLater(() -> {
-//                EmailViewerGUI viewer = new EmailViewerGUI(emails);
-//                viewer.setVisible(true);
-//            });
+            List<Map<String, String>> emails = EmailReader.readEmails("emails");
+            SwingUtilities.invokeLater(() -> {
+                EmailViewerGUI viewer = new EmailViewerGUI(emails);
+                viewer.setVisible(true);
+            });
 
 
     }
