@@ -1,0 +1,16 @@
+Konu: Re: test
+Gönderen: "Ömer Faruk Altınova" <skocraft05@gmail.com>
+Parça 1 - İçerik Tipi: 
+TEXT/PLAIN; charset=UTF-8
+Düz Metin İçerik: Testine test
+
+14 May 2024 Sal 19:14 tarihinde <iamtheone.javaproje@gmail.com> şunu yazdı:
+
+> test
+>
+
+Parça 2 - İçerik Tipi: 
+TEXT/HTML; charset=UTF-8
+HTML İçerik: <div dir="auto">Testine test</div><br><div class="gmail_quote"><div dir="ltr" class="gmail_attr">14 May 2024 Sal 19:14 tarihinde  &lt;<a href="mailto:iamtheone.javaproje@gmail.com">iamtheone.javaproje@gmail.com</a>&gt; şunu yazdı:<br></div><blockquote class="gmail_quote" style="margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">test<br>
+</blockquote></div>
+
