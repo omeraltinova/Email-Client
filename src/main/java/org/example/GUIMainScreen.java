@@ -2,11 +2,14 @@ package org.example;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
 
-public class GUIMainScreen {
+public class GUIMainScreen implements ActionListener{
     //Panels
     JPanel selectMenu1;
     JPanel receivedMailPanel;
@@ -17,15 +20,19 @@ public class GUIMainScreen {
     //Scrollbars
     JScrollPane receivedScroll;
     JScrollPane sentScroll;
-    GUIMainScreen(){
-        JFrame mainScreen=new JFrame("Email-Client Main Screen");
+    GUIMainScreen(List<Map<String, String>> emails){
+
         //Pencerenin genel özellikleri
+
+        JFrame mainScreen=new JFrame("Email-Client Main Screen");
         mainScreen.setLayout(null);
         mainScreen.setVisible(true);
         mainScreen.setSize(1368,720);
         mainScreen.setLocationRelativeTo(null);
         mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         //Gönderilen,alınan vb. şeyler arasında geçiş yapmak için menü
+
         selectMenu1 =new JPanel();
         mainScreen.add(selectMenu1);
         selectMenu1.setBackground(Color.lightGray);
@@ -36,25 +43,31 @@ public class GUIMainScreen {
         selectMenu1.add(sent);
         selectMenu1.setLayout(null);
         received.setBounds(10,10,200,30);
-        //received.addActionListener(this); //tıklayınca açılması için
+        received.addActionListener(this); //tıklayınca açılması için
         sent.setBounds(10,50,200,30);
-        //sent.addActionListener(this); //tıklayınca açılması için
+        sent.addActionListener(this); //tıklayınca açılması için
+
         //Alınan e-postaların gözükeceği yer
+
         receivedMailPanel=new JPanel();
         mainScreen.add(receivedMailPanel);
         receivedMailPanel.setLayout(new BoxLayout(receivedMailPanel,BoxLayout.Y_AXIS));
-        receivedMailPanel.setVisible(true);
+        receivedMailPanel.setVisible(false);
         receivedMailPanel.setBackground(Color.gray);
         receivedMailPanel.setBounds(220,0,400,680);
         //-----------------------------
-        String[] columnNames = {"ID", "Sender", "Subject"};
-        Object[][] data = {
-                {1, "alice@example.com", "Meeting Reminder"},
-                {2, "bob@example.com", "Project Update"},
-                {3, "charlie@example.com", "Invitation"}
-        };
-        JTable table = new JTable(data, columnNames);
+        String[] columnNames = {"Sender", "Subject"};
+        /*Object[][] data = {
+                {"alice@example.com", "Meeting Reminder"},
+                {"bob@example.com", "Project Update"},
+                {"charlie@example.com", "Invitation"}
+        };*/
+        DefaultTableModel receivedTableModel = new DefaultTableModel(columnNames, 0);
+        JTable table = new JTable(receivedTableModel);
         JScrollPane scrollPane = new JScrollPane(table);
+        for(Map<String, String> email : emails){
+            receivedTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
+        }
         receivedMailPanel.add(scrollPane);
         //------------------------------
         //Gönderilen e-postaların gözükeceği yer
@@ -66,17 +79,15 @@ public class GUIMainScreen {
         sentMailPanel.setBounds(220,0,400,680);
     }
 
-   /* @Override
+   @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==received){
             sentMailPanel.setVisible(false);
-            receivedScroll.setVisible(true);
             receivedMailPanel.setVisible(true);
         }
         if(e.getSource()==sent){
-            receivedScroll.setVisible(false);
             receivedMailPanel.setVisible(false);
             sentMailPanel.setVisible(true);
         }
-    }*/
+    }
 }
