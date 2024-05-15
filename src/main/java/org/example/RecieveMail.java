@@ -1,4 +1,5 @@
 package org.example;
+
 import javax.mail.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -32,9 +33,6 @@ public class RecieveMail {
                 }
             });
 
-            // Debug için konsolda detaylı bilgi çıktısı al
-            //session.setDebug(true);
-
             // Mail sunucusuna bağlan
             Store store = session.getStore("imap");
             store.connect(host, username, password);
@@ -52,8 +50,7 @@ public class RecieveMail {
                 String subject = message.getSubject().replaceAll("[^a-zA-Z0-9\\s]", "");
                 File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile), StandardCharsets.UTF_8));
-                ) {
+                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile), StandardCharsets.UTF_8))) {
                     writer.write("Konu: " + message.getSubject() + "\n");
                     writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                     Object content = message.getContent();
@@ -88,7 +85,12 @@ public class RecieveMail {
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
                 saveAttachment(bodyPart);
             } else if (bodyPart.isMimeType("text/plain")) {
-                writer.write("Düz Metin İçerik: " + bodyPart.getContent() + "\n");
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        writer.write("Düz Metin İçerik: " + line + "\n");
+                    }
+                }
             } else if (bodyPart.isMimeType("text/html")) {
                 writer.write("HTML İçerik: " + bodyPart.getContent() + "\n");
             } else if (bodyPart.getContent() instanceof Multipart) {
@@ -128,9 +130,4 @@ public class RecieveMail {
         }
     }
 }
-
-
-
-
-
 
