@@ -18,14 +18,7 @@ public class Main {
 //
 //        m1.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","test","test",true);
 
-
-
-            //CHATGPT UI
         List<Map<String, String>> emails = EmailReader.readEmails("emails");
-//            SwingUtilities.invokeLater(() -> {
-//                EmailViewerGUI viewer = new EmailViewerGUI(emails);
-//                viewer.setVisible(true);
-//            });
         //Ana ekranı çağırmak için
         GUIMainScreen anaEkran=new GUIMainScreen(emails);
 
