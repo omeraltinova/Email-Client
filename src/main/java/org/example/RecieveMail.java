@@ -1,6 +1,7 @@
 package org.example;
 
 import javax.mail.*;
+import javax.mail.internet.MimeUtility;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
@@ -77,30 +78,31 @@ public class RecieveMail {
         }
     }
 
+    private static String decodeText(String encodedText) throws IOException {
+        return MimeUtility.decodeText(encodedText);
+    }
+
     private static void handleMultipart(Multipart multipart, BufferedWriter writer) throws MessagingException, IOException {
         for (int i = 0; i < multipart.getCount(); i++) {
             BodyPart bodyPart = multipart.getBodyPart(i);
             String contentType = bodyPart.getContentType();
             writer.write("Parça " + (i + 1) + " - İçerik Tipi: \n" + contentType + "\n");
+
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
                 saveAttachment(bodyPart);
             } else if (bodyPart.isMimeType("text/plain")) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream(), StandardCharsets.UTF_8))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        writer.write("Düz Metin İçerik: " + line + "\n");
-                    }
-                }
+                String content = (String) bodyPart.getContent();
+                writer.write("Düz Metin İçerik: " + decodeText(content) + "\n");
             } else if (bodyPart.isMimeType("text/html")) {
-                writer.write("HTML İçerik: " + bodyPart.getContent() + "\n");
+                String content = (String) bodyPart.getContent();
+                writer.write("HTML İçerik: " + decodeText(content) + "\n");
             } else if (bodyPart.getContent() instanceof Multipart) {
-                // Multipart içeren parçaları ayrıştır
                 handleMultipart((Multipart) bodyPart.getContent(), writer);
             } else if (bodyPart.getContent() instanceof InputStream) {
-                // InputStream içeriği işle
                 handleInputStream((InputStream) bodyPart.getContent(), writer);
             } else {
-                writer.write("Diğer İçerik: " + bodyPart.getContent() + "\n");
+                String content = bodyPart.getContent().toString();
+                writer.write("Diğer İçerik: " + decodeText(content) + "\n");
             }
         }
     }
