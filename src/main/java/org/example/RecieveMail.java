@@ -8,9 +8,9 @@ import java.util.Properties;
 public class RecieveMail {
 
     public void fetchEmails() {
-        String host = "imap.gmail.com";
-        String username = "iamtheone.javaproje@gmail.com";
-        String password = "dnhz mqsf buou dfxd";
+        String host = "imap-mail.outlook.com";
+        String username = "iamtheone.javaproje@outlook.com";
+        String password = "RuhiBaba123_Java";
 
         File emailDir = new File("emails");
         if (!emailDir.exists()) {
@@ -22,6 +22,7 @@ public class RecieveMail {
             props.setProperty("mail.imap.host", host);
             props.setProperty("mail.imap.port", "993");
             props.setProperty("mail.imap.ssl.enable", "true");
+
 
             Session session = Session.getDefaultInstance(props, new Authenticator() {
                 @Override
@@ -40,10 +41,9 @@ public class RecieveMail {
 
             for (int i = 0; i < messages.length; i++) {
                 Message message = messages[i];
-                String subject = message.getSubject().replaceAll("[^a-zA-Z0-9\\s]", "");
                 File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
-                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile), StandardCharsets.UTF_8))) {
+                try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
                     writer.write("Konu: " + message.getSubject() + "\n");
                     writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                     Object content = message.getContent();
@@ -74,7 +74,7 @@ public class RecieveMail {
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
                 saveAttachment(bodyPart);
             } else if (bodyPart.isMimeType("text/plain")) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream(), StandardCharsets.UTF_8))) {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         writer.write("Düz Metin İçerik: " + line + "\n");
