@@ -1,6 +1,8 @@
 package org.example;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -34,6 +36,7 @@ public class GUIMainScreen implements ActionListener{
     JScrollPane sentScroll;
     JScrollPane receivedContentScroll;
     JScrollPane sentContentScroll;
+    JScrollPane sendContentScroll;
 
     //Text Fields and Areas
 
@@ -58,13 +61,14 @@ public class GUIMainScreen implements ActionListener{
         mainScreen.setSize(1368,720);
         mainScreen.setLocationRelativeTo(null);
         mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainScreen.getContentPane().setBackground(new Color(46, 64, 83 ));
 
         //Gönderilen,alınan vb. şeyler arasında geçiş yapmak için menü
 
         selectMenu1 =new JPanel();
         mainScreen.add(selectMenu1);
-        selectMenu1.setBackground(Color.lightGray);
-        selectMenu1.setBounds(0,0,220,680);
+        selectMenu1.setBackground(new Color(93, 109, 126));
+        selectMenu1.setBounds(0,50,220,630);
         received=new JButton("Received");
         sent=new JButton("Sent");
         sendMail=new JButton("Send a mail");
@@ -72,12 +76,15 @@ public class GUIMainScreen implements ActionListener{
         selectMenu1.add(sent);
         selectMenu1.add(sendMail);
         selectMenu1.setLayout(null);
-        received.setBounds(10,10,200,30);
+        received.setBounds(10,150,200,30);
         received.addActionListener(this); //tıklayınca açılması için
-        sent.setBounds(10,50,200,30);
+        sent.setBounds(10,190,200,30);
         sent.addActionListener(this); //tıklayınca açılması için
-        sendMail.setBounds(10,90,200,30);
+        sendMail.setBounds(10,230,200,30);
         sendMail.addActionListener(this);
+        received.setBackground(new Color(174, 182, 191));
+        sent.setBackground(new Color(174, 182, 191));
+        sendMail.setBackground(new Color(174, 182, 191));
 
         //Alınan e-postaların gözükeceği yer
 
@@ -86,7 +93,7 @@ public class GUIMainScreen implements ActionListener{
         receivedMailPanel.setLayout(new BorderLayout());
         receivedMailPanel.setVisible(false);
         receivedMailPanel.setBackground(Color.gray);
-        receivedMailPanel.setBounds(220,0,400,680);
+        receivedMailPanel.setBounds(220,50,400,630);
         //-----------------------------
         String[] receivedMailColumns = {"Sender", "Subject"};
         DefaultTableModel receivedMailTableModel = new DefaultTableModel(receivedMailColumns, 0){
@@ -120,6 +127,8 @@ public class GUIMainScreen implements ActionListener{
         showReceivedMailsPanel.setVisible(false);
         receivedSubject.setPreferredSize(new Dimension(690,50));
         receivedMailSender.setPreferredSize(new Dimension(690,30));
+        receivedContent.setLineWrap(true);
+        receivedContent.setWrapStyleWord(true);
         receviedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         receviedMailTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -139,7 +148,7 @@ public class GUIMainScreen implements ActionListener{
                 }
             }
         });
-
+        receviedMailTable.setBackground(new Color(174, 182, 191));
         //Gönderilen e-postaların gözükeceği yer
 
         sentMailPanel=new JPanel();
@@ -147,7 +156,7 @@ public class GUIMainScreen implements ActionListener{
         sentMailPanel.setLayout(new BorderLayout());
         sentMailPanel.setVisible(false);
         sentMailPanel.setBackground(Color.gray);
-        sentMailPanel.setBounds(220,0,400,680);
+        sentMailPanel.setBounds(220,50,400,630);
         String[] sentMailColumns = {"To", "Subject"};
         DefaultTableModel sentMailTableModel=new DefaultTableModel(sentMailColumns,0){
             @Override
@@ -170,15 +179,17 @@ public class GUIMainScreen implements ActionListener{
         sentSubject=new JTextField();
         sentContent=new JTextArea();
         sentTo=new JTextField();
+        sentContentScroll=new JScrollPane(sentContent);
         showSentMailsPanel.add(sentSubject,BorderLayout.NORTH);
-        showSentMailsPanel.add(sentContent,BorderLayout.CENTER);
+        showSentMailsPanel.add(sentContentScroll,BorderLayout.CENTER);
         showSentMailsPanel.add(sentTo,BorderLayout.SOUTH);
         sentSubject.setPreferredSize(new Dimension(690,50));
         sentTo.setPreferredSize(new Dimension(690,30));
         sentSubject.setEditable(false);
         sentContent.setEditable(false);
         sentTo.setEditable(false);
-
+        sentContent.setLineWrap(true);
+        sentContent.setWrapStyleWord(true);
         //E-posta gönderme paneli
 
         sendMailPanel=new JPanel(null);
@@ -192,15 +203,16 @@ public class GUIMainScreen implements ActionListener{
         sendMailTo=new JTextField();
         sendMailSubject1=new JTextField();
         sendMailTo1=new JTextField();
+        sendContentScroll=new JScrollPane(sendMailContent);
         sendMailPanel.add(mailSendButton);
         sendMailPanel.add(sendMailSubject1);
         sendMailPanel.add(sendMailSubject);
-        sendMailPanel.add(sendMailContent);
+        sendMailPanel.add(sendContentScroll);
         sendMailPanel.add(sendMailTo1);
         sendMailPanel.add(sendMailTo);
         sendMailSubject1.setBounds(0,0,50,50);
         sendMailSubject.setBounds(50,0,640,50);
-        sendMailContent.setBounds(0,50,690,470);
+        sendContentScroll.setBounds(0,50,690,470);
         sendMailTo1.setBounds(0,520,50,30);
         sendMailTo.setBounds(50,520,550,30);
         mailSendButton.setBounds(600,520,90,30);
@@ -208,7 +220,9 @@ public class GUIMainScreen implements ActionListener{
         sendMailSubject1.setEditable(false);
         sendMailTo1.setText("To:");
         sendMailTo1.setEditable(false);
-
+        sendMailContent.setLineWrap(true);
+        sendMailContent.setWrapStyleWord(true);
+        mailSendButton.addActionListener(this);
     }
 
    @Override
@@ -229,6 +243,12 @@ public class GUIMainScreen implements ActionListener{
            showSentMailsPanel.setVisible(false);
            showReceivedMailsPanel.setVisible(false);
            sendMailPanel.setVisible(true);
+       }
+       if(e.getSource()==mailSendButton){
+           String sendSubject=sendMailSubject.getText(),sendContent=sendMailContent.getText(),sendTo=sendMailTo.getText();
+           System.out.println("Subject:"+sendSubject+"\n");
+           System.out.println("Content:"+sendContent+"\n");
+           System.out.println("To:"+sendTo);
        }
     }
 }
