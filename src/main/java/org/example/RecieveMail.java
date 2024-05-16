@@ -1,17 +1,16 @@
 package org.example;
 
 import javax.mail.*;
-import javax.mail.internet.MimeUtility;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 public class RecieveMail {
+
     public void fetchEmails() {
-        // Gmail hesap bilgileri
         String host = "imap.gmail.com";
-        String username = "iamtheone.javaproje@gmail.com"; // Gmail adresinizi buraya yazın
-        String password = "dnhz mqsf buou dfxd"; // Gmail şifrenizi buraya yazın
+        String username = "iamtheone.javaproje@gmail.com";
+        String password = "dnhz mqsf buou dfxd";
 
         File emailDir = new File("emails");
         if (!emailDir.exists()) {
@@ -19,14 +18,11 @@ public class RecieveMail {
         }
 
         try {
-            // Mail sunucusuna bağlanmak için gerekli özellikler
             Properties props = new Properties();
             props.setProperty("mail.imap.host", host);
             props.setProperty("mail.imap.port", "993");
             props.setProperty("mail.imap.ssl.enable", "true");
-            //props.setProperty("mail.debug", "true"); // Hata ayıklama bilgilerini etkinleştir
 
-            // Session oluştur
             Session session = Session.getDefaultInstance(props, new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -34,18 +30,14 @@ public class RecieveMail {
                 }
             });
 
-            // Mail sunucusuna bağlan
             Store store = session.getStore("imap");
             store.connect(host, username, password);
 
-            // Inbox klasörüne eriş
             Folder inbox = store.getFolder("INBOX");
             inbox.open(Folder.READ_ONLY);
 
-            // Inbox'taki mesajları al
             Message[] messages = inbox.getMessages();
 
-            // Mesajları dosyaya yazdır ve ekleri kaydet
             for (int i = 0; i < messages.length; i++) {
                 Message message = messages[i];
                 String subject = message.getSubject().replaceAll("[^a-zA-Z0-9\\s]", "");
@@ -56,13 +48,10 @@ public class RecieveMail {
                     writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                     Object content = message.getContent();
                     if (content instanceof String) {
-                        // İçerik metin tipinde ise direkt olarak alınabilir
                         writer.write("İçerik: " + (String) content + "\n");
                     } else if (content instanceof Multipart) {
-                        // Multipart içeriği işleme
                         handleMultipart((Multipart) content, writer);
                     } else {
-                        // Diğer durumlarda, içeriği dönüştürme veya işleme yöntemlerinize göre işlem yapılabilir
                         writer.write("İçerik: " + content.toString() + "\n");
                     }
                 } catch (IOException | MessagingException e) {
@@ -70,7 +59,6 @@ public class RecieveMail {
                 }
             }
 
-            // Bağlantıyı kapat
             inbox.close(false);
             store.close();
         } catch (Exception e) {
@@ -78,31 +66,28 @@ public class RecieveMail {
         }
     }
 
-    private static String decodeText(String encodedText) throws IOException {
-        return MimeUtility.decodeText(encodedText);
-    }
-
     private static void handleMultipart(Multipart multipart, BufferedWriter writer) throws MessagingException, IOException {
         for (int i = 0; i < multipart.getCount(); i++) {
             BodyPart bodyPart = multipart.getBodyPart(i);
             String contentType = bodyPart.getContentType();
             writer.write("Parça " + (i + 1) + " - İçerik Tipi: \n" + contentType + "\n");
-
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
                 saveAttachment(bodyPart);
             } else if (bodyPart.isMimeType("text/plain")) {
-                String content = (String) bodyPart.getContent();
-                writer.write("Düz Metin İçerik: " + decodeText(content) + "\n");
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        writer.write("Düz Metin İçerik: " + line + "\n");
+                    }
+                }
             } else if (bodyPart.isMimeType("text/html")) {
-                String content = (String) bodyPart.getContent();
-                writer.write("HTML İçerik: " + decodeText(content) + "\n");
+                writer.write("HTML İçerik: " + bodyPart.getContent() + "\n");
             } else if (bodyPart.getContent() instanceof Multipart) {
                 handleMultipart((Multipart) bodyPart.getContent(), writer);
             } else if (bodyPart.getContent() instanceof InputStream) {
                 handleInputStream((InputStream) bodyPart.getContent(), writer);
             } else {
-                String content = bodyPart.getContent().toString();
-                writer.write("Diğer İçerik: " + decodeText(content) + "\n");
+                writer.write("Diğer İçerik: " + bodyPart.getContent() + "\n");
             }
         }
     }
@@ -132,4 +117,3 @@ public class RecieveMail {
         }
     }
 }
-
