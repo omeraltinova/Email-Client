@@ -61,9 +61,9 @@ import static org.example.Mail.*;
         }
     }
        public void fetchEmails() {
-           String host = "imap-mail.outlook.com";
-           String username = "iamtheone.javaproje@outlook.com";
-           String password = "RuhiBaba123_Java";
+           String host = "imap.gmail.com";
+           String username = "iamtheone.javaproje@gmail.com";
+           String password = "dnhz mqsf buou dfxd";
 
            File emailDir = new File("emails/inbox");
            if (!emailDir.exists()) {
@@ -125,7 +125,7 @@ import static org.example.Mail.*;
                String contentType = bodyPart.getContentType();
                writer.write("Parça " + (i + 1) + " - İçerik Tipi: \n" + contentType + "\n");
                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
-                   saveAttachment(bodyPart);
+                   saveAttachment(bodyPart,i);
                } else if (bodyPart.isMimeType("text/plain")) {
                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream()))) {
                        String line;
@@ -154,8 +154,8 @@ import static org.example.Mail.*;
            }
        }
 
-       private static void saveAttachment(BodyPart bodyPart) throws MessagingException, IOException {
-           File dir = new File("attachments");
+       private static void saveAttachment(BodyPart bodyPart,int i) throws MessagingException, IOException {
+           File dir = new File("attachments/email_" + (i + 1));
            if (!dir.exists()) dir.mkdirs();
            String fileName = bodyPart.getFileName();
            File file = new File(dir, fileName);
