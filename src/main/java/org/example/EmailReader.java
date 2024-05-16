@@ -43,13 +43,13 @@ public class EmailReader {
                                     contentBuilder.append(line.substring(18)).append("\n");
 
                                     // Sonrasında gelen tüm satırları okuyun ve içeriğe ekleyin
-                                    while ((line = reader.readLine()) != null) {
-                                        // "Parça" ile başlayan satıra kadar olan satırları kontrol edin
-                                        if (line.startsWith("Parça")) {
-                                            break; // "Parça" ile başlayan satıra ulaşıldığında döngüyü sonlandırın
-                                        }
-                                        contentBuilder.append(line).append("\n");
-                                    }
+//                                    while ((line = reader.readLine()) != null) {
+//                                        // "Parça" ile başlayan satıra kadar olan satırları kontrol edin
+//                                        if (line.startsWith("Parça")) {
+//                                            break; // "Parça" ile başlayan satıra ulaşıldığında döngüyü sonlandırın
+//                                        }
+//                                        contentBuilder.append(line).append("\n");
+//                                    }
                                 }else if(line.contains("name=")){
                                         contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
                                 }
