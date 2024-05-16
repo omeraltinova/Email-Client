@@ -12,14 +12,6 @@ import static org.example.Mail.*;
 
    public class MailManagement extends Mail {
 
-       private static String MANAGE_USERNAME = getUSERNAME();
-       private static String MANAGE_PASSWORD = getPASSWORD();
-       private static String MANAGE_HOST = getHOST(); //SMTP HOST
-       private static String MANAGE_PORT = getPORT(); //SMTP PORT
-       private static String MANAGE_IMAP_HOST = getImapHost();
-       private static String MANAGE_IMAP_PORT = getImapPort();
-
-
     public static void sendPlainTextEmail(String from, String to, String subject, String message, boolean debug) {
 
         String host = getHOST();
@@ -169,29 +161,6 @@ import static org.example.Mail.*;
                System.out.println("Ek kaydedildi: " + file.getAbsolutePath());
            }
        }
-
-       public static String getManageUsername() {
-           return MANAGE_USERNAME;
-       }
-
-       public static String getManagePassword() {
-           return MANAGE_PASSWORD;
-       }
-
-       public static String getManageHost() {
-           return MANAGE_HOST;
-       }
-
-       public static String getManagePort() {
-           return MANAGE_PORT;
-       }
-
-       public static String getManageImapHost() {
-           return MANAGE_IMAP_HOST;
-       }
-
-       public static String getManageImapPort() {
-           return MANAGE_IMAP_PORT;
-       }
+       
    }
 
