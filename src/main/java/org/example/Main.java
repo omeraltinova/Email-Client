@@ -6,13 +6,12 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("MMMMmmmherbaaaa ARkadaşlarrrr ");
        // CheckMail check = new CheckMail();
        // System.out.println(check.isEmailLegal("as@hotmail.com")); //Bende hata gösterdiği için yoruma aldım
 //        MailManagement mm = new MailManagement();
 //       mm.fetchEmails();
-        RecieveMail rm = new RecieveMail();
-        rm.fetchEmails();
+//        RecieveMail rm = new RecieveMail();
+//        rm.fetchEmails();
 
 //        MailManagement m1 = new MailManagement();
 //
