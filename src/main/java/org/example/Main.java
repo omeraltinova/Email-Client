@@ -10,7 +10,7 @@ public class Main {
 //        MailManagement mm = new MailManagement();
 //        mm.fetchEmails();
 //        mm.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","test","test",true);
-        ReciveMail rm = new ReciveMail();
+        RecieveMail rm = new RecieveMail();
         rm.fetchEmails();
 
         List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
