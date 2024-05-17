@@ -1,0 +1,9 @@
+Konu: Test
+Gönderen: "Ömer Faruk Altınova" <skocraft05@gmail.com>
+Parça 1 - İçerik Tipi: 
+TEXT/PLAIN; charset=UTF-8
+Düz Metin İçerik: Test etmeyelim mi kardeşim?
+Parça 2 - İçerik Tipi: 
+TEXT/HTML; charset=UTF-8
+HTML İçerik: <div dir="auto">Test etmeyelim mi kardeşim?</div>
+
