@@ -67,7 +67,7 @@ import static org.example.Mail.*;
                props.setProperty("mail.imap.host", host);
                props.setProperty("mail.imap.port", "993");
                props.setProperty("mail.imap.ssl.enable", "true");
-
+               props.setProperty("mail.debug", "true");
 
                Session session = Session.getDefaultInstance(props, new Authenticator() {
                    @Override
