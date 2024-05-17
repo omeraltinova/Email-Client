@@ -13,7 +13,7 @@ import static org.example.Mail.*;
    public class MailManagement extends Mail {
 
     public static void sendPlainTextEmail(String from, String to, String subject, String message, boolean debug) {
-
+        mailSaver(from,to,subject,message);
         String host = getHOST();
         String password = getPASSWORD();
         //System.out.println("Şifre + " + password);
@@ -161,6 +161,36 @@ import static org.example.Mail.*;
                }
                System.out.println("Ek kaydedildi: " + file.getAbsolutePath());
            }
+       }
+
+       public static void mailSaver(String from, String to, String subject, String message){
+        String path = "emails/sent/"+from+"/"+subject+".txt";
+
+        String[] content = {subject,
+        from,
+        to,
+        message};
+        try{
+            File saver = new File(path);
+            saver.getParentFile().mkdirs();
+            System.out.println(saver.getName() + " adlı dosya oluşturuldu.");
+            FileWriter fw = new FileWriter(path);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            for(String line: content){
+                bw.write(line);
+                bw.newLine();
+            }
+            bw.flush();
+            bw.close();
+
+
+        }
+        catch (Exception e){
+            System.out.println("Gönderilen dosya kaydedilemedi.");
+            e.printStackTrace();
+        }
+
        }
        
    }
