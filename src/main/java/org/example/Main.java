@@ -7,11 +7,11 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
        // CheckMail check = new CheckMail();
-//        MailManagement mm = new MailManagement();
-//        mm.fetchEmails();
+        MailManagement mm = new MailManagement();
+        mm.fetchEmails();
 //        mm.sendPlainTextEmail("ruhicenet123_javaproje@outlook.com","skocraft05@gmail.com","test","test",true);
-        RecieveMail rm = new RecieveMail();
-        rm.fetchEmails();
+//        RecieveMail rm = new RecieveMail();
+//        rm.fetchEmails();
 
         List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
         //Ana ekranı çağırmak için
