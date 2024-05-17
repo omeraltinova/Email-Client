@@ -192,6 +192,40 @@ import static org.example.Mail.*;
         }
 
        }
+
+       public static void mailLister(String email){
+           String path = "emails/sent/"+email;
+           int i = 0;
+
+           try{
+               File lister = new File(path);
+
+               if(!lister.exists()){
+                   System.out.println("Gönderilmiş bir mail yok!");
+                   return;
+               }
+               File[] txtFiles = lister.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+
+               if(txtFiles!=null && txtFiles.length>0){
+                   System.out.println("Bulunan dosyalar: ");
+                   for(File dosya : txtFiles){
+                       System.out.println((i+1) + ". gönderilen mail");
+                       System.out.println(dosya.getName());
+                       i++;
+                   }
+
+               }
+               else{
+                   System.out.println("Gönderilen bir mail bulunamadı");
+               }
+
+
+           }
+           catch (Exception e){
+               System.out.println("Dosya bulunamadı");
+           }
+
+       }
        
    }
 

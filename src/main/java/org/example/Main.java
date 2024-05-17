@@ -12,7 +12,9 @@ public class Main {
 //        mm.sendPlainTextEmail("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","testi",true);
 
         MailManagement.mailSaver("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","Model-View-Controller (MVC), yazılım geliştirme sürecinde sıklıkla kullanılan bir tasarım desenidir. Bu desen, bir uygulamanın yapısal bütünlüğünü korumak ve farklı bileşenler arasında net bir ayrım sağlamak için kullanılır.");
+        MailManagement.mailSaver("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test2","2. mail");
 
+        MailManagement.mailLister("iamtheone.javaproje@gmail.com");
 
 
 //        RecieveMail rm = new RecieveMail();
