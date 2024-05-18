@@ -41,6 +41,6 @@ build/
 ### Kişisel verilerin GitHub'a gitmemesi için ###
 /Accounts/*.txt
 /attachments/
-/emails/*txt
-/emails/inbox/*txt
+/emails/*.txt
+/emails/inbox/*.txt
 /emails/sent/*
