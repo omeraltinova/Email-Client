@@ -19,6 +19,9 @@ public class GUIMainScreen {
     private JPanel detailsPanel;
     private DefaultTableModel receivedMailTableModel;
     private List<Map<String, String>> emails;
+    private JLabel carLabel;
+    private Timer timer;
+    private int xPosition;
 
     public GUIMainScreen(List<Map<String, String>> emails) {
         this.emails = emails;
@@ -46,6 +49,17 @@ public class GUIMainScreen {
 
         toolBar.add(refreshButton);
         toolBar.add(settingsButton);
+
+        // Profile Picture and Name
+        toolBar.add(Box.createHorizontalGlue());
+        JLabel profilePicture = new JLabel(new ImageIcon("profile.jpg"));
+        JLabel nameLabel = new JLabel("John Doe");
+        nameLabel.setForeground(Color.WHITE);
+        nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        toolBar.add(profilePicture);
+        toolBar.add(Box.createRigidArea(new Dimension(10, 0)));
+        toolBar.add(nameLabel);
 
         mainScreen.add(toolBar, BorderLayout.NORTH);
 
@@ -97,6 +111,11 @@ public class GUIMainScreen {
             }
         });
 
+        receivedMailTable.setBackground(new Color(45, 52, 54));
+        receivedMailTable.setForeground(Color.WHITE);
+        receivedMailTable.setSelectionBackground(new Color(99, 110, 114));
+        receivedMailTable.setSelectionForeground(Color.BLACK);
+
         // Right-click context menu
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem deleteItem = new JMenuItem("Delete");
@@ -137,7 +156,28 @@ public class GUIMainScreen {
         emailDetails.setMargin(new Insets(10, 10, 10, 10));
 
         JScrollPane emailDetailsScrollPane = new JScrollPane(emailDetails);
+
+        // Close button
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                emailDetails.setText("");
+            }
+        });
+
+        // Animated Car
+        carLabel = new JLabel(new ImageIcon("car.png"));
+        JPanel carPanel = new JPanel(null);
+        carPanel.setPreferredSize(new Dimension(detailsPanel.getWidth(), 100));
+        carPanel.setBackground(new Color(0, 0, 0));
+        carPanel.add(carLabel);
+
         detailsPanel.add(emailDetailsScrollPane, BorderLayout.CENTER);
+        detailsPanel.add(closeButton, BorderLayout.NORTH);
+        detailsPanel.add(carPanel, BorderLayout.SOUTH);
+
+        startCarAnimation(carPanel);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, emailListScrollPane, detailsPanel);
         splitPane.setDividerLocation(400);
@@ -168,14 +208,20 @@ public class GUIMainScreen {
         emailDetails.setText(details);
     }
 
-    public static void main(String[] args) {
-        List<Map<String, String>> emails = List.of(
-                Map.of("Gönderen", "alice@example.com", "Konu", "Meeting Reminder", "İçerik", "Don't forget our meeting tomorrow at 10 AM."),
-                Map.of("Gönderen", "bob@example.com", "Konu", "Project Update", "İçerik", "The project is on track for the deadline."),
-                Map.of("Gönderen", "carol@example.com", "Konu", "Lunch Plans", "İçerik", "How about lunch tomorrow?")
-        );
-
-        SwingUtilities.invokeLater(() -> new GUIMainScreen(emails));
+    private void startCarAnimation(JPanel carPanel) {
+        xPosition = -100;
+        timer = new Timer(30, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                xPosition += 5;
+                if (xPosition > carPanel.getWidth()) {
+                    xPosition = -100;
+                }
+                carLabel.setBounds(xPosition, 20, carLabel.getPreferredSize().width, carLabel.getPreferredSize().height);
+                carPanel.repaint();
+            }
+        });
+        timer.start();
     }
 }
 
