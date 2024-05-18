@@ -204,10 +204,9 @@ public class RecieveMail {
 
             Message[] messages = inbox.getMessages();
 
-            for (int i = 0; i < messages.length; i++) { // Tüm mesajları işleyin
+            for (int i = 0; i < messages.length; i++) {
                 Message message = messages[i];
-                Email eMail = new Email(); // Her döngü adımında yeni bir Email nesnesi oluşturuluyor
-                // Konu satırını doğru şekilde al
+                Email eMail = new Email();
                 String subject = message.getSubject();
                 eMail.setSubject(subject);
                 eMail.setFrom(message.getFrom()[0].toString());
@@ -217,9 +216,8 @@ public class RecieveMail {
                 } else if (content instanceof Multipart) {
                     handleMultipart((Multipart) content, eMail);
                 } else {
-                    eMail.setContent(content.toString());
+                    eMail.setContent(decodeContent(content));
                 }
-                // Email nesnesini HashMap'e ekle
                 emailMap.put(i, eMail);
             }
 
@@ -233,22 +231,18 @@ public class RecieveMail {
         StringBuilder contentBuilder = new StringBuilder();
         for (int i = 0; i < multipart.getCount(); i++) {
             BodyPart bodyPart = multipart.getBodyPart(i);
-            // İçeriği işle
             if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
                 saveAttachment(bodyPart, i);
             } else if (bodyPart.isMimeType("text/plain")) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream()))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        contentBuilder.append(line).append("\n");
-                    }
-                }
+                contentBuilder.append(decodeContent(bodyPart.getContent())).append("\n");
+            } else if (bodyPart.isMimeType("text/html")) {
+                // HTML içeriği atla
             } else if (bodyPart.getContent() instanceof Multipart) {
-                // Birden fazla parçadan oluşan içerik varsa, içeriği işle
                 handleMultipart((Multipart) bodyPart.getContent(), email);
+            } else {
+                contentBuilder.append(decodeContent(bodyPart.getContent())).append("\n");
             }
         }
-        // Önceki içeriği bozmadan yeni içeriği ekle
         if (email.getContent() != null) {
             email.setContent(email.getContent() + contentBuilder.toString());
         } else {
@@ -270,5 +264,25 @@ public class RecieveMail {
             }
             System.out.println("Ek kaydedildi: " + file.getAbsolutePath());
         }
+    }
+
+    private static String decodeContent(Object content) throws IOException {
+        if (content instanceof InputStream) {
+            return readInputStream((InputStream) content);
+        } else if (content != null) {
+            return content.toString();
+        }
+        return "";
+    }
+
+    private static String readInputStream(InputStream is) throws IOException {
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line).append("\n");
+            }
+        }
+        return contentBuilder.toString();
     }
 }
