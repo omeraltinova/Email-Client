@@ -5,6 +5,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Map;
 
@@ -13,19 +17,38 @@ public class GUIMainScreen {
     private JTable receivedMailTable;
     private JTextArea emailDetails;
     private JPanel detailsPanel;
+    private DefaultTableModel receivedMailTableModel;
+    private List<Map<String, String>> emails;
 
     public GUIMainScreen(List<Map<String, String>> emails) {
+        this.emails = emails;
         mainScreen = new JFrame("Email Client Main Screen");
         mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainScreen.setSize(1368, 720);
         mainScreen.setLayout(new BorderLayout());
 
-        initializeUI(emails);
+        initializeUI();
 
         mainScreen.setVisible(true);
     }
 
-    private void initializeUI(List<Map<String, String>> emails) {
+    private void initializeUI() {
+        // ToolBar
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+        toolBar.setBackground(new Color(33, 33, 33));
+
+        JButton refreshButton = new JButton("Refresh");
+        JButton settingsButton = new JButton("Settings");
+
+        configureToolBarButton(refreshButton);
+        configureToolBarButton(settingsButton);
+
+        toolBar.add(refreshButton);
+        toolBar.add(settingsButton);
+
+        mainScreen.add(toolBar, BorderLayout.NORTH);
+
         // Sidebar
         JPanel selectMenu1 = new JPanel();
         selectMenu1.setLayout(new GridLayout(0, 1));
@@ -51,7 +74,7 @@ public class GUIMainScreen {
 
         // Email List
         String[] receivedMailColumns = {"Sender", "Subject"};
-        DefaultTableModel receivedMailTableModel = new DefaultTableModel(receivedMailColumns, 0) {
+        receivedMailTableModel = new DefaultTableModel(receivedMailColumns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -74,18 +97,43 @@ public class GUIMainScreen {
             }
         });
 
+        // Right-click context menu
+        JPopupMenu popupMenu = new JPopupMenu();
+        JMenuItem deleteItem = new JMenuItem("Delete");
+        deleteItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = receivedMailTable.getSelectedRow();
+                if (selectedRow != -1) {
+                    receivedMailTableModel.removeRow(selectedRow);
+                    emails.remove(selectedRow);
+                }
+            }
+        });
+        popupMenu.add(deleteItem);
+
+        receivedMailTable.setComponentPopupMenu(popupMenu);
+        receivedMailTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int row = receivedMailTable.rowAtPoint(e.getPoint());
+                receivedMailTable.getSelectionModel().setSelectionInterval(row, row);
+            }
+        });
+
         JScrollPane emailListScrollPane = new JScrollPane(receivedMailTable);
         emailListScrollPane.setPreferredSize(new Dimension(400, mainScreen.getHeight()));
 
         // Email Details
         detailsPanel = new JPanel(new BorderLayout());
-        detailsPanel.setBackground(new Color(238, 238, 238));
+        detailsPanel.setBackground(new Color(33, 33, 33));
 
         emailDetails = new JTextArea();
         emailDetails.setEditable(false);
         emailDetails.setLineWrap(true);
         emailDetails.setWrapStyleWord(true);
-        emailDetails.setBackground(new Color(238, 238, 238));
+        emailDetails.setBackground(new Color(33, 33, 33));
+        emailDetails.setForeground(Color.WHITE);
         emailDetails.setMargin(new Insets(10, 10, 10, 10));
 
         JScrollPane emailDetailsScrollPane = new JScrollPane(emailDetails);
@@ -105,6 +153,14 @@ public class GUIMainScreen {
         button.setFont(new Font("Arial", Font.PLAIN, 18));
     }
 
+    private void configureToolBarButton(JButton button) {
+        button.setFocusPainted(false);
+        button.setBackground(new Color(45, 52, 54));
+        button.setForeground(Color.WHITE);
+        button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        button.setFont(new Font("Arial", Font.PLAIN, 16));
+    }
+
     private void showEmailDetails(Map<String, String> email) {
         String details = "Sender: " + email.get("Gönderen") + "\n"
                 + "Subject: " + email.get("Konu") + "\n\n"
@@ -122,6 +178,8 @@ public class GUIMainScreen {
         SwingUtilities.invokeLater(() -> new GUIMainScreen(emails));
     }
 }
+
+
 
 
 
