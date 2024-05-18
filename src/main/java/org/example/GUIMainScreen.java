@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,9 +20,6 @@ public class GUIMainScreen {
     private JPanel detailsPanel;
     private DefaultTableModel receivedMailTableModel;
     private List<Map<String, String>> emails;
-    private JLabel carLabel;
-    private Timer timer;
-    private int xPosition;
 
     public GUIMainScreen(List<Map<String, String>> emails) {
         this.emails = emails;
@@ -50,39 +48,46 @@ public class GUIMainScreen {
         toolBar.add(refreshButton);
         toolBar.add(settingsButton);
 
-        // Profile Picture and Name
+        // Profile Picture and Name with Sign Out button
         toolBar.add(Box.createHorizontalGlue());
-        JLabel profilePicture = new JLabel(new ImageIcon("profile.jpg"));
+        JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon("profile-photos/default-picture.png"), 50, 50));
         JLabel nameLabel = new JLabel("John Doe");
         nameLabel.setForeground(Color.WHITE);
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
 
+        JButton signOutButton = new JButton("Sign Out");
+        configureToolBarButton(signOutButton);
+
         toolBar.add(profilePicture);
         toolBar.add(Box.createRigidArea(new Dimension(10, 0)));
         toolBar.add(nameLabel);
+        toolBar.add(Box.createRigidArea(new Dimension(10, 0)));
+        toolBar.add(signOutButton);
 
         mainScreen.add(toolBar, BorderLayout.NORTH);
 
         // Sidebar
         JPanel selectMenu1 = new JPanel();
-        selectMenu1.setLayout(new GridLayout(0, 1));
-        selectMenu1.setBackground(new Color(45, 52, 54));
+        selectMenu1.setLayout(new GridBagLayout());
+        selectMenu1.setBackground(new Color(33, 33, 33));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = GridBagConstraints.RELATIVE;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
         JButton received = new JButton("Inbox");
         JButton sent = new JButton("Sent");
         JButton sendMail = new JButton("Compose");
-        JButton signOutButton = new JButton("Sign Out");
 
         configureButton(received);
         configureButton(sent);
         configureButton(sendMail);
-        configureButton(signOutButton);
 
-        selectMenu1.add(received);
-        selectMenu1.add(sent);
-        selectMenu1.add(sendMail);
-        selectMenu1.add(Box.createVerticalGlue());
-        selectMenu1.add(signOutButton);
+        selectMenu1.add(received, gbc);
+        selectMenu1.add(sent, gbc);
+        selectMenu1.add(sendMail, gbc);
 
         mainScreen.add(selectMenu1, BorderLayout.WEST);
 
@@ -99,7 +104,16 @@ public class GUIMainScreen {
             receivedMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
         }
 
-        receivedMailTable = new JTable(receivedMailTableModel);
+        receivedMailTable = new JTable(receivedMailTableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    component.setBackground(row % 2 == 0 ? new Color(45, 52, 54) : new Color(60, 63, 65));
+                }
+                return component;
+            }
+        };
         receivedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         receivedMailTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -115,33 +129,11 @@ public class GUIMainScreen {
         receivedMailTable.setForeground(Color.WHITE);
         receivedMailTable.setSelectionBackground(new Color(99, 110, 114));
         receivedMailTable.setSelectionForeground(Color.BLACK);
+        receivedMailTable.setGridColor(new Color(45, 52, 54)); // Set grid color to match background
 
-        // Right-click context menu
-        JPopupMenu popupMenu = new JPopupMenu();
-        JMenuItem deleteItem = new JMenuItem("Delete");
-        deleteItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int selectedRow = receivedMailTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    receivedMailTableModel.removeRow(selectedRow);
-                    emails.remove(selectedRow);
-                }
-            }
-        });
-        popupMenu.add(deleteItem);
-
-        receivedMailTable.setComponentPopupMenu(popupMenu);
-        receivedMailTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                int row = receivedMailTable.rowAtPoint(e.getPoint());
-                receivedMailTable.getSelectionModel().setSelectionInterval(row, row);
-            }
-        });
-
+        // Set the background color for the JScrollPane
         JScrollPane emailListScrollPane = new JScrollPane(receivedMailTable);
-        emailListScrollPane.setPreferredSize(new Dimension(400, mainScreen.getHeight()));
+        emailListScrollPane.getViewport().setBackground(new Color(33, 33, 33));
 
         // Email Details
         detailsPanel = new JPanel(new BorderLayout());
@@ -159,6 +151,11 @@ public class GUIMainScreen {
 
         // Close button
         JButton closeButton = new JButton("Close");
+        closeButton.setFocusPainted(false);
+        closeButton.setBackground(new Color(255, 0, 0));
+        closeButton.setForeground(Color.WHITE);
+        closeButton.setFont(new Font("Arial", Font.BOLD, 12));
+        closeButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
         closeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -166,18 +163,12 @@ public class GUIMainScreen {
             }
         });
 
-        // Animated Car
-        carLabel = new JLabel(new ImageIcon("car.png"));
-        JPanel carPanel = new JPanel(null);
-        carPanel.setPreferredSize(new Dimension(detailsPanel.getWidth(), 100));
-        carPanel.setBackground(new Color(0, 0, 0));
-        carPanel.add(carLabel);
+        JPanel closeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        closeButtonPanel.setBackground(new Color(33, 33, 33));
+        closeButtonPanel.add(closeButton);
 
         detailsPanel.add(emailDetailsScrollPane, BorderLayout.CENTER);
-        detailsPanel.add(closeButton, BorderLayout.NORTH);
-        detailsPanel.add(carPanel, BorderLayout.SOUTH);
-
-        startCarAnimation(carPanel);
+        detailsPanel.add(closeButtonPanel, BorderLayout.NORTH);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, emailListScrollPane, detailsPanel);
         splitPane.setDividerLocation(400);
@@ -189,13 +180,13 @@ public class GUIMainScreen {
         button.setFocusPainted(false);
         button.setBackground(new Color(99, 110, 114));
         button.setForeground(Color.WHITE);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        button.setFont(new Font("Arial", Font.PLAIN, 18));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        button.setFont(new Font("Arial", Font.PLAIN, 16));
     }
 
     private void configureToolBarButton(JButton button) {
         button.setFocusPainted(false);
-        button.setBackground(new Color(45, 52, 54));
+        button.setBackground(new Color(33, 33, 33));
         button.setForeground(Color.WHITE);
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -208,22 +199,24 @@ public class GUIMainScreen {
         emailDetails.setText(details);
     }
 
-    private void startCarAnimation(JPanel carPanel) {
-        xPosition = -100;
-        timer = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                xPosition += 5;
-                if (xPosition > carPanel.getWidth()) {
-                    xPosition = -100;
-                }
-                carLabel.setBounds(xPosition, 20, carLabel.getPreferredSize().width, carLabel.getPreferredSize().height);
-                carPanel.repaint();
-            }
-        });
-        timer.start();
+    private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
+        Image image = icon.getImage();
+        Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
+    }
+
+    public static void main(String[] args) {
+        // Dummy email data for testing
+        List<Map<String, String>> emails = List.of(
+                Map.of("Gönderen", "example1@example.com", "Konu", "Test Subject 1", "İçerik", "Test Content 1"),
+                Map.of("Gönderen", "example2@example.com", "Konu", "Test Subject 2", "İçerik", "Test Content 2")
+        );
+        new GUIMainScreen(emails);
     }
 }
+
+
+
 
 
 
