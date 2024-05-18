@@ -42,3 +42,5 @@ build/
 /Accounts/*.txt
 /attachments/
 /emails/*txt
+/emails/inbox/*txt
+/emails/sent/*
