@@ -20,12 +20,12 @@ public class Main {
         RecieveMail rm = new RecieveMail();
         rm.fetchEmails();
 
-//        List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
-//
-//        //Ana ekranı çağırmak için
-//        GUIMainScreen anaEkran = new GUIMainScreen(emails);
-        Map<Integer, Email> emails = rm.fetchEmails();
+        List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
+
+        //Ana ekranı çağırmak için
         GUIMainScreen anaEkran = new GUIMainScreen(emails);
+//        Map<Integer, Email> emails = rm.fetchEmails();
+//        GUIMainScreen anaEkran = new GUIMainScreen(emails);
 
 
     }
