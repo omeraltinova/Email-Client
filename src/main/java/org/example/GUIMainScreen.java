@@ -1,15 +1,9 @@
 package org.example;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 import java.util.Map;
 
@@ -114,14 +108,14 @@ public class GUIMainScreen {
                 return component;
             }
         };
+
+        // Use the custom renderer for multi-line support
+        receivedMailTable.setDefaultRenderer(Object.class, new MultiLineTableCellRenderer());
         receivedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        receivedMailTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                int selectedRow = receivedMailTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    showEmailDetails(emails.get(selectedRow));
-                }
+        receivedMailTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = receivedMailTable.getSelectedRow();
+            if (selectedRow != -1) {
+                showEmailDetails(emails.get(selectedRow));
             }
         });
 
@@ -156,12 +150,7 @@ public class GUIMainScreen {
         closeButton.setForeground(Color.WHITE);
         closeButton.setFont(new Font("Arial", Font.BOLD, 12));
         closeButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        closeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                emailDetails.setText("");
-            }
-        });
+        closeButton.addActionListener(e -> emailDetails.setText(""));
 
         JPanel closeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         closeButtonPanel.setBackground(new Color(33, 33, 33));
@@ -191,11 +180,9 @@ public class GUIMainScreen {
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
     }
-
     private void showEmailDetails(Map<String, String> email) {
-        String details = "Sender: " + email.get("Gönderen") + "\n"
-                + "Subject: " + email.get("Konu") + "\n\n"
-                + email.get("İçerik");
+        String details = "Sender: " + email.get("Gönderen") + "\n" + "Subject: " + email.get("Konu") + "\n\n" + email.get("İçerik");
+
         emailDetails.setText(details);
     }
 
@@ -205,15 +192,46 @@ public class GUIMainScreen {
         return new ImageIcon(resizedImage);
     }
 
+    // Custom cell renderer for multi-line text
+    private class MultiLineTableCellRenderer extends JTextArea implements TableCellRenderer {
+        public MultiLineTableCellRenderer() {
+            setLineWrap(true);
+            setWrapStyleWord(true);
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            setText(value != null ? value.toString() : "");
+            setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+            setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Adjust as needed
+
+            // Adjust the row height to fit the content
+            setSize(table.getColumnModel().getColumn(column).getWidth(), Integer.MAX_VALUE);
+            int preferredHeight = getPreferredSize().height;
+            int rowHeight = table.getRowHeight(row);
+            if (preferredHeight > rowHeight && preferredHeight > 0) {
+                table.setRowHeight(row, preferredHeight);
+            }
+
+            return this;
+        }
+    }
+
     public static void main(String[] args) {
-        // Dummy email data for testing
-        List<Map<String, String>> emails = List.of(
-                Map.of("Gönderen", "example1@example.com", "Konu", "Test Subject 1", "İçerik", "Test Content 1"),
-                Map.of("Gönderen", "example2@example.com", "Konu", "Test Subject 2", "İçerik", "Test Content 2")
-        );
-        new GUIMainScreen(emails);
+        SwingUtilities.invokeLater(() -> {
+            List<Map<String, String>> dummyEmails = List.of(
+                    Map.of("Gönderen", "Alice", "Konu", "Güzel Haberler", "İçerik", "Merhaba, bu güzel bir denemedir."),
+                    Map.of("Gönderen", "Bob", "Konu", "Toplantı", "İçerik", "Toplantı saat 14:00'te."),
+                    Map.of("Gönderen", "Charlie", "Konu", "Proje güncellemesi", "İçerik", "Proje güncellemeleri hakkında bilgi.")
+            );
+            new GUIMainScreen(dummyEmails);
+        });
     }
 }
+
 
 
 
