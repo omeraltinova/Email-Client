@@ -51,7 +51,8 @@ public class EmailReader {
 //                                        contentBuilder.append(line).append("\n");
 //                                    }
                                 }else if(line.contains("name=")){
-                                        contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
+                                    emailData.put("Attachment",line.substring(line.indexOf("name=")));
+                                    contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
                                 }
 //                                else {
 //                                    // Diğer satırları da içeriğe ekle

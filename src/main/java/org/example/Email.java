@@ -8,7 +8,7 @@ public class Email {
     private String contentType;
     private String content;
     private List<Email> multipartContent;
-    private Attachment attachment;
+    private String attachment;
 
     // Getters and setters
 
@@ -52,11 +52,11 @@ public class Email {
         this.multipartContent = multipartContent;
     }
 
-    public Attachment getAttachment() {
+    public String getAttachment() {
         return attachment;
     }
 
-    public void setAttachment(Attachment attachment) {
+    public void setAttachment(String attachment) {
         this.attachment = attachment;
     }
 }
