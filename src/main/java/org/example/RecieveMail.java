@@ -6,7 +6,7 @@ import javax.mail.*;
 import javax.mail.internet.MimeUtility;
 
 public class RecieveMail {
-    public void fetchEmails() {
+    public void fetchEmails(int indexToDelete) {
         String host = "imap.gmail.com";
         String username = "iamtheone.javaproje@gmail.com";
         String password = "dnhz mqsf buou dfxd";
@@ -40,6 +40,11 @@ public class RecieveMail {
 
             for (int i = 0; i < messages.length; i++) {
                 Message message = messages[i];
+                if (indexToDelete >= 0 && indexToDelete == i) {
+                    message.setFlag(Flags.Flag.DELETED, true);  // Mesajı sil
+                    System.out.println("Mesaj silindi: " + message.getSubject());
+                }
+
                 File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
                 try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
@@ -180,6 +185,49 @@ public class RecieveMail {
             System.out.println("Dosya bulunamadı");
         }
     }
+    public void deleteEmailAtIndex(int indexToDelete) {
+        String host = "imap-mail.outlook.com";
+        String username = "ruhicenet123_javaproje@outlook.com";
+        String password = "RuhiBaba123_Java";
+
+        try {
+            Properties props = new Properties();
+            props.setProperty("mail.imap.host", host);
+            props.setProperty("mail.imap.port", "993");
+            props.setProperty("mail.imap.ssl.enable", "true");
+
+            Session session = Session.getDefaultInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(username, password);
+                }
+            });
+
+            Store store = session.getStore("imap");
+            store.connect(host, username, password);
+
+            Folder inbox = store.getFolder("INBOX");
+            inbox.open(Folder.READ_WRITE);  // READ_WRITE olarak açıyoruz
+
+            Message[] messages = inbox.getMessages();
+
+            // Silinecek indeksin doğruluğunu kontrol ediyoruz
+            if (indexToDelete >= 0 && indexToDelete < messages.length) {
+                Message message = messages[indexToDelete];
+                message.setFlag(Flags.Flag.DELETED, true);  // Mesajı sil
+                System.out.println("Mesaj silindi: " + message.getSubject());
+            } else {
+                System.out.println("Geçersiz indeks: " + indexToDelete);
+            }
+
+            // Değişiklikleri uygulamak için inbox'ı kapat
+            inbox.close(true);  // true parametresi, silme işlemini onaylar
+            store.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
 
@@ -188,7 +236,7 @@ public class RecieveMail {
 
 
 //package org.example;
-//
+
 //import org.example.Email;
 //
 //import java.io.*;
@@ -197,7 +245,7 @@ public class RecieveMail {
 //import javax.mail.internet.MimeUtility;
 //
 //public class RecieveMail {
-//    public Map<Integer, Email> fetchEmails() {
+//    public Map<Integer, Email> fetchEmails(int indexToDelete) {
 //        Map<Integer, Email> emailMap = new HashMap<>();
 //        String host = "imap.gmail.com";
 //        String username = "iamtheone.javaproje@gmail.com";
@@ -227,6 +275,10 @@ public class RecieveMail {
 //
 //            for (int i = 0; i < messages.length; i++) {
 //                Message message = messages[i];
+//                if (indexToDelete >= 0 && indexToDelete == i) {
+//                    message.setFlag(Flags.Flag.DELETED, true);  // Mesajı sil
+//                    System.out.println("Mesaj silindi: " + message.getSubject());
+//                }
 //                Email eMail = new Email();
 //                String subject = message.getSubject();
 //                eMail.setSubject(subject);
