@@ -17,8 +17,8 @@ public class Main {
         MailManagement.mailLister("iamtheone.javaproje@gmail.com");
 
 
-//        RecieveMail rm = new RecieveMail();
-//        rm.fetchEmails();
+        RecieveMail rm = new RecieveMail();
+        rm.fetchEmails(-1);
 
         List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
         //Ana ekranı çağırmak için
