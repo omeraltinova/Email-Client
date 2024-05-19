@@ -93,14 +93,14 @@ public class RecieveMail {
         }
     }
 
-    private static void handleInputStream(InputStream is, BufferedWriter writer) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            writer.write(line);
-            writer.newLine();
-        }
-    }
+//    private static void handleInputStream(InputStream is, BufferedWriter writer) throws IOException {
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            writer.write(line);
+//            writer.newLine();
+//        }
+//    }
 
     private static void saveAttachment(BodyPart bodyPart, int i) throws MessagingException, IOException {
         File dir = new File("attachments/email_" + (i + 1));
@@ -138,54 +138,54 @@ public class RecieveMail {
         return contentBuilder.toString();
     }
 
-    public static void mailSaver(String from, String to, String subject, String message) {
-        String path = "emails/sent/" + from + "/" + subject + ".txt";
-
-        String[] content = {subject, from, to, message};
-        try {
-            File saver = new File(path);
-            saver.getParentFile().mkdirs();
-            System.out.println(saver.getName() + " adlı dosya oluşturuldu.");
-            FileWriter fw = new FileWriter(path);
-            BufferedWriter bw = new BufferedWriter(fw);
-
-            for (String line : content) {
-                bw.write(line);
-                bw.newLine();
-            }
-            bw.flush();
-            bw.close();
-        } catch (Exception e) {
-            System.out.println("Gönderilen dosya kaydedilemedi.");
-            e.printStackTrace();
-        }
-    }
-
-    public static void mailLister(String email) {
-        String path = "emails/sent/" + email;
-        int i = 0;
-
-        try {
-            File lister = new File(path);
-
-            if (!lister.exists()) {
-                System.out.println("Gönderilmiş bir mail yok!");
-                return;
-            }
-            File[] txtFiles = lister.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
-
-            if (txtFiles != null && txtFiles.length > 0) {
-                System.out.println("Bulunan dosyalar: ");
-                for (File dosya : txtFiles) {
-                    System.out.println((i + 1) + ". gönderilen mail");
-                    System.out.println(dosya.getName());
-                    i++;
-                }
-            } else {
-                System.out.println("Gönderilen bir mail bulunamadı");
-            }
-        } catch (Exception e) {
-            System.out.println("Dosya bulunamadı");
-        }
-    }
+//    public static void mailSaver(String from, String to, String subject, String message) {
+//        String path = "emails/sent/" + from + "/" + subject + ".txt";
+//
+//        String[] content = {subject, from, to, message};
+//        try {
+//            File saver = new File(path);
+//            saver.getParentFile().mkdirs();
+//            System.out.println(saver.getName() + " adlı dosya oluşturuldu.");
+//            FileWriter fw = new FileWriter(path);
+//            BufferedWriter bw = new BufferedWriter(fw);
+//
+//            for (String line : content) {
+//                bw.write(line);
+//                bw.newLine();
+//            }
+//            bw.flush();
+//            bw.close();
+//        } catch (Exception e) {
+//            System.out.println("Gönderilen dosya kaydedilemedi.");
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    public static void mailLister(String email) {
+//        String path = "emails/sent/" + email;
+//        int i = 0;
+//
+//        try {
+//            File lister = new File(path);
+//
+//            if (!lister.exists()) {
+//                System.out.println("Gönderilmiş bir mail yok!");
+//                return;
+//            }
+//            File[] txtFiles = lister.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+//
+//            if (txtFiles != null && txtFiles.length > 0) {
+//                System.out.println("Bulunan dosyalar: ");
+//                for (File dosya : txtFiles) {
+//                    System.out.println((i + 1) + ". gönderilen mail");
+//                    System.out.println(dosya.getName());
+//                    i++;
+//                }
+//            } else {
+//                System.out.println("Gönderilen bir mail bulunamadı");
+//            }
+//        } catch (Exception e) {
+//            System.out.println("Dosya bulunamadı");
+//        }
+//    }
 }
