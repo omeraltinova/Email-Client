@@ -180,6 +180,7 @@ public class GUIMainScreen {
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
     }
+
     private void showEmailDetails(Map<String, String> email) {
         String details = "Sender: " + email.get("Gönderen") + "\n" + "Subject: " + email.get("Konu") + "\n\n" + email.get("İçerik");
 
@@ -220,18 +221,7 @@ public class GUIMainScreen {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            List<Map<String, String>> dummyEmails = List.of(
-                    Map.of("Gönderen", "Alice", "Konu", "Güzel Haberler", "İçerik", "Merhaba, bu güzel bir denemedir."),
-                    Map.of("Gönderen", "Bob", "Konu", "Toplantı", "İçerik", "Toplantı saat 14:00'te."),
-                    Map.of("Gönderen", "Charlie", "Konu", "Proje güncellemesi", "İçerik", "Proje güncellemeleri hakkında bilgi.")
-            );
-            new GUIMainScreen(dummyEmails);
-        });
-    }
 }
-
 
 
 
