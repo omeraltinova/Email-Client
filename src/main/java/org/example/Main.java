@@ -19,8 +19,8 @@ public class Main {
 //        MailManagement.mailLister("iamtheone.javaproje@gmail.com");
 
 
-        RecieveMail rm = new RecieveMail();
-        rm.fetchEmails(-1);
+//        RecieveMail rm = new RecieveMail();
+//        rm.fetchEmails(-1);
 
         List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
         //Ana ekranı çağırmak için
@@ -34,6 +34,7 @@ public class Main {
         for (String fileName : txtFileNames) {
             System.out.println(fileName);
         }
+
 
     }
 
