@@ -14,7 +14,7 @@ public class AccountSelectionScreen {
     private List<Account> accounts;
     private JPanel accountsPanel;
 
-    public AccountSelectionScreen(List<Account> accounts) {
+    public AccountSelectionScreen() {
         this.accounts = accounts;
         accountSelectionFrame = new JFrame("Hesap Seçimi");
         accountSelectionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,6 +63,8 @@ public class AccountSelectionScreen {
             addButton.addActionListener(e -> {
                 // Hesap ekleme işlemi burada yapılacak
                 System.out.println("Hesap ekleme butonuna tıklandı");
+                KAYITEKRANI();
+
             });
             accountsPanel.add(addButton);
         }
@@ -114,15 +116,60 @@ public class AccountSelectionScreen {
         Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
     }
+        public void KAYITEKRANI(){
+            JFrame f1 = new JFrame("Giris Yapma Ekrani");
+            JLabel lblEposta= new JLabel("E-posta adresinizi giriniz:");
+            lblEposta.setBounds(10,10,200,50);
+            JLabel lblSifre = new JLabel("Şifrenizi giriniz:");
+            lblSifre.setBounds(10,70,200,50);
+            JTextField textEposta= new JTextField();
+            textEposta.setBounds(240,10,300,60);
+            JPasswordField password = new JPasswordField();
+            password.setBounds(240,70,300,60);
+            JButton btnOturumAc= new JButton("Oturum Aç");
+            List<Account> dummyAccounts = new ArrayList<>();
+            btnOturumAc.setBounds(330,140,200,60);
+
+            btnOturumAc.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String eposta = textEposta.getText();
+                    char[] passwordChars = password.getPassword();
+                    String sifre = new String(passwordChars);
+
+                    // Perform your login logic here using eposta and sifre
+                    System.out.println("E-posta: " + eposta);
+                    System.out.println("Şifre: " + sifre);
+                        dummyAccounts.add(new Account("Alice", eposta, "profile-photos/default-picture.png"));
+//                        new AccountSelectionScreen(dummyAccounts);
+
+                    f1.dispose();
+                }
+            });
+
+        f1.add(lblEposta);
+        f1.add(lblSifre);
+        f1.add(textEposta);
+        f1.add(password);
+        f1.add(btnOturumAc);
+
+
+        f1.setLayout(null);
+        f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f1.setSize(600,300);
+        f1.setVisible(true);
+    }
+
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            List<Account> dummyAccounts = new ArrayList<>();
-            dummyAccounts.add(new Account("Alice", "alice@example.comasdaasdasd", "profile-photos/default-picture.png"));
-            dummyAccounts.add(new Account("Bob", "bob@example.comasdasdasd", "profile-photos/default-picture.png"));
-
-            new AccountSelectionScreen(dummyAccounts);
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            List<Account> dummyAccounts = new ArrayList<>();
+//            dummyAccounts.add(new Account("Alice", "alice@example.comasdaasdasd", "profile-photos/default-picture.png"));
+//            dummyAccounts.add(new Account("Bob", "bob@example.comasdasdasd", "profile-photos/default-picture.png"));
+//            dummyAccounts.add(new Account("mahmut","mahut@","profile-photos/default-picture.png"));
+//            new AccountSelectionScreen(dummyAccounts);
+//        });
+        AccountSelectionScreen ass = new AccountSelectionScreen();
     }
 
     public static class Account {
