@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.AccountSelectionScreen.readAccountsFromFile;
+
 public class GUIMainScreen implements ActionListener{
     //Main frame
     JFrame mainScreen;
@@ -340,6 +342,10 @@ public class GUIMainScreen implements ActionListener{
         }
         if (e.getSource()==signOutButton){
             mainScreen.dispose();
+            List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
+
+            // Start the account selection screen
+            new AccountSelectionScreen(accounts);
         }
     }
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {

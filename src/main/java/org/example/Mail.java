@@ -10,91 +10,91 @@ import java.util.regex.Pattern;
 public class Mail{
 
 
-    protected static String USERNAME = "";
-    protected static String PASSWORD = "";
-    protected static String HOST = ""; //SMTP HOST
-    protected static String PORT = ""; //SMTP PORT
-    protected static String IMAP_HOST = "";
-    protected static String IMAP_PORT = "";
-    protected static String NAME = "NoName"; // Kullanıcı ismi
-    protected static String IMAGE = "profile-photos/default-picture.png"; // Kullanıcı profil fotosu dosya yolu
+    private static String USERNAME = "";
+    private static String PASSWORD = "";
+    private static String HOST = ""; //SMTP HOST
+    private static String PORT = ""; //SMTP PORT
+    private static String IMAP_HOST = "";
+    private static String IMAP_PORT = "";
+    private static String NAME = "NoName"; // Kullanıcı ismi
+    private static String IMAGE = "profile-photos/default-picture.png"; // Kullanıcı profil fotosu dosya yolu
 
 
-    protected static String getUSERNAME() {
+    public static String getUSERNAME() {
         return USERNAME;
     }
 
-    protected static void setUSERNAME(String USERNAME2) {
+    public static void setUSERNAME(String USERNAME2) {
         USERNAME = USERNAME2;
         System.out.println(USERNAME2);
         System.out.println(USERNAME);
     }
 
-    protected static String getPASSWORD() {
+    public static String getPASSWORD() {
         return PASSWORD;
     }
 
-    protected static void setPASSWORD(String PASSWORD2) {
+    public static void setPASSWORD(String PASSWORD2) {
         PASSWORD = PASSWORD2;
         System.out.println(PASSWORD);
     }
 
-    protected static String getHOST() {
+    public static String getHOST() {
         return HOST;
     }
 
-    protected static void setHOST(String HOST2) {
+    public static void setHOST(String HOST2) {
         HOST = HOST2;
     }
 
-    protected static String getPORT() {
+    public static String getPORT() {
         return PORT;
     }
 
-    protected static void setPORT(String PORT2) {
+    public static void setPORT(String PORT2) {
         PORT = PORT2;
     }
 
-    protected static String getNAME() {
+    public static String getNAME() {
         return NAME;
     }
 
-    protected static void setNAME(String NAME2) {
+    public static void setNAME(String NAME2) {
         NAME = NAME2;
     }
 
-    protected static String getIMAGE() {
+    public static String getIMAGE() {
         return IMAGE;
     }
 
-    protected static void setIMAGE(String IMAGE2) {
-       IMAGE = IMAGE2;
+    public static void setIMAGE(String IMAGE2) {
+        IMAGE = IMAGE2;
     }
 
-    protected static String getImapPort() {
+    public static String getImapPort() {
         return IMAP_PORT;
     }
 
-    protected static void setImapPort(String imapPort2) {
+    public static void setImapPort(String imapPort2) {
         IMAP_PORT = imapPort2;
     }
 
-    protected static String getImapHost() {
+    public static String getImapHost() {
         return IMAP_HOST;
     }
 
-    protected static void setImapHost(String imapHost) {
+    public static void setImapHost(String imapHost) {
         IMAP_HOST = imapHost;
     }
 
-    /*protected void setValues(String USERNAME, String PASSWORD, String HOST, String PORT) {
+    /*public void setValues(String USERNAME, String PASSWORD, String HOST, String PORT) {
         Mail.USERNAME=USERNAME;
         Mail.PASSWORD=PASSWORD;
         Mail.HOST=HOST;
         Mail.PORT=PORT;
     }*/
 
-    protected boolean isEmailLegal(String email,String password)
+    public boolean isEmailLegal(String email,String password)
     {
         String patternString = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
 
@@ -118,7 +118,7 @@ public class Mail{
 
     }
 
-    protected static void findPort(String email){
+    public static void findPort(String email){
         int startIndex = email.indexOf("@"); // @ indexi
         String googleDomain = "gmail.com";
         String outLookDomain = "outlook.com";
@@ -136,7 +136,7 @@ public class Mail{
         }
     }
 
-    protected static void findHost(String email){
+    public static void findHost(String email){
         int startIndex = email.indexOf("@"); // @ indexi
         String googleDomain = "gmail.com";
         String outLookDomain = "outlook.com";
@@ -156,15 +156,16 @@ public class Mail{
         }
     }
 
-    protected void setFile(String email){
+    public void setFile(String email){
         String filePath = ("Accounts/"+email+".txt");
         String[] info = {
-                getUSERNAME(),
-                getPASSWORD(),
-                getHOST(),
-                getImapHost(),
-                getPORT(),
-                getImapPort(),
+                "Name : "+ getNAME(),
+                "Email : "+ getUSERNAME(),
+                "Şifre : "+ getPASSWORD(),
+                "Host : "+ getHOST(),
+                "ImapHost : "+ getImapHost(),
+                "Port : "+ getPORT(),
+                "ImapPort : "+ getImapPort(),
         };
         try {
             // Dosyayı oluştur

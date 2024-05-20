@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.AccountSelectionScreen.readAccountsFromFile;
+
 public class Main {
     public static void main(String[] args) {
-        MailManagement mm = new MailManagement();
-        mm.isEmailLegal("iamtheone.javaproje@gmail.com","dnhz mqsf buou dfxd");
+//        MailManagement mm = new MailManagement();
+//        mm.isEmailLegal("iamtheone.javaproje@gmail.com","dnhz mqsf buou dfxd");
 //        mm.fetchEmails();
 //        mm.sendPlainTextEmail("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","testi",true);
 
@@ -19,12 +21,16 @@ public class Main {
 //        MailManagement.mailLister("iamtheone.javaproje@gmail.com");
 
 
-        RecieveMail rm = new RecieveMail();
-        rm.fetchEmails(-1,"Inbox");
+//        RecieveMail rm = new RecieveMail();
+//        rm.fetchEmails(-1,"Inbox");
 
         List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
         //Ana ekranı çağırmak için
-        GUIMainScreen anaEkran = new GUIMainScreen(emails);
+//        GUIMainScreen anaEkran = new GUIMainScreen(emails);
+        List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
+//
+//        // Start the account selection screen
+        new AccountSelectionScreen(accounts);
 
 
         // Giriş yapılan hesapları döndüren fonksiyon.
