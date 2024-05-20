@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AccountSelectionScreen {
     private JFrame accountSelectionFrame;
@@ -104,7 +105,55 @@ public class AccountSelectionScreen {
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 super.mouseClicked(e);
                 // Display email address of the clicked account
-//                File accounts = new File();
+//
+                File accountSelection = new File("Accounts");
+                File[] files = accountSelection.listFiles();
+
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isFile() && file.getName().equals(account.email + ".txt")) {
+                            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                                String line;
+                                while ((line = br.readLine()) != null) {
+                                    String[] parts = line.split(":");
+                                    if (parts.length == 2) {
+                                        String key = parts[0].trim();
+                                        String value = parts[1].trim();
+                                        switch (key) {
+                                            case "Email":
+                                                MailManagement.setUSERNAME(value);
+                                                break;
+                                            case "Şifre":
+                                                MailManagement.setPASSWORD(value);
+                                                break;
+                                            case "Host":
+                                                MailManagement.setHOST(value);
+                                                break;
+                                            case "ImapHost":
+                                                MailManagement.setImapHost(value);
+                                                break;
+                                            case "Port":
+                                                MailManagement.setPORT(value);
+                                                break;
+                                            case "ImapPort":
+                                                MailManagement.setImapPort(value);
+                                                break;
+                                        }
+                                    }
+                                }
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                            }
+                            accountSelectionFrame.dispose();
+                            List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
+
+                            //Ana ekranı çağırmak için
+                            GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) emails);
+
+                        }
+                    }
+                }
+
             }
         });
 

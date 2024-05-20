@@ -4,6 +4,7 @@ package org.example;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeUtility;
 import java.io.*;
 import java.util.Date;
 import java.util.Properties;
@@ -53,16 +54,28 @@ import static org.example.Mail.*;
             }
         }
     }
-       public void fetchEmails() {
-           String host = "imap.gmail.com";
-           String username = "iamtheone.javaproje@gmail.com";
-           String password = "dnhz mqsf buou dfxd";
 
-           File emailDir = new File("emails/inbox");
-           if (!emailDir.exists()) {
-               emailDir.mkdirs();
+       public void fetchEmails(int indexToDelete,String boxName) {
+           String host = getImapHost();
+           String username = getUSERNAME();
+           String password = getPASSWORD();
+
+           File emailDir = null;
+
+           // Gelen klasör ismine göre dosya yolunu belirleyin ve büyük harflerle kontrol edin
+           if (boxName.equalsIgnoreCase("INBOX")) {
+               emailDir = new File("emails/inbox");
+               boxName = "INBOX"; // IMAP sunucusu için doğru klasör ismi
+           }
+           else if (boxName.equalsIgnoreCase("SENT")) {
+               emailDir = new File("emails/sent");
+               boxName = "SENT"; // IMAP sunucusu için doğru klasör ismi
            }
 
+           // Dosya yolunu kontrol edin ve gerekirse oluşturun
+           if (emailDir != null && !emailDir.exists()) {
+               emailDir.mkdirs();
+           }
            try {
                Properties props = new Properties();
                props.setProperty("mail.imap.host", host);
@@ -80,17 +93,23 @@ import static org.example.Mail.*;
                Store store = session.getStore("imap");
                store.connect(host, username, password);
 
-               Folder inbox = store.getFolder("INBOX");
+               Folder inbox = store.getFolder(boxName);
                inbox.open(Folder.READ_ONLY);
 
                Message[] messages = inbox.getMessages();
 
                for (int i = 0; i < messages.length; i++) {
                    Message message = messages[i];
+                   if (indexToDelete >= 0 && indexToDelete == i) {
+                       message.setFlag(Flags.Flag.DELETED, true);  // Mesajı sil
+                       System.out.println("Mesaj silindi: " + message.getSubject());
+                   }
+
                    File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
                    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
-                       writer.write("Konu: " + message.getSubject() + "\n");
+                       String subject = MimeUtility.decodeText(message.getSubject());
+                       writer.write("Konu: " + subject + "\n");
                        writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                        Object content = message.getContent();
                        if (content instanceof String) {
@@ -98,7 +117,7 @@ import static org.example.Mail.*;
                        } else if (content instanceof Multipart) {
                            handleMultipart((Multipart) content, writer);
                        } else {
-                           writer.write("İçerik: " + content.toString() + "\n");
+                           writer.write("İçerik: " + decodeContent(content) + "\n");
                        }
                    } catch (IOException | MessagingException e) {
                        e.printStackTrace();
@@ -118,39 +137,23 @@ import static org.example.Mail.*;
                String contentType = bodyPart.getContentType();
                writer.write("Parça " + (i + 1) + " - İçerik Tipi: \n" + contentType + "\n");
                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
-                   saveAttachment(bodyPart,i);
+                   saveAttachment(bodyPart, i);
                } else if (bodyPart.isMimeType("text/plain")) {
-                   try (BufferedReader reader = new BufferedReader(new InputStreamReader(bodyPart.getInputStream()))) {
-                       String line;
-                       while ((line = reader.readLine()) != null) {
-                           writer.write("Düz Metin İçerik: " + line + "\n");
-                       }
-                   }
+                   writer.write("Düz Metin İçerik: " + decodeContent(bodyPart.getContent()) + "\n");
                } else if (bodyPart.isMimeType("text/html")) {
-                   writer.write("HTML İçerik: " + bodyPart.getContent() + "\n");
+                   // HTML içeriği atla
                } else if (bodyPart.getContent() instanceof Multipart) {
                    handleMultipart((Multipart) bodyPart.getContent(), writer);
-               } else if (bodyPart.getContent() instanceof InputStream) {
-                   handleInputStream((InputStream) bodyPart.getContent(), writer);
                } else {
-                   writer.write("Diğer İçerik: " + bodyPart.getContent() + "\n");
+                   writer.write("Diğer İçerik: " + decodeContent(bodyPart.getContent()) + "\n");
                }
            }
        }
 
-       private static void handleInputStream(InputStream is, BufferedWriter writer) throws IOException {
-           BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-           String line;
-           while ((line = reader.readLine()) != null) {
-               writer.write(line);
-               writer.newLine();
-           }
-       }
-
-       private static void saveAttachment(BodyPart bodyPart,int i) throws MessagingException, IOException {
+       private static void saveAttachment(BodyPart bodyPart, int i) throws MessagingException, IOException {
            File dir = new File("attachments/email_" + (i + 1));
            if (!dir.exists()) dir.mkdirs();
-           String fileName = bodyPart.getFileName();
+           String fileName = MimeUtility.decodeText(bodyPart.getFileName());
            File file = new File(dir, fileName);
            try (InputStream is = bodyPart.getInputStream();
                 FileOutputStream fos = new FileOutputStream(file)) {
@@ -161,6 +164,26 @@ import static org.example.Mail.*;
                }
                System.out.println("Ek kaydedildi: " + file.getAbsolutePath());
            }
+       }
+
+       private static String decodeContent(Object content) throws IOException {
+           if (content instanceof InputStream) {
+               return readInputStream((InputStream) content);
+           } else if (content != null) {
+               return content.toString();
+           }
+           return "";
+       }
+
+       private static String readInputStream(InputStream is) throws IOException {
+           StringBuilder contentBuilder = new StringBuilder();
+           try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+               String line;
+               while ((line = reader.readLine()) != null) {
+                   contentBuilder.append(line).append("\n");
+               }
+           }
+           return contentBuilder.toString();
        }
 
        public static void mailSaver(String from, String to, String subject, String message){
