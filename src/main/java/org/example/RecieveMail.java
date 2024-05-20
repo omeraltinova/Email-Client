@@ -9,16 +9,27 @@ import java.util.Properties;
 
 public class RecieveMail {
 
-    public void fetchEmails(int indexToDelete) {
+    public void fetchEmails(int indexToDelete,String boxName) {
         String host = "imap.gmail.com";
         String username = "iamtheone.javaproje@gmail.com";
         String password = "dnhz mqsf buou dfxd";
 
-        File emailDir = new File("emails/inbox");
-        if (!emailDir.exists()) {
-            emailDir.mkdirs();
+        File emailDir = null;
+
+        // Gelen klasör ismine göre dosya yolunu belirleyin ve büyük harflerle kontrol edin
+        if (boxName.equalsIgnoreCase("INBOX")) {
+            emailDir = new File("emails/inbox");
+            boxName = "INBOX"; // IMAP sunucusu için doğru klasör ismi
+        }
+        else if (boxName.equalsIgnoreCase("SENT")) {
+            emailDir = new File("emails/sent");
+            boxName = "SENT"; // IMAP sunucusu için doğru klasör ismi
         }
 
+        // Dosya yolunu kontrol edin ve gerekirse oluşturun
+        if (emailDir != null && !emailDir.exists()) {
+            emailDir.mkdirs();
+        }
         try {
             Properties props = new Properties();
             props.setProperty("mail.imap.host", host);
@@ -36,7 +47,7 @@ public class RecieveMail {
             Store store = session.getStore("imap");
             store.connect(host, username, password);
 
-            Folder inbox = store.getFolder("INBOX");
+            Folder inbox = store.getFolder(boxName);
             inbox.open(Folder.READ_ONLY);
 
             Message[] messages = inbox.getMessages();
@@ -92,15 +103,6 @@ public class RecieveMail {
             }
         }
     }
-
-//    private static void handleInputStream(InputStream is, BufferedWriter writer) throws IOException {
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            writer.write(line);
-//            writer.newLine();
-//        }
-//    }
 
     private static void saveAttachment(BodyPart bodyPart, int i) throws MessagingException, IOException {
         File dir = new File("attachments/email_" + (i + 1));
