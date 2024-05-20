@@ -159,12 +159,13 @@ public class Mail{
     public void setFile(String email){
         String filePath = ("Accounts/"+email+".txt");
         String[] info = {
-                getUSERNAME(),
-                getPASSWORD(),
-                getHOST(),
-                getImapHost(),
-                getPORT(),
-                getImapPort(),
+                "Name : "+ getNAME(),
+                "Email : "+ getUSERNAME(),
+                "Şifre : "+ getPASSWORD(),
+                "Host : "+ getHOST(),
+                "ImapHost : "+ getImapHost(),
+                "Port : "+ getPORT(),
+                "ImapPort : "+ getImapPort(),
         };
         try {
             // Dosyayı oluştur
