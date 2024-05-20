@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -98,10 +99,20 @@ public class AccountSelectionScreen {
         accountPanel.add(accountImageLabel, BorderLayout.CENTER);
         accountPanel.add(textPanel, BorderLayout.SOUTH);
 
+        // Click listener for account panel
+        accountPanel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                super.mouseClicked(e);
+                // Display email address of the clicked account
+//                File accounts = new File();
+            }
+        });
+
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem deleteItem = new JMenuItem("Sil");
         deleteItem.addActionListener(e -> {
             accounts.remove(account);
+            deleteAccount(account.email);
             updateAccountsPanel();
         });
         popupMenu.add(deleteItem);
@@ -143,6 +154,8 @@ public class AccountSelectionScreen {
 
                 // Add new account to the list
                 accounts.add(new Account("Alice", eposta, "profile-photos/default-picture.png"));
+                MailManagement ts1 = new MailManagement();
+                ts1.isEmailLegal(eposta,sifre);
                 updateAccountsPanel();
 
                 f1.dispose();
@@ -160,7 +173,10 @@ public class AccountSelectionScreen {
         f1.setSize(600, 300);
         f1.setVisible(true);
     }
-
+    public static void deleteAccount(String email){
+        File silici = new File("Accounts/"+email+".txt");
+        silici.delete();
+    }
     public static void main(String[] args) {
         // Read account information from files
         List<Account> accounts = readAccountsFromFile();
@@ -180,7 +196,6 @@ public class AccountSelectionScreen {
                     try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                         String line;
                         String name = null, email = null;
-//                         String       profilePicturePath = null;
                         while ((line = br.readLine()) != null) {
                             String[] parts = line.split(":");
                             if (parts.length == 2) {
@@ -193,13 +208,10 @@ public class AccountSelectionScreen {
                                     case "Email":
                                         email = value;
                                         break;
-//                                    case "ProfilePicturePath":
-//                                        profilePicturePath = value;
-//                                        break;
                                 }
                             }
                         }
-                        if (name != null && email != null ) {
+                        if (name != null && email != null) {
                             accounts.add(new Account(name, email));
                         }
                     } catch (IOException e) {
@@ -221,7 +233,8 @@ public class AccountSelectionScreen {
             this.email = email;
             this.profilePicturePath = profilePicturePath;
         }
-        public Account(String name, String email ) {
+
+        public Account(String name, String email) {
             this.name = name;
             this.email = email;
         }
@@ -239,7 +252,3 @@ public class AccountSelectionScreen {
         }
     }
 }
-
-
-
-
