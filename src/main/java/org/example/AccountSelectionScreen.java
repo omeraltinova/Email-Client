@@ -17,6 +17,7 @@ public class AccountSelectionScreen {
     private JFrame accountSelectionFrame;
     private List<Account> accounts;
     private JPanel accountsPanel;
+    static int i=1;
 
     public AccountSelectionScreen(List<Account> accounts) {
         this.accounts = accounts != null ? accounts : new ArrayList<>();
@@ -24,6 +25,7 @@ public class AccountSelectionScreen {
         accountSelectionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         accountSelectionFrame.setSize(800, 600);
         accountSelectionFrame.setLayout(new BorderLayout());
+        accountSelectionFrame.setLocationRelativeTo(null);
 
         initializeUI();
 
@@ -145,6 +147,8 @@ public class AccountSelectionScreen {
                                 exception.printStackTrace();
                             }
                             accountSelectionFrame.dispose();
+                            MailManagement mm=new MailManagement();
+                            mm.fetchEmails(-1,"inbox");
                             List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
 
                             //Ana ekranı çağırmak için
@@ -160,6 +164,7 @@ public class AccountSelectionScreen {
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem deleteItem = new JMenuItem("Sil");
         deleteItem.addActionListener(e -> {
+            i--;
             accounts.remove(account);
             deleteAccount(account.email);
             updateAccountsPanel();
@@ -179,47 +184,71 @@ public class AccountSelectionScreen {
 
     public void KAYITEKRANI() {
         JFrame f1 = new JFrame("Giris Yapma Ekrani");
+        JLabel lblName=new JLabel("İsminizi giriniz:");
+        lblName.setForeground(Color.WHITE);
+        lblName.setBounds(10,10,200,50);
         JLabel lblEposta = new JLabel("E-posta adresinizi giriniz:");
-        lblEposta.setBounds(10, 10, 200, 50);
+        lblEposta.setForeground(Color.WHITE);
+        lblEposta.setBounds(10, 80, 200, 50);
         JLabel lblSifre = new JLabel("Şifrenizi giriniz:");
-        lblSifre.setBounds(10, 70, 200, 50);
+        lblSifre.setForeground(Color.WHITE);
+        lblSifre.setBounds(10, 150, 200, 50);
+        JTextField textName=new JTextField();
+        textName.setBounds(240,10,300,60);
         JTextField textEposta = new JTextField();
-        textEposta.setBounds(240, 10, 300, 60);
+        textEposta.setBounds(240, 80, 300, 60);
         JPasswordField password = new JPasswordField();
-        password.setBounds(240, 70, 300, 60);
+        password.setBounds(240, 150, 300, 60);
         JButton btnOturumAc = new JButton("Oturum Aç");
-        btnOturumAc.setBounds(330, 140, 200, 60);
+        btnOturumAc.setBackground(new Color(45, 52, 54));
+        btnOturumAc.setForeground(Color.WHITE);
+        btnOturumAc.setBounds(330, 220, 200, 60);
+        btnOturumAc.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         btnOturumAc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String name=textName.getText();
                 String eposta = textEposta.getText();
                 char[] passwordChars = password.getPassword();
                 String sifre = new String(passwordChars);
 
                 // Perform your login logic here using eposta and sifre
+                System.out.println("Name:" + name);
                 System.out.println("E-posta: " + eposta);
                 System.out.println("Şifre: " + sifre);
 
                 // Add new account to the list
-                accounts.add(new Account("Alice", eposta, "profile-photos/default-picture.png"));
+                if (i==1)
+                    accounts.add(new Account(name, eposta, "profile-photos/bear.png"));
+                else if (i==2)
+                    accounts.add(new Account(name, eposta, "profile-photos/cat.png"));
+                else if (i==3)
+                    accounts.add(new Account(name, eposta, "profile-photos/rabbit.png"));
+                else if (i==4)
+                    accounts.add(new Account(name, eposta, "profile-photos/panda.png"));
+
+                i++;
                 MailManagement ts1 = new MailManagement();
                 ts1.isEmailLegal(eposta,sifre);
                 updateAccountsPanel();
-
                 f1.dispose();
             }
         });
 
+        f1.add(lblName);
         f1.add(lblEposta);
         f1.add(lblSifre);
+        f1.add(textName);
         f1.add(textEposta);
         f1.add(password);
         f1.add(btnOturumAc);
 
+        f1.getContentPane().setBackground(new Color(33, 33, 33));
         f1.setLayout(null);
         f1.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f1.setSize(600, 300);
+        f1.setSize(600, 330);
+        f1.setLocationRelativeTo(null);
         f1.setVisible(true);
     }
     public static void deleteAccount(String email){
