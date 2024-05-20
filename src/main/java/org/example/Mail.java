@@ -10,12 +10,12 @@ import java.util.regex.Pattern;
 public class Mail{
 
 
-    private static String USERNAME = "";
-    private static String PASSWORD = "";
+    private static String USERNAME = "iamtheone.javaproje@gmail.com";
+    private static String PASSWORD = "dnhz mqsf buou dfxd";
     private static String HOST = ""; //SMTP HOST
     private static String PORT = ""; //SMTP PORT
-    private static String IMAP_HOST = "";
-    private static String IMAP_PORT = "";
+    private static String IMAP_HOST = "imap.gmail.com";
+    private static String IMAP_PORT = "993";
     private static String NAME = "NoName"; // Kullanıcı ismi
     private static String IMAGE = "profile-photos/default-picture.png"; // Kullanıcı profil fotosu dosya yolu
 
