@@ -74,6 +74,7 @@ import static org.example.Mail.*;
            // Dosya yolunu kontrol edin ve gerekirse oluşturun
            if (emailDir != null && !emailDir.exists()) {
                emailDir.mkdirs();
+
            }
            try {
                Properties props = new Properties();
