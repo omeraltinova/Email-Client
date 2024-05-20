@@ -89,16 +89,6 @@ public class RecieveMail {
             }
         }
     }
-
-//    private static void handleInputStream(InputStream is, BufferedWriter writer) throws IOException {
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-//        String line;
-//        while ((line = reader.readLine()) != null) {
-//            writer.write(line);
-//            writer.newLine();
-//        }
-//    }
-
     private static void saveAttachment(BodyPart bodyPart, int i) throws MessagingException, IOException {
         File dir = new File("attachments/email_" + (i + 1));
         if (!dir.exists()) dir.mkdirs();
