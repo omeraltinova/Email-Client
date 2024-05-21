@@ -18,7 +18,11 @@ public class Main {
 //        MailManagement.mailSaver("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","Model-View-Controller (MVC), yazılım geliştirme sürecinde sıklıkla kullanılan bir tasarım desenidir. Bu desen, bir uygulamanın yapısal bütünlüğünü korumak ve farklı bileşenler arasında net bir ayrım sağlamak için kullanılır.");
 //        MailManagement.draftSaver("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","test");
 //        MailManagement.mailLister("iamtheone.javaproje@gmail.com");
-//        MailManagement.listDraftFiles();
+//        List<String> draftFileNames = MailManagement.listDraftFiles(); // Taslakların listesini görme
+//
+//        for (String fileName : draftFileNames) {
+//            System.out.println(fileName);
+//        }
 
 
 //        MailManagement rm = new MailManagement();
