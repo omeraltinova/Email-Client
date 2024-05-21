@@ -21,16 +21,16 @@ public class Main {
 //        MailManagement.mailLister("iamtheone.javaproje@gmail.com");
 
 
-        MailManagement rm = new MailManagement();
-        rm.fetchEmails(-1,"Sent");
+//        MailManagement rm = new MailManagement();
+//        rm.fetchEmails(-1,"Sent");
 
 //        List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
 //        //Ana ekranı çağırmak için
 ////        GUIMainScreen anaEkran = new GUIMainScreen(emails);
-//        List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
-////
-////        // Start the account selection screen
-//        new AccountSelectionScreen(accounts);
+        List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
+//
+//        // Start the account selection screen
+        new AccountSelectionScreen(accounts);
 //
 //
 //        // Giriş yapılan hesapları döndüren fonksiyon.
@@ -41,6 +41,7 @@ public class Main {
 //            System.out.println(fileName);
 //        }
 //
+        deleteFilesInDirectory("Accounts/inbox");
 
     }
 
@@ -62,4 +63,18 @@ public class Main {
 
         return txtFileNames;
     }
+    private static void deleteFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
+    }
+}
 }

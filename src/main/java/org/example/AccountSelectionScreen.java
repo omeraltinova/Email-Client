@@ -146,13 +146,13 @@ public class AccountSelectionScreen {
                             } catch (IOException exception) {
                                 exception.printStackTrace();
                             }
-                            accountSelectionFrame.dispose();
-                            MailManagement mm=new MailManagement();
+                            MailManagement mm = new MailManagement();
                             mm.fetchEmails(-1,"inbox");
                             List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
 
                             //Ana ekranı çağırmak için
                             GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) emails);
+                            accountSelectionFrame.dispose();
 
                         }
                     }
