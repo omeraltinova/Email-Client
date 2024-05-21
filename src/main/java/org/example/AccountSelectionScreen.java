@@ -5,11 +5,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +69,7 @@ public class AccountSelectionScreen {
             addButton.setForeground(Color.WHITE);
             addButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
             addButton.addActionListener(e -> {
+                accountSelectionFrame.dispose();
                 System.out.println("Hesap ekleme butonuna tıklandı");
                 KAYITEKRANI();
             });
@@ -102,13 +105,13 @@ public class AccountSelectionScreen {
 
         accountPanel.add(accountImageLabel, BorderLayout.CENTER);
         accountPanel.add(textPanel, BorderLayout.SOUTH);
-
+        Map<String, String> accountInfo = new HashMap<>();
         // Click listener for account panel
         accountPanel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 // Display email address of the clicked account
-//
+//Map<String,
                 File accountSelection = new File("Accounts");
                 File[] files = accountSelection.listFiles();
 
@@ -123,8 +126,13 @@ public class AccountSelectionScreen {
                                         String key = parts[0].trim();
                                         String value = parts[1].trim();
                                         switch (key) {
+                                            case "Name":
+                                                Mail.setUSERNAME(value);
+                                                accountInfo.put("Name",value);
+                                                break;
                                             case "Email":
                                                 MailManagement.setUSERNAME(value);
+                                                accountInfo.put("Email",value);
                                                 break;
                                             case "Şifre":
                                                 MailManagement.setPASSWORD(value);
@@ -141,6 +149,10 @@ public class AccountSelectionScreen {
                                             case "ImapPort":
                                                 MailManagement.setImapPort(value);
                                                 break;
+                                            case "Image":
+                                                MailManagement.setIMAGE(value);
+                                                accountInfo.put("Image",value);
+                                                break;
                                         }
                                     }
                                 }
@@ -150,6 +162,7 @@ public class AccountSelectionScreen {
                             MailManagement mm = new MailManagement();
                             mm.fetchEmails(-1,"inbox");
                             mm.fetchEmails(-1,"sent");
+                       //     Map<String, String> accountInfo = EmailReader.readEmails("Accounts");
                             List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
                             List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");
                             if(receivedEmails.size()==0){
@@ -161,7 +174,7 @@ public class AccountSelectionScreen {
                             }
                             else{
                                 //Ana ekranı çağırmak için
-                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails);
+                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails,(Map<String,String>) accountInfo);
                                 accountSelectionFrame.dispose();
 
                             }
@@ -223,6 +236,7 @@ public class AccountSelectionScreen {
                 String eposta = textEposta.getText();
                 char[] passwordChars = password.getPassword();
                 String sifre = new String(passwordChars);
+                MailManagement.setNAME(name);
                 MailManagement ts1 = new MailManagement();
                 boolean check = ts1.isEmailLegal(eposta,sifre);
 
@@ -254,6 +268,7 @@ public class AccountSelectionScreen {
 
                 updateAccountsPanel();
                 f1.dispose();
+                accountSelectionFrame.setVisible(true);
             }
         });
 
@@ -294,7 +309,7 @@ public class AccountSelectionScreen {
                 if (file.isFile() && file.getName().endsWith(".txt")) {
                     try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                         String line;
-                        String name = null, email = null;
+                        String name = null, email = null, image = null;
                         while ((line = br.readLine()) != null) {
                             String[] parts = line.split(":");
                             if (parts.length == 2) {
@@ -307,11 +322,14 @@ public class AccountSelectionScreen {
                                     case "Email":
                                         email = value;
                                         break;
+                                    case "Image":
+                                        image = value;
+                                        break;
                                 }
                             }
                         }
                         if (name != null && email != null) {
-                            accounts.add(new Account(name, email));
+                            accounts.add(new Account(name, email,image));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

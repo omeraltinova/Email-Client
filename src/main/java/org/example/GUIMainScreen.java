@@ -80,7 +80,7 @@ public class GUIMainScreen implements ActionListener{
     JLabel illusionLabel4;
     JLabel illusionLabel5;
 
-    GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails){
+    GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo){
 
         //Pencerenin genel özellikleri
 
@@ -117,8 +117,8 @@ public class GUIMainScreen implements ActionListener{
         receivedMailSearchBar.setVisible(false);
         sentMailSearchbar.setVisible(false);
         mainScreenToolbar.add(Box.createHorizontalGlue());
-        JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon("profile-photos/default-picture.png"), 50, 50));
-        JLabel nameLabel = new JLabel(Mail.getNAME());
+        JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon(accountInfo.get("Image")), 50, 50));
+        JLabel nameLabel = new JLabel(accountInfo.get("Name"));
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         nameLabel.setBackground(new Color(33, 33, 33));
         nameLabel.setForeground(Color.WHITE);

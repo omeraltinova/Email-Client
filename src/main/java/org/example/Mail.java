@@ -166,7 +166,7 @@ public class Mail{
                 "ImapHost : "+ getImapHost(),
                 "Port : "+ getPORT(),
                 "ImapPort : "+ getImapPort(),
-        };
+                "Image : " + getIMAGE()};
         try {
             // Dosyayı oluştur
             File file = new File(filePath);

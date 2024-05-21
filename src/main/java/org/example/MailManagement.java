@@ -298,10 +298,10 @@ import static org.example.Mail.*;
        public static void draftSaver(String from, String to, String subject, String message){
            String path = "emails/draft/"+from+"/"+subject+".txt";
 
-           String[] content = {subject,
+           String[] content = { "Konu: "+ subject,
                    from,
-                   to,
-                   message};
+                   "Gönderen: "+ to,
+                   "İçerik: "+ message};
            try{
                File saver = new File(path);
                saver.getParentFile().mkdirs();
