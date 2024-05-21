@@ -51,12 +51,7 @@
                                         }
                                     }else if(line.contains("name=")){
                                             contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
-                                    }else if(line.startsWith("Name: ")){
-                                        emailData.put("Name",line.substring(6));
-                                    }else if(line.startsWith("Image: ")){
-                                        emailData.put("Image", line.substring(7));
                                     }
-
                                 }
                                 // İçeriği tamamlayıp içeriğe ekle
                                 emailData.put("İçerik", contentBuilder.toString());
