@@ -115,6 +115,7 @@ import static org.example.Mail.*;
                        writer.write("Konu: " + subject + "\n");
                        if(boxName.equalsIgnoreCase("INBOX")){
                            Address[] fromAddresses = message.getFrom();
+
                            if (fromAddresses != null && fromAddresses.length > 0) {
                                InternetAddress from = (InternetAddress) fromAddresses[0];
                                String senderName = from.getPersonal(); // Gönderenin adını al
