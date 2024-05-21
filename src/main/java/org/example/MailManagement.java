@@ -113,7 +113,16 @@ import static org.example.Mail.*;
                    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
                        String subject = MimeUtility.decodeText(message.getSubject());
                        writer.write("Konu: " + subject + "\n");
-                       writer.write("Gönderen: " + message.getFrom()[0] + "\n");
+
+                       Address[] fromAddresses = message.getFrom();
+                       if (fromAddresses != null && fromAddresses.length > 0) {
+                           InternetAddress from = (InternetAddress) fromAddresses[0];
+                           String senderName = from.getPersonal(); // Gönderenin adını al
+                           String senderEmail = from.getAddress(); // Gönderenin e-posta adresini al
+                           writer.write("Gönderen: " + senderName + " <" + senderEmail + ">\n");
+                       }
+
+//                       writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                        Object content = message.getContent();
                        if (content instanceof String) {
                            writer.write("İçerik: " + (String) content + "\n");

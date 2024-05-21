@@ -41,7 +41,7 @@ public class Main {
 //            System.out.println(fileName);
 //        }
 //
-//        deleteFilesInDirectory("Accounts/inbox");
+        deleteFilesInDirectory("Accounts/inbox");
 
     }
 
@@ -62,5 +62,18 @@ public class Main {
         }
 
         return txtFileNames;
+    }
+    private static void deleteFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
     }
 }
