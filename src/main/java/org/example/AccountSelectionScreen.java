@@ -247,16 +247,16 @@ public class AccountSelectionScreen {
                     System.out.println("Şifre: " + sifre);
 
                     // Add new account to the list
+                    i = Mail.countTxtFiles("Accounts");
                     if (i==1)
                         accounts.add(new Account(name, eposta, "profile-photos/bear.png"));
                     else if (i==2)
                         accounts.add(new Account(name, eposta, "profile-photos/cat.png"));
                     else if (i==3)
-                        accounts.add(new Account(name, eposta, "profile-photos/rabbit.png"));
-                    else if (i==4)
                         accounts.add(new Account(name, eposta, "profile-photos/panda.png"));
+                    else if (i==4)
+                        accounts.add(new Account(name, eposta, "profile-photos/rabbit.png"));
 
-                    i++;
 
                 }
                 else{

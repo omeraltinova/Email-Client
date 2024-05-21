@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,6 +105,25 @@ public class Mail{
 
         if (matcher.matches()) {
             System.out.println("Girilen metin bir e-posta adresidir.");
+            int hesapsayisi = countTxtFiles("Accounts");
+            System.out.println("Hesap sayısı "+ hesapsayisi);
+            switch (hesapsayisi){
+                case 0:
+                    setIMAGE("profile-photos/bear.png");
+                    break;
+                case 1:
+                    setIMAGE("profile-photos/cat.png");
+                    break;
+                case 2:
+                    setIMAGE("profile-photos/panda.png");
+                    break;
+                case 3:
+                    setIMAGE("profile-photos/rabbit.png");
+                    break;
+                default:
+                    setIMAGE("profile-photos/default-picture.png");
+                    break;
+            }
             setUSERNAME(email);
             setPASSWORD(password);
             findPort(email);
@@ -190,6 +211,25 @@ public class Mail{
             e.printStackTrace();
         }
 
+    }
+
+    public static int countTxtFiles(String path) {
+        File folder = new File(path);
+        int counter = 0;
+
+        if (folder.exists() && folder.isDirectory()) {
+            File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+
+            if (files != null) {
+                for (File file : files) {
+                    counter++;
+                }
+            }
+        } else {
+            System.out.println("Klasör bulunamadı: " + "Accounts");
+        }
+
+        return (counter-1);
     }
 
 }
