@@ -30,6 +30,8 @@ public class GUIMainScreen implements ActionListener{
     JPanel illusionPanel2;
     JPanel receivedMailClosePanel;
     JPanel sentMailClosePanel;
+    JPanel sendMailTopPanel;
+    JPanel sendMailBottomPanel;
 
     //Buttons
 
@@ -37,6 +39,7 @@ public class GUIMainScreen implements ActionListener{
     JButton sent;
     JButton sendMail;
     JButton mailSendButton;
+    JButton mailSaveButton;
     JButton showReceivedClose;
     JButton showSentClose;
     JButton sendMailClose;
@@ -55,15 +58,25 @@ public class GUIMainScreen implements ActionListener{
 
     JTextField searchBar;
     JTextArea receivedContent;
+    JTextField receivedMailSearchBar;
     JTextArea sentContent;
-    JTextField sendMailSubject1;
+    JTextField sentMailSearchbar;
     JTextField sendMailSubject;
     JTextArea sendMailContent;
-    JTextField sendMailTo1;
     JTextField sendMailTo;
 
     //Toolbars
     JToolBar mainScreenToolbar;
+
+    //Labels
+
+    JLabel sendMailTo1;
+    JLabel sendMailSubject1;
+    JLabel illusionLabel1;
+    JLabel illusionLabel2;
+    JLabel illusionLabel3;
+    JLabel illusionLabel4;
+    JLabel illusionLabel5;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails){
 
@@ -77,17 +90,33 @@ public class GUIMainScreen implements ActionListener{
         mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainScreen.getContentPane().setBackground(new Color(33, 33, 33));
         mainScreenToolbar=new JToolBar();
+
+        //Searchbar'ı ortalamak için
+        illusionLabel1=new JLabel("                                                                     ");
+        illusionLabel1.setForeground(new Color(33, 33, 33));
+        illusionLabel2=new JLabel("                                                                     ");
+        illusionLabel2.setForeground(new Color(33, 33, 33));
+
         mainScreenToolbar.setFloatable(false);
         mainScreenToolbar.setBackground(new Color(33, 33, 33));
         refreshButton = new JButton("Refresh");
         refreshButton.setBackground(new Color(33, 33, 33));
         refreshButton.setForeground(Color.WHITE);
         refreshButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        searchBar=new JTextField("Search");
-        searchBar.setBackground(new Color(45, 52, 54));
-        searchBar.setForeground(Color.WHITE);
+        receivedMailSearchBar=new JTextField("Search");
+        receivedMailSearchBar.setMargin(new Insets(0, 10, 0, 10));
+        receivedMailSearchBar.setBackground(new Color(45, 52, 54));
+        receivedMailSearchBar.setForeground(Color.WHITE);
+        sentMailSearchbar=new JTextField("Search");
+        sentMailSearchbar.setMargin(new Insets(0, 10, 0, 10));
+        sentMailSearchbar.setBackground(new Color(45, 52, 54));
+        sentMailSearchbar.setForeground(Color.WHITE);
         mainScreenToolbar.add(refreshButton);
-        mainScreenToolbar.add(searchBar);
+        mainScreenToolbar.add(illusionLabel1);
+        mainScreenToolbar.add(receivedMailSearchBar);
+        receivedMailSearchBar.setVisible(false);
+        mainScreenToolbar.add(sentMailSearchbar);
+        sentMailSearchbar.setVisible(false);
         mainScreenToolbar.add(Box.createHorizontalGlue());
         JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon("profile-photos/default-picture.png"), 50, 50));
         JLabel nameLabel = new JLabel("John Doe");
@@ -99,12 +128,15 @@ public class GUIMainScreen implements ActionListener{
         signOutButton.setBackground(new Color(33, 33, 33));
         signOutButton.setForeground(Color.WHITE);
         signOutButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        mainScreenToolbar.add(illusionLabel2);
         mainScreenToolbar.add(profilePicture);
         mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
         mainScreenToolbar.add(nameLabel);
         mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
         mainScreenToolbar.add(signOutButton);
         mainScreen.add(mainScreenToolbar, BorderLayout.NORTH);
+
+
 
         //Maillerin ve mail gönderme yerinin gözükeceği panel
 
@@ -307,38 +339,57 @@ public class GUIMainScreen implements ActionListener{
 
         //E-posta gönderme paneli
 
-        sendMailPanel=new JPanel(null);
+        sendMailPanel=new JPanel(new BorderLayout());
         showMailPanel.add(sendMailPanel);
-        mailSendButton=new JButton("Send");
+        sendMailTopPanel=new JPanel(new FlowLayout());
+        sendMailTopPanel.setBackground(new Color(33,33,33));
+        sendMailBottomPanel=new JPanel(new FlowLayout());
+        sendMailBottomPanel.setBackground(new Color(33,33,33));
         sendMailSubject=new JTextField();
+        sendMailSubject.setBackground(new Color(45, 52, 54));
+        sendMailSubject.setForeground(Color.WHITE);
         sendMailContent=new JTextArea();
+        sendMailContent.setBackground(new Color(45, 52, 54));
+        sendMailContent.setForeground(Color.WHITE);
+        sendMailContent.setMargin(new Insets(10, 10, 10, 10));
         sendMailTo=new JTextField();
-        sendMailSubject1=new JTextField();
-        sendMailTo1=new JTextField();
+        sendMailTo.setBackground(new Color(45, 52, 54));
+        sendMailTo.setForeground(Color.WHITE);
+        sendMailSubject1=new JLabel();
+        sendMailSubject1.setBackground(new Color(33,33,33));
+        sendMailSubject1.setForeground(Color.WHITE);
+        sendMailTo1=new JLabel();
+        sendMailTo1.setForeground(Color.WHITE);
         sendContentScroll=new JScrollPane(sendMailContent);
         sendMailClose=new JButton("Close");
-        sendMailPanel.add(mailSendButton);
-        sendMailPanel.add(sendMailSubject1);
-        sendMailPanel.add(sendMailSubject);
-        sendMailPanel.add(sendContentScroll);
-        sendMailPanel.add(sendMailTo1);
-        sendMailPanel.add(sendMailTo);
-        sendMailPanel.add(sendMailClose);
-        sendMailSubject1.setBounds(0,0,50,50);
-        sendMailSubject.setBounds(50,0,550,50);
-        sendContentScroll.setBounds(0,50,690,470);
-        sendMailTo1.setBounds(0,520,50,30);
-        sendMailTo.setBounds(50,520,550,30);
-        mailSendButton.setBounds(600,520,90,30);
-        sendMailClose.setBounds(600,0,90,50);
+        sendMailClose.setBackground(new Color(255, 0, 0));
+        sendMailClose.setForeground(Color.WHITE);
+        sendMailClose.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        mailSendButton=new JButton("Send");
+        mailSendButton.setBackground(new Color(45, 52, 54));
+        mailSendButton.setForeground(Color.WHITE);
+        mailSaveButton=new JButton("Save");
+        mailSaveButton.setBackground(new Color(45, 52, 54));
+        mailSaveButton.setForeground(Color.WHITE);
+        sendMailPanel.add(sendMailTopPanel,BorderLayout.NORTH);
+        sendMailPanel.add(sendContentScroll,BorderLayout.CENTER);
+        sendMailPanel.add(sendMailBottomPanel,BorderLayout.SOUTH);
+        sendMailTopPanel.add(sendMailSubject1);
+        sendMailTopPanel.add(sendMailSubject);
+        sendMailTopPanel.add(sendMailClose);
+        sendMailSubject.setPreferredSize(new Dimension(500,30));
+        sendMailBottomPanel.add(sendMailTo1);
+        sendMailBottomPanel.add(sendMailTo);
+        sendMailBottomPanel.add(mailSaveButton);
+        sendMailBottomPanel.add(mailSendButton);
+        sendMailTo.setPreferredSize(new Dimension(500,30));
         sendMailClose.addActionListener(this);
         sendMailSubject1.setText("Subject:");
-        sendMailSubject1.setEditable(false);
         sendMailTo1.setText("To:");
-        sendMailTo1.setEditable(false);
         sendMailContent.setLineWrap(true);
         sendMailContent.setWrapStyleWord(true);
         mailSendButton.addActionListener(this);
+        mailSaveButton.addActionListener(this);
         mainScreen.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -393,6 +444,9 @@ public class GUIMainScreen implements ActionListener{
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
             // Start the account selection screen
             new AccountSelectionScreen(accounts);
+        }
+        if (e.getSource()==mailSaveButton){
+
         }
     }
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
