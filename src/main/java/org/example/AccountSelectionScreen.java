@@ -77,6 +77,7 @@ public class AccountSelectionScreen {
         accountsPanel.repaint();
     }
 
+
     private JPanel createAccountPanel(Account account) {
         JPanel accountPanel = new JPanel(new BorderLayout());
         accountPanel.setPreferredSize(new Dimension(100, 100));
