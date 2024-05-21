@@ -6,7 +6,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 import static org.example.Mail.*;
@@ -270,6 +272,54 @@ import static org.example.Mail.*;
            }
            catch (Exception e){
                System.out.println("Dosya bulunamadı");
+           }
+
+       }
+       public static List<String> listDraftFiles() {
+           File folder = new File("emails/draft/"+getUSERNAME());
+           List<String> txtFileNames = new ArrayList<>();
+
+           if (folder.exists() && folder.isDirectory()) {
+               File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+
+               if (files != null) {
+                   for (File file : files) {
+                       txtFileNames.add(file.getName());
+                   }
+               }
+           } else {
+               System.out.println("Klasör bulunamadı: ");
+           }
+
+           return txtFileNames;
+       }
+
+       public static void draftSaver(String from, String to, String subject, String message){
+           String path = "emails/draft/"+from+"/"+subject+".txt";
+
+           String[] content = {subject,
+                   from,
+                   to,
+                   message};
+           try{
+               File saver = new File(path);
+               saver.getParentFile().mkdirs();
+               System.out.println(saver.getName() + " adlı dosya oluşturuldu.");
+               FileWriter fw = new FileWriter(path);
+               BufferedWriter bw = new BufferedWriter(fw);
+
+               for(String line: content){
+                   bw.write(line);
+                   bw.newLine();
+               }
+               bw.flush();
+               bw.close();
+
+
+           }
+           catch (Exception e){
+               System.out.println("Gönderilen dosya kaydedilemedi.");
+               e.printStackTrace();
            }
 
        }
