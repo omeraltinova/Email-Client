@@ -42,7 +42,6 @@ public class GUIMainScreen implements ActionListener{
     JButton sendMailClose;
     JButton signOutButton;
     JButton refreshButton;
-    JButton settingsButton;
 
     //Scrollbars
 
@@ -56,9 +55,7 @@ public class GUIMainScreen implements ActionListener{
 
     JTextField searchBar;
     JTextArea receivedContent;
-    JTextField sentSubject;
     JTextArea sentContent;
-    JTextField sentTo;
     JTextField sendMailSubject1;
     JTextField sendMailSubject;
     JTextArea sendMailContent;
@@ -68,7 +65,7 @@ public class GUIMainScreen implements ActionListener{
     //Toolbars
     JToolBar mainScreenToolbar;
 
-    GUIMainScreen(List<Map<String, String>> emails){
+    GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails){
 
         //Pencerenin genel özellikleri
 
@@ -83,16 +80,25 @@ public class GUIMainScreen implements ActionListener{
         mainScreenToolbar.setFloatable(false);
         mainScreenToolbar.setBackground(new Color(33, 33, 33));
         refreshButton = new JButton("Refresh");
-        settingsButton = new JButton("Settings");
+        refreshButton.setBackground(new Color(33, 33, 33));
+        refreshButton.setForeground(Color.WHITE);
+        refreshButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        searchBar=new JTextField("Search");
+        searchBar.setBackground(new Color(45, 52, 54));
+        searchBar.setForeground(Color.WHITE);
         mainScreenToolbar.add(refreshButton);
-        mainScreenToolbar.add(settingsButton);
+        mainScreenToolbar.add(searchBar);
         mainScreenToolbar.add(Box.createHorizontalGlue());
         JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon("profile-photos/default-picture.png"), 50, 50));
         JLabel nameLabel = new JLabel("John Doe");
-        nameLabel.setForeground(Color.WHITE);
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        nameLabel.setBackground(new Color(33, 33, 33));
+        nameLabel.setForeground(Color.WHITE);
         signOutButton=new JButton("Sign Out");
         signOutButton.addActionListener(this);
+        signOutButton.setBackground(new Color(33, 33, 33));
+        signOutButton.setForeground(Color.WHITE);
+        signOutButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         mainScreenToolbar.add(profilePicture);
         mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
         mainScreenToolbar.add(nameLabel);
@@ -139,9 +145,15 @@ public class GUIMainScreen implements ActionListener{
         sent.addActionListener(this); //tıklayınca açılması için
         sendMail.setBounds(10,230,200,30);
         sendMail.addActionListener(this);
-        received.setBackground(new Color(174, 182, 191));
-        sent.setBackground(new Color(174, 182, 191));
-        sendMail.setBackground(new Color(174, 182, 191));
+        received.setBackground(new Color(45, 52, 54));
+        received.setForeground(Color.WHITE);
+        received.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        sent.setBackground(new Color(45, 52, 54));
+        sent.setForeground(Color.WHITE);
+        sent.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        sendMail.setBackground(new Color(45, 52, 54));
+        sendMail.setForeground(Color.WHITE);
+        sendMail.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         //Alınan e-postaların gözükeceği yer
 
@@ -164,7 +176,7 @@ public class GUIMainScreen implements ActionListener{
         };
         receviedMailTable.getTableHeader().setReorderingAllowed(false);
         receivedScroll = new JScrollPane(receviedMailTable);
-        for(Map<String, String> email : emails){
+        for(Map<String, String> email : receivedEmails){
             receivedMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
         }
 
@@ -200,9 +212,9 @@ public class GUIMainScreen implements ActionListener{
                 sendMailPanel.setVisible(false);
                 showSentMailsPanel.setVisible(false);
                 showReceivedMailsPanel.setVisible(true);
-                String subject=emails.get(selectedRow).get("Konu");
-                String content=emails.get(selectedRow).get("İçerik");
-                String sender=emails.get(selectedRow).get("Gönderen");
+                String subject=receivedEmails.get(selectedRow).get("Konu");
+                String content=receivedEmails.get(selectedRow).get("İçerik");
+                String sender=receivedEmails.get(selectedRow).get("Gönderen");
                 receivedContent.setText("Subject:  "+subject+"\nSender:  "+sender+"\n\nContent:\n"+content);
             }
         });
@@ -228,47 +240,70 @@ public class GUIMainScreen implements ActionListener{
                 return false;
             }
         };
-        for(int i=200;i<400;i++){
-            sentMailTableModel.addRow(new Object[]{i,i});
-        }
-        JTable sentMailTable=new JTable(sentMailTableModel);
+        JTable sentMailTable=new JTable(sentMailTableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    component.setBackground(row % 2 == 0 ? new Color(45, 52, 54) : new Color(60, 63, 65));
+                }
+                return component;
+            }
+        };
         sentMailTable.getTableHeader().setReorderingAllowed(false);
         sentScroll=new JScrollPane(sentMailTable);
-        showSentMailsPanel=new JPanel(null);
+        for(Map<String, String> email : sentEmails){
+            sentMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
+        }
+        showSentMailsPanel=new JPanel(new BorderLayout());
+        showSentMailsPanel.setBackground(new Color(33, 33, 33));
         showMailPanel.add(showSentMailsPanel);
         mailPanel.add(sentScroll);
         sentScroll.setVisible(false);
-
-        showSentClose=new JButton("Close");
-        sentSubject=new JTextField();
         sentContent=new JTextArea();
-        sentTo=new JTextField();
-        sentContentScroll=new JScrollPane(sentContent);
-        showSentMailsPanel.add(sentSubject);
-        showSentMailsPanel.add(sentContentScroll);
-        showSentMailsPanel.add(sentTo);
-        showSentMailsPanel.add(showSentClose);
-        sentSubject.setBounds(0,0,600,50);
-        sentContentScroll.setBounds(0,50,690,480);
-        sentTo.setBounds(0,520,690,30);
-        showSentClose.setBounds(600,0,90,50);
-        showSentClose.addActionListener(this);
-        sentSubject.setEditable(false);
-        sentContent.setEditable(false);
-        sentTo.setEditable(false);
+        sentContent.setBackground(new Color(33, 33, 33));
+        sentContent.setForeground(Color.WHITE);
         sentContent.setLineWrap(true);
         sentContent.setWrapStyleWord(true);
+        sentContent.setMargin(new Insets(10, 10, 10, 10));
+        sentContent.setEditable(false);
+        showSentClose=new JButton("Close");
+        showSentClose.setBackground(new Color(255, 0, 0));
+        showSentClose.setForeground(Color.WHITE);
+        showSentClose.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        sentContentScroll=new JScrollPane(sentContent);
+        sentMailClosePanel=new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        sentMailClosePanel.setBackground(new Color(33, 33, 33));
+        showSentMailsPanel.add(sentMailClosePanel,BorderLayout.NORTH);
+        sentMailClosePanel.add(showSentClose);
+        showSentMailsPanel.add(sentContentScroll,BorderLayout.CENTER);
+        showSentClose.addActionListener(this);
 
         for(int i=0;i<sentMailTable.getColumnModel().getColumnCount();i++){
             sentMailTable.getColumnModel().getColumn(i).setResizable(false);
         }
+        sentMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        sentMailTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow=sentMailTable.getSelectedRow();
+            if(selectedRow!=-1){
+                illusionPanel2.setVisible(false);
+                sendMailPanel.setVisible(false);
+                showReceivedMailsPanel.setVisible(false);
+                showSentMailsPanel.setVisible(true);
+                String subject=sentEmails.get(selectedRow).get("Konu");
+                String content=sentEmails.get(selectedRow).get("İçerik");
+                String to=sentEmails.get(selectedRow).get("Gönderen");
+                sentContent.setText("Subject:  "+subject+"\nSender:  "+to+"\n\nContent:\n"+content);
+            }
+        });
 
         sentMailTable.setFillsViewportHeight(true);
-        sentScroll.getViewport().setBackground(new Color(33, 33, 33));
-        sentMailTable.setBackground(new Color(45, 52, 54));
+        sentMailTable.setBackground(new Color(33, 33, 33));
         sentMailTable.setForeground(Color.WHITE);
+        sentMailTable.setSelectionBackground(new Color(99, 110, 114));
         sentMailTable.setSelectionForeground(Color.BLACK);
         sentMailTable.setGridColor(new Color(45, 52, 54));
+        sentScroll.getViewport().setBackground(new Color(33, 33, 33));
 
         //E-posta gönderme paneli
 
@@ -308,6 +343,7 @@ public class GUIMainScreen implements ActionListener{
             @Override
             public void windowClosing(WindowEvent e) {
                 deleteFilesInDirectory("emails/inbox");
+                deleteFilesInDirectory("emails/sent");
             }
         });
     }
@@ -352,6 +388,7 @@ public class GUIMainScreen implements ActionListener{
         }
         if (e.getSource()==signOutButton){
             deleteFilesInDirectory("emails/inbox");
+            deleteFilesInDirectory("emails/sent");
             mainScreen.dispose();
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
             // Start the account selection screen

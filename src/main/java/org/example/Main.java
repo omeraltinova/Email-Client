@@ -28,15 +28,17 @@ public class Main {
 //        MailManagement rm = new MailManagement();
 //        rm.fetchEmails(-1,"Sent");
 
-//        List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
+//        List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
+//        List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");
 //        //Ana ekranı çağırmak için
-////        GUIMainScreen anaEkran = new GUIMainScreen(emails);
+
         List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
-//
-//        // Start the account selection screen
+
+        // Start the account selection screen
         new AccountSelectionScreen(accounts);
-//
-//
+//        GUIMainScreenTest aasd=new GUIMainScreenTest(receivedEmails);
+//        GUIMainScreen anaEkran = new GUIMainScreen(receivedEmails,sentEmails);
+
 //        // Giriş yapılan hesapları döndüren fonksiyon.
 //        listTxtFiles();
 //        List<String> txtFileNames = listTxtFiles();

@@ -148,8 +148,10 @@ public class AccountSelectionScreen {
                             }
                             MailManagement mm = new MailManagement();
                             mm.fetchEmails(-1,"inbox");
-                            List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
-                            if(emails.size()==0){
+                            mm.fetchEmails(-1,"sent");
+                            List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
+                            List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");
+                            if(receivedEmails.size()==0){
                                 JOptionPane.showMessageDialog(accountSelectionFrame, "Hatalı şifre girdiniz\nHesap silindi tekrar giriş yapın");
                                 File silici = new File("Accounts/"+account.getEmail()+".txt");
                                 silici.delete();
@@ -158,7 +160,7 @@ public class AccountSelectionScreen {
                             }
                             else{
                                 //Ana ekranı çağırmak için
-                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) emails);
+                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails);
                                 accountSelectionFrame.dispose();
 
                             }
