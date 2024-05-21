@@ -10,34 +10,17 @@ import static org.example.AccountSelectionScreen.readAccountsFromFile;
 
 public class Main {
     public static void main(String[] args) {
-//        MailManagement mm = new MailManagement();
-//        mm.isEmailLegal("iamtheone.javaproje@gmail.com","dnhz mqsf buou dfxd");
-//        mm.fetchEmails();
-//        mm.sendPlainTextEmail("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","testi",true);
 
-//        MailManagement.mailSaver("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","Model-View-Controller (MVC), yazılım geliştirme sürecinde sıklıkla kullanılan bir tasarım desenidir. Bu desen, bir uygulamanın yapısal bütünlüğünü korumak ve farklı bileşenler arasında net bir ayrım sağlamak için kullanılır.");
-//        MailManagement.draftSaver("iamtheone.javaproje@gmail.com","skocraft05@gmail.com","File test","test");
-//        MailManagement.mailLister("iamtheone.javaproje@gmail.com");
 //        List<String> draftFileNames = MailManagement.listDraftFiles(); // Taslakların listesini görme
 //
 //        for (String fileName : draftFileNames) {
 //            System.out.println(fileName);
 //        }
 
-
-//        MailManagement rm = new MailManagement();
-//        rm.fetchEmails(-1,"Sent");
-
-//        List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
-//        List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");
-//        //Ana ekranı çağırmak için
-
+        // Hesap seçme ekranını başlatma
         List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
-
-        // Start the account selection screen
         new AccountSelectionScreen(accounts);
-//        GUIMainScreenTest aasd=new GUIMainScreenTest(receivedEmails);
-//        GUIMainScreen anaEkran = new GUIMainScreen(receivedEmails,sentEmails);
+
 
 //        // Giriş yapılan hesapları döndüren fonksiyon.
 //        listTxtFiles();
@@ -47,7 +30,6 @@ public class Main {
 //            System.out.println(fileName);
 //        }
 //
-        deleteFilesInDirectory("Accounts/inbox");
 
     }
 
