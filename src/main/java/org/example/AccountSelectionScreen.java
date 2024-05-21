@@ -149,11 +149,19 @@ public class AccountSelectionScreen {
                             MailManagement mm = new MailManagement();
                             mm.fetchEmails(-1,"inbox");
                             List<Map<String, String>> emails = EmailReader.readEmails("emails/inbox");
+                            if(emails.size()==0){
+                                JOptionPane.showMessageDialog(accountSelectionFrame, "Hatalı şifre girdiniz\nHesap silindi tekrar giriş yapın");
+                                File silici = new File("Accounts/"+account.getEmail()+".txt");
+                                silici.delete();
+                                accounts.remove(account);
+                                updateAccountsPanel();
+                            }
+                            else{
+                                //Ana ekranı çağırmak için
+                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) emails);
+                                accountSelectionFrame.dispose();
 
-                            //Ana ekranı çağırmak için
-                            GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) emails);
-                            accountSelectionFrame.dispose();
-
+                            }
                         }
                     }
                 }
@@ -212,25 +220,35 @@ public class AccountSelectionScreen {
                 String eposta = textEposta.getText();
                 char[] passwordChars = password.getPassword();
                 String sifre = new String(passwordChars);
-
-                // Perform your login logic here using eposta and sifre
-                System.out.println("Name:" + name);
-                System.out.println("E-posta: " + eposta);
-                System.out.println("Şifre: " + sifre);
-
-                // Add new account to the list
-                if (i==1)
-                    accounts.add(new Account(name, eposta, "profile-photos/bear.png"));
-                else if (i==2)
-                    accounts.add(new Account(name, eposta, "profile-photos/cat.png"));
-                else if (i==3)
-                    accounts.add(new Account(name, eposta, "profile-photos/rabbit.png"));
-                else if (i==4)
-                    accounts.add(new Account(name, eposta, "profile-photos/panda.png"));
-
-                i++;
                 MailManagement ts1 = new MailManagement();
-                ts1.isEmailLegal(eposta,sifre);
+                boolean check = ts1.isEmailLegal(eposta,sifre);
+
+                if(!check){
+                    // Perform your login logic here using eposta and sifre
+                    System.out.println("Name:" + name);
+                    System.out.println("E-posta: " + eposta);
+                    System.out.println("Şifre: " + sifre);
+
+                    // Add new account to the list
+                    if (i==1)
+                        accounts.add(new Account(name, eposta, "profile-photos/bear.png"));
+                    else if (i==2)
+                        accounts.add(new Account(name, eposta, "profile-photos/cat.png"));
+                    else if (i==3)
+                        accounts.add(new Account(name, eposta, "profile-photos/rabbit.png"));
+                    else if (i==4)
+                        accounts.add(new Account(name, eposta, "profile-photos/panda.png"));
+
+                    i++;
+
+                }
+                else{
+                    System.out.println("Geçersiz domain adresi.");
+                    JOptionPane.showMessageDialog(f1, "Desteklenmeyen domain girdiniz" );
+                }
+
+
+
                 updateAccountsPanel();
                 f1.dispose();
             }
