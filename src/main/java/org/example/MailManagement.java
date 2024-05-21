@@ -140,10 +140,7 @@ import static org.example.Mail.*;
 //                       writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                        Object content = message.getContent();
                        if (content instanceof String) {
-                           String[] lines = ((String) content).split("\\r?\\n");
-                           for (String line : lines) {
-                               writer.write("İçerik: " + line + "\n");
-                           }
+                           writer.write("İçerik: " + (String) content + "\n");
                        } else if (content instanceof Multipart) {
                            handleMultipart((Multipart) content, writer);
                        } else {
