@@ -28,6 +28,7 @@ public class GUIMainScreen implements ActionListener{
     JPanel sendMailPanel;
     JPanel illusionPanel1;
     JPanel illusionPanel2;
+    JPanel illusionPanel3;
     JPanel receivedMailClosePanel;
     JPanel sentMailClosePanel;
     JPanel sendMailTopPanel;
@@ -64,6 +65,7 @@ public class GUIMainScreen implements ActionListener{
     JTextField sendMailSubject;
     JTextArea sendMailContent;
     JTextField sendMailTo;
+    JTextField illusionTextField;
 
     //Toolbars
     JToolBar mainScreenToolbar;
@@ -91,14 +93,10 @@ public class GUIMainScreen implements ActionListener{
         mainScreen.getContentPane().setBackground(new Color(33, 33, 33));
         mainScreenToolbar=new JToolBar();
 
-        //Searchbar'ı ortalamak için
-        illusionLabel1=new JLabel("                                                                     ");
-        illusionLabel1.setForeground(new Color(33, 33, 33));
-        illusionLabel2=new JLabel("                                                                     ");
-        illusionLabel2.setForeground(new Color(33, 33, 33));
-
         mainScreenToolbar.setFloatable(false);
         mainScreenToolbar.setBackground(new Color(33, 33, 33));
+        illusionPanel3=new JPanel(new CardLayout());
+        illusionPanel3.setBackground(new Color(33, 33, 33));
         refreshButton = new JButton("Refresh");
         refreshButton.setBackground(new Color(33, 33, 33));
         refreshButton.setForeground(Color.WHITE);
@@ -111,11 +109,12 @@ public class GUIMainScreen implements ActionListener{
         sentMailSearchbar.setMargin(new Insets(0, 10, 0, 10));
         sentMailSearchbar.setBackground(new Color(45, 52, 54));
         sentMailSearchbar.setForeground(Color.WHITE);
+        illusionLabel1=new JLabel();
         mainScreenToolbar.add(refreshButton);
-        mainScreenToolbar.add(illusionLabel1);
-        mainScreenToolbar.add(receivedMailSearchBar);
+        mainScreenToolbar.add(illusionPanel3);
+        illusionPanel3.add(illusionLabel1);
+        illusionPanel3.add(receivedMailSearchBar);
         receivedMailSearchBar.setVisible(false);
-        mainScreenToolbar.add(sentMailSearchbar);
         sentMailSearchbar.setVisible(false);
         mainScreenToolbar.add(Box.createHorizontalGlue());
         JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon("profile-photos/default-picture.png"), 50, 50));
@@ -128,7 +127,6 @@ public class GUIMainScreen implements ActionListener{
         signOutButton.setBackground(new Color(33, 33, 33));
         signOutButton.setForeground(Color.WHITE);
         signOutButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        mainScreenToolbar.add(illusionLabel2);
         mainScreenToolbar.add(profilePicture);
         mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
         mainScreenToolbar.add(nameLabel);
@@ -404,11 +402,17 @@ public class GUIMainScreen implements ActionListener{
         if(e.getSource()==received){
             illusionPanel1.setVisible(false);
             sentScroll.setVisible(false);
+            illusionLabel1.setVisible(false);
+            sentMailSearchbar.setVisible(false);
+            receivedMailSearchBar.setVisible(true);
             receivedScroll.setVisible(true);
         }
         if(e.getSource()==sent){
             illusionPanel1.setVisible(false);
             receivedScroll.setVisible(false);
+            illusionLabel1.setVisible(false);
+            receivedMailSearchBar.setVisible(false);
+            sentMailSearchbar.setVisible(true);
             sentScroll.setVisible(true);
         }
         if(e.getSource()==sendMail){
