@@ -118,7 +118,7 @@ public class GUIMainScreen implements ActionListener{
         sentMailSearchbar.setVisible(false);
         mainScreenToolbar.add(Box.createHorizontalGlue());
         JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon("profile-photos/default-picture.png"), 50, 50));
-        JLabel nameLabel = new JLabel("John Doe");
+        JLabel nameLabel = new JLabel(Mail.getNAME());
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         nameLabel.setBackground(new Color(33, 33, 33));
         nameLabel.setForeground(Color.WHITE);
