@@ -4,10 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +54,6 @@ public class GUIMainScreen implements ActionListener{
 
     //Text Fields and Areas
 
-    JTextField searchBar;
     JTextArea receivedContent;
     JTextField receivedMailSearchBar;
     JTextArea sentContent;
@@ -65,11 +61,13 @@ public class GUIMainScreen implements ActionListener{
     JTextField sendMailSubject;
     JTextArea sendMailContent;
     JTextField sendMailTo;
-    JTextField illusionTextField;
 
-    //Toolbars
+    //Toolbars & Popup Menus and menu items
     JToolBar mainScreenToolbar;
-
+    JPopupMenu receivedMailPopupMenu;
+    JMenuItem receivedMailDelete;
+    JPopupMenu sentMailPopupMenu;
+    JMenuItem sentMailDelete;
     //Labels
 
     JLabel sendMailTo1;
@@ -79,6 +77,13 @@ public class GUIMainScreen implements ActionListener{
     JLabel illusionLabel3;
     JLabel illusionLabel4;
     JLabel illusionLabel5;
+
+    //Tables and models
+
+    DefaultTableModel receivedMailTableModel;
+    JTable receivedMailTable;
+    DefaultTableModel sentMailTableModel;
+    JTable sentMailTable;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo){
 
@@ -101,11 +106,11 @@ public class GUIMainScreen implements ActionListener{
         refreshButton.setBackground(new Color(33, 33, 33));
         refreshButton.setForeground(Color.WHITE);
         refreshButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        receivedMailSearchBar=new JTextField("Search");
+        receivedMailSearchBar=new JTextField("Search in received mails");
         receivedMailSearchBar.setMargin(new Insets(0, 10, 0, 10));
         receivedMailSearchBar.setBackground(new Color(45, 52, 54));
         receivedMailSearchBar.setForeground(Color.WHITE);
-        sentMailSearchbar=new JTextField("Search");
+        sentMailSearchbar=new JTextField("Search in sent mails");
         sentMailSearchbar.setMargin(new Insets(0, 10, 0, 10));
         sentMailSearchbar.setBackground(new Color(45, 52, 54));
         sentMailSearchbar.setForeground(Color.WHITE);
@@ -114,6 +119,7 @@ public class GUIMainScreen implements ActionListener{
         mainScreenToolbar.add(illusionPanel3);
         illusionPanel3.add(illusionLabel1);
         illusionPanel3.add(receivedMailSearchBar);
+        illusionPanel3.add(sentMailSearchbar);
         receivedMailSearchBar.setVisible(false);
         sentMailSearchbar.setVisible(false);
         mainScreenToolbar.add(Box.createHorizontalGlue());
@@ -133,8 +139,6 @@ public class GUIMainScreen implements ActionListener{
         mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
         mainScreenToolbar.add(signOutButton);
         mainScreen.add(mainScreenToolbar, BorderLayout.NORTH);
-
-
 
         //Maillerin ve mail gönderme yerinin gözükeceği panel
 
@@ -188,13 +192,13 @@ public class GUIMainScreen implements ActionListener{
         //Alınan e-postaların gözükeceği yer
 
         String[] receivedMailColumns = {"Sender", "Subject"};
-        DefaultTableModel receivedMailTableModel = new DefaultTableModel(receivedMailColumns, 0){
+        receivedMailTableModel = new DefaultTableModel(receivedMailColumns, 0){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        JTable receviedMailTable = new JTable(receivedMailTableModel) {
+        receivedMailTable = new JTable(receivedMailTableModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component component = super.prepareRenderer(renderer, row, column);
@@ -204,8 +208,8 @@ public class GUIMainScreen implements ActionListener{
                 return component;
             }
         };
-        receviedMailTable.getTableHeader().setReorderingAllowed(false);
-        receivedScroll = new JScrollPane(receviedMailTable);
+        receivedMailTable.getTableHeader().setReorderingAllowed(false);
+        receivedScroll = new JScrollPane(receivedMailTable);
         for(Map<String, String> email : receivedEmails){
             receivedMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
         }
@@ -234,43 +238,69 @@ public class GUIMainScreen implements ActionListener{
         showReceivedMailsPanel.add(receivedContentScroll,BorderLayout.CENTER);
         showReceivedClose.addActionListener(this);
 
-        receviedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        receviedMailTable.getSelectionModel().addListSelectionListener(e -> {
-            int selectedRow=receviedMailTable.getSelectedRow();
-            if(selectedRow!=-1){
+        receivedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        receivedMailTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow=receivedMailTable.getSelectedRow();
+            if(selectedRow!=-1) {
                 illusionPanel2.setVisible(false);
                 sendMailPanel.setVisible(false);
                 showSentMailsPanel.setVisible(false);
                 showReceivedMailsPanel.setVisible(true);
-                String subject=receivedEmails.get(selectedRow).get("Konu");
-                String content=receivedEmails.get(selectedRow).get("İçerik");
-                String sender=receivedEmails.get(selectedRow).get("Gönderen");
-                receivedContent.setText("Subject:  "+subject+"\nSender:  "+sender+"\n\nContent:\n"+content);
+                String subject = receivedEmails.get(selectedRow).get("Konu");
+                String content = receivedEmails.get(selectedRow).get("İçerik");
+                String sender = receivedEmails.get(selectedRow).get("Gönderen");
+                receivedContent.setText("Subject:  " + subject + "\nSender:  " + sender + "\n\nContent:\n" + content);
+
             }
         });
 
-        receviedMailTable.setFillsViewportHeight(true);
-        receviedMailTable.setBackground(new Color(33, 33, 33));
-        receviedMailTable.setForeground(Color.WHITE);
-        receviedMailTable.setSelectionBackground(new Color(99, 110, 114));
-        receviedMailTable.setSelectionForeground(Color.BLACK);
-        receviedMailTable.setGridColor(new Color(45, 52, 54));
+        receivedMailTable.setFillsViewportHeight(true);
+        receivedMailTable.setBackground(new Color(33, 33, 33));
+        receivedMailTable.setForeground(Color.WHITE);
+        receivedMailTable.setSelectionBackground(new Color(99, 110, 114));
+        receivedMailTable.setSelectionForeground(Color.BLACK);
+        receivedMailTable.setGridColor(new Color(45, 52, 54));
         receivedScroll.getViewport().setBackground(new Color(33, 33, 33));
 
-        for(int i=0;i<receviedMailTable.getColumnModel().getColumnCount();i++){
-            receviedMailTable.getColumnModel().getColumn(i).setResizable(false);
+        for(int i=0;i<receivedMailTable.getColumnModel().getColumnCount();i++){
+            receivedMailTable.getColumnModel().getColumn(i).setResizable(false);
         }
+        receivedMailPopupMenu=new JPopupMenu();
+        receivedMailDelete=new JMenuItem("Sil");
+        receivedMailPopupMenu.add(receivedMailDelete);
+        receivedMailTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = receivedMailTable.rowAtPoint(e.getPoint());
+                    receivedMailTable.setRowSelectionInterval(row, row);
+                    receivedMailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+        receivedMailDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = receivedMailTable.getSelectedRow();
+                if (row != -1) {
+                    showReceivedMailsPanel.setVisible(false);
+                    illusionPanel2.setVisible(true);
+                    receivedMailTableModel.removeRow(row);
+                    receivedEmails.remove(row);
+                }
+            }
+        });
 
         //Gönderilen e-postaların gözükeceği yer
 
         String[] sentMailColumns = {"To", "Subject"};
-        DefaultTableModel sentMailTableModel=new DefaultTableModel(sentMailColumns,0){
+        sentMailTableModel=new DefaultTableModel(sentMailColumns,0){
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        JTable sentMailTable=new JTable(sentMailTableModel) {
+        sentMailTable=new JTable(sentMailTableModel) {
             @Override
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component component = super.prepareRenderer(renderer, row, column);
@@ -315,15 +345,15 @@ public class GUIMainScreen implements ActionListener{
         sentMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sentMailTable.getSelectionModel().addListSelectionListener(e -> {
             int selectedRow=sentMailTable.getSelectedRow();
-            if(selectedRow!=-1){
+            if(selectedRow!=-1) {
                 illusionPanel2.setVisible(false);
                 sendMailPanel.setVisible(false);
                 showReceivedMailsPanel.setVisible(false);
                 showSentMailsPanel.setVisible(true);
-                String subject=sentEmails.get(selectedRow).get("Konu");
-                String content=sentEmails.get(selectedRow).get("İçerik");
-                String to=sentEmails.get(selectedRow).get("Gönderen");
-                sentContent.setText("Subject:  "+subject+"\nSender:  "+to+"\n\nContent:\n"+content);
+                String subject = sentEmails.get(selectedRow).get("Konu");
+                String content = sentEmails.get(selectedRow).get("İçerik");
+                String to = sentEmails.get(selectedRow).get("Gönderen");
+                sentContent.setText("Subject:  " + subject + "\nTo:  " + to + "\n\nContent:\n" + content);
             }
         });
 
@@ -334,6 +364,32 @@ public class GUIMainScreen implements ActionListener{
         sentMailTable.setSelectionForeground(Color.BLACK);
         sentMailTable.setGridColor(new Color(45, 52, 54));
         sentScroll.getViewport().setBackground(new Color(33, 33, 33));
+
+        sentMailPopupMenu=new JPopupMenu();
+        sentMailDelete=new JMenuItem("Sil");
+        sentMailPopupMenu.add(sentMailDelete);
+        sentMailTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = sentMailTable.rowAtPoint(e.getPoint());
+                    sentMailTable.setRowSelectionInterval(row, row);
+                    sentMailPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
+        sentMailDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int row = sentMailTable.getSelectedRow();
+                if (row != -1) {
+                    showSentMailsPanel.setVisible(false);
+                    illusionPanel2.setVisible(true);
+                    sentMailTableModel.removeRow(row);
+                    sentEmails.remove(row);
+                }
+            }
+        });
 
         //E-posta gönderme paneli
 
@@ -446,7 +502,6 @@ public class GUIMainScreen implements ActionListener{
             deleteFilesInDirectory("emails/sent");
             mainScreen.dispose();
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
-            // Start the account selection screen
             new AccountSelectionScreen(accounts);
         }
         if (e.getSource()==mailSaveButton){

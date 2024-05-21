@@ -35,7 +35,7 @@ public class AccountSelectionScreen {
     }
 
     private void initializeUI() {
-        JLabel titleLabel = new JLabel("Hoşgeldin", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("WELCOME!", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
@@ -208,13 +208,13 @@ public class AccountSelectionScreen {
 
     public void KAYITEKRANI() {
         JFrame f1 = new JFrame("Giris Yapma Ekrani");
-        JLabel lblName=new JLabel("İsminizi giriniz:");
+        JLabel lblName=new JLabel("Enter your name:");
         lblName.setForeground(Color.WHITE);
         lblName.setBounds(10,10,200,50);
-        JLabel lblEposta = new JLabel("E-posta adresinizi giriniz:");
+        JLabel lblEposta = new JLabel("Enter your e-Mail adress:");
         lblEposta.setForeground(Color.WHITE);
         lblEposta.setBounds(10, 80, 200, 50);
-        JLabel lblSifre = new JLabel("Şifrenizi giriniz:");
+        JLabel lblSifre = new JLabel("Enter your password:");
         lblSifre.setForeground(Color.WHITE);
         lblSifre.setBounds(10, 150, 200, 50);
         JTextField textName=new JTextField();
@@ -223,7 +223,7 @@ public class AccountSelectionScreen {
         textEposta.setBounds(240, 80, 300, 60);
         JPasswordField password = new JPasswordField();
         password.setBounds(240, 150, 300, 60);
-        JButton btnOturumAc = new JButton("Oturum Aç");
+        JButton btnOturumAc = new JButton("Sign in");
         btnOturumAc.setBackground(new Color(45, 52, 54));
         btnOturumAc.setForeground(Color.WHITE);
         btnOturumAc.setBounds(330, 220, 200, 60);
