@@ -6,6 +6,9 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +54,7 @@ public class GUIMainScreen implements ActionListener{
 
     //Text Fields and Areas
 
+    JTextField searchBar;
     JTextArea receivedContent;
     JTextField sentSubject;
     JTextArea sentContent;
@@ -300,6 +304,12 @@ public class GUIMainScreen implements ActionListener{
         sendMailContent.setLineWrap(true);
         sendMailContent.setWrapStyleWord(true);
         mailSendButton.addActionListener(this);
+        mainScreen.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                deleteFilesInDirectory("emails/inbox");
+            }
+        });
     }
 
     @Override
@@ -341,9 +351,9 @@ public class GUIMainScreen implements ActionListener{
             illusionPanel2.setVisible(true);
         }
         if (e.getSource()==signOutButton){
+            deleteFilesInDirectory("emails/inbox");
             mainScreen.dispose();
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
-
             // Start the account selection screen
             new AccountSelectionScreen(accounts);
         }
@@ -352,5 +362,18 @@ public class GUIMainScreen implements ActionListener{
         Image image = icon.getImage();
         Image resizedImage = image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(resizedImage);
+    }
+    private static void deleteFilesInDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (directory.exists() && directory.isDirectory()) {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        file.delete();
+                    }
+                }
+            }
+        }
     }
 }
