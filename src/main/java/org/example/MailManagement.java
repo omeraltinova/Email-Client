@@ -113,13 +113,24 @@ import static org.example.Mail.*;
                    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
                        String subject = MimeUtility.decodeText(message.getSubject());
                        writer.write("Konu: " + subject + "\n");
-
-                       Address[] fromAddresses = message.getFrom();
-                       if (fromAddresses != null && fromAddresses.length > 0) {
-                           InternetAddress from = (InternetAddress) fromAddresses[0];
-                           String senderName = from.getPersonal(); // Gönderenin adını al
-                           String senderEmail = from.getAddress(); // Gönderenin e-posta adresini al
-                           writer.write("Gönderen: " + senderName + " <" + senderEmail + ">\n");
+                       if(boxName.equalsIgnoreCase("INBOX")){
+                           Address[] fromAddresses = message.getFrom();
+                           if (fromAddresses != null && fromAddresses.length > 0) {
+                               InternetAddress from = (InternetAddress) fromAddresses[0];
+                               String senderName = from.getPersonal(); // Gönderenin adını al
+                               String senderEmail = from.getAddress(); // Gönderenin e-posta adresini al
+                               writer.write("Gönderen: " + senderName + " <" + senderEmail + ">\n");
+                           }
+                       }else {
+                           Address[] toAddresses = message.getRecipients(Message.RecipientType.TO);
+                           if (toAddresses != null && toAddresses.length > 0) {
+                               for (Address address : toAddresses) {
+                                   InternetAddress to = (InternetAddress) address;
+                                   String recipientName = to.getPersonal(); // Alıcının adını al
+                                   String recipientEmail = to.getAddress(); // Alıcının e-posta adresini al
+                                   writer.write("Gönderen: " + (recipientName != null ? recipientName : "") + " <" + recipientEmail + ">\n");
+                               }
+                           }
                        }
 
 //                       writer.write("Gönderen: " + message.getFrom()[0] + "\n");
