@@ -126,6 +126,7 @@ import static org.example.Mail.*;
                            }
                        }else {
                            Address[] toAddresses = message.getRecipients(Message.RecipientType.TO);
+
                            if (toAddresses != null && toAddresses.length > 0) {
                                for (Address address : toAddresses) {
                                    InternetAddress to = (InternetAddress) address;
