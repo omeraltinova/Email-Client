@@ -17,7 +17,7 @@ public class Main {
 //            System.out.println(fileName);
 //        }
 
-        // Hesap seçme ekranını başlatma
+        // Hesap seçme ekranını başlatmannbvbn
         List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
         new AccountSelectionScreen(accounts);
 
