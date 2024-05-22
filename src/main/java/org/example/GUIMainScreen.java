@@ -149,7 +149,7 @@ public class GUIMainScreen implements ActionListener{
         mailPanel.setVisible(true);
         illusionPanel1=new JPanel();
         mailPanel.add(illusionPanel1);
-        illusionPanel1.setBackground(new Color(33, 33, 33));
+        illusionPanel1.setBackground(new Color(33, 33, 3));
 
         showMailPanel=new JPanel(new CardLayout());
         mainScreen.add(showMailPanel,BorderLayout.EAST);
