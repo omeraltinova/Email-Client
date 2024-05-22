@@ -483,7 +483,7 @@ public class GUIMainScreen implements ActionListener{
             System.out.println("Subject:"+sendSubject+"\n");
             System.out.println("Content:"+sendContent+"\n");
             System.out.println("To:"+sendTo);
-            aa.sendPlainTextEmail("iamtheone.javaproje@gmail.com",sendTo,sendSubject,sendContent,true);
+            aa.sendPlainTextEmail(Mail.getUSERNAME(),sendTo,sendSubject,sendContent,true);
         }
         if (e.getSource()==showReceivedClose){
             showReceivedMailsPanel.setVisible(false);
