@@ -160,8 +160,8 @@ public class AccountSelectionScreen {
                                 exception.printStackTrace();
                             }
                             MailManagement mm = new MailManagement();
-                            mm.fetchEmails(-1,"inbox");
-                            mm.fetchEmails(-1,"sent");
+                            mm.fetchEmails("","inbox");
+                            mm.fetchEmails("","sent");
                        //     Map<String, String> accountInfo = EmailReader.readEmails("Accounts");
                             List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
                             List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");

@@ -56,7 +56,7 @@ import static org.example.Mail.*;
             }
         }
     }
-       public void fetchEmails(int indexToDelete,String boxName) {
+       public void fetchEmails(String sub, String boxName) {
            String host = getImapHost();
            String username = getUSERNAME();
            String password = getPASSWORD();
@@ -99,16 +99,18 @@ import static org.example.Mail.*;
                store.connect(host, username, password);
 
                Folder inbox = store.getFolder(boxName);
-               inbox.open(Folder.READ_ONLY);
+               inbox.open(Folder.READ_WRITE);
 
                Message[] messages = inbox.getMessages();
 
                for (int i = 0; i < messages.length; i++) {
                    Message message = messages[i];
-                   if (indexToDelete >= 0 && indexToDelete == i) {
-                       message.setFlag(Flags.Flag.DELETED, true);  // Mesajı sil
-                       System.out.println("Mesaj silindi: " + message.getSubject());
-                   }
+                   // Eğer subject parametresi doluysa ve mesajın konusu verilen subject ile eşleşiyorsa, mesajı sil
+                    if ( message.getSubject().equals(sub)) {
+                           message.setFlag(Flags.Flag.DELETED, true);
+                           System.out.println("Mesaj silindi: " + message.getSubject());
+                           break;
+                    }
 
                    File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
@@ -151,7 +153,7 @@ import static org.example.Mail.*;
                    }
                }
 
-               inbox.close(false);
+               inbox.expunge();
                store.close();
            } catch (Exception e) {
                e.printStackTrace();
