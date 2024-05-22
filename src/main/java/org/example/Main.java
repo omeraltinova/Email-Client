@@ -15,7 +15,7 @@ public class Main {
 //
 //        for (String fileName : draftFileNames) {
 //            System.out.println(fileName);
-//        }aaa
+//        }aaaaaa
 
         // Hesap seçme ekranını başlatmannbvbn
         List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
