@@ -16,7 +16,9 @@ import static org.example.AccountSelectionScreen.accountInfo;
 import static org.example.AccountSelectionScreen.readAccountsFromFile;
 
 public class GUIMainScreen implements ActionListener{
+
     //Main frame
+
     JFrame mainScreen;
 
     //Panels
@@ -70,6 +72,7 @@ public class GUIMainScreen implements ActionListener{
     JTextField sendMailTo;
 
     //Toolbars & Menus & Popup Menus and menu items
+
     JMenuBar mainScreenMenubar;
     JPopupMenu receivedMailPopupMenu;
     JMenuItem receivedMailDelete;
@@ -100,9 +103,9 @@ public class GUIMainScreen implements ActionListener{
     DefaultTableModel searchTableModel;
     JTable searchTable;
 
-    List<Map<String, String>> draftEmailsReset;
+    //String
+
     List<Map<String, String>> resultList;
-    static String senderOrTo;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo,List<Map<String, String>> draftEmails){
 
@@ -610,6 +613,7 @@ public class GUIMainScreen implements ActionListener{
             public void windowClosing(WindowEvent e) {
                 deleteFilesInDirectory("emails/inbox");
                 deleteFilesInDirectory("emails/sent");
+                deleteFilesInDirectory("attachments");
             }
         });
         resultList = new ArrayList<>();
@@ -744,6 +748,7 @@ public class GUIMainScreen implements ActionListener{
         if (e.getSource()==signOutButton){
             deleteFilesInDirectory("emails/inbox");
             deleteFilesInDirectory("emails/sent");
+            deleteFilesInDirectory("attachments");
             mainScreen.dispose();
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
             new AccountSelectionScreen(accounts);

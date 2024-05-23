@@ -105,7 +105,6 @@ public class AccountSelectionScreen {
         accountPanel.add(accountImageLabel, BorderLayout.CENTER);
         accountPanel.add(textPanel, BorderLayout.SOUTH);
         accountInfo = new HashMap<>();
-        // Click listener for account panel
         accountPanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
@@ -236,12 +235,10 @@ public class AccountSelectionScreen {
                 boolean check = ts1.isEmailLegal(eposta,sifre);
 
                 if(!check){
-                    // Perform your login logic here using eposta and sifre
                     System.out.println("Name:" + name);
                     System.out.println("E-posta: " + eposta);
                     System.out.println("Şifre: " + sifre);
 
-                    // Add new account to the list
                     i = Mail.countTxtFiles("Accounts");
                     if (i==1)
                         accounts.add(new Account(name, eposta, "profile-photos/bear.png"));

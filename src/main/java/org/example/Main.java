@@ -10,27 +10,9 @@ import static org.example.AccountSelectionScreen.readAccountsFromFile;
 
 public class Main {
     public static void main(String[] args) {
-
-//        List<String> draftFileNames = MailManagement.listDraftFiles(); // Taslakların listesini görme
-//
-//        for (String fileName : draftFileNames) {
-//            System.out.println(fileName);
-//        }
-
-        // Hesap seçme ekranını başlatmannbvbn
+        // Hesap seçme ekranını başlat
         List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
         new AccountSelectionScreen(accounts);
-
-
-//        // Giriş yapılan hesapları döndüren fonksiyon.
-//        listTxtFiles();
-//        List<String> txtFileNames = listTxtFiles();
-//
-//        for (String fileName : txtFileNames) {
-//            System.out.println(fileName);
-//        }
-//
-
     }
 
     public static List<String> listTxtFiles() {
