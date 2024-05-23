@@ -75,7 +75,7 @@ import static org.example.Mail.*;
                boxName = "[Gmail]/Sent Mail"; // IMAP sunucusu için doğru klasör ismi
            } else if (boxName.equalsIgnoreCase("SENT") && host.equals("outlook.office365.com")) {
                emailDir = new File("emails/sent");
-               boxName = "Sent Items"; // IMAP sunucusu için doğru klasör ismi
+               boxName = "Sent"; // IMAP sunucusu için doğru klasör ismi
            }
 
            // Dosya yolunu kontrol edin ve gerekirse oluşturun
