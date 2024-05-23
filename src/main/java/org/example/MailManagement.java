@@ -171,7 +171,7 @@ import static org.example.Mail.*;
                String contentType = bodyPart.getContentType();
                writer.write("Parça " + (i + 1) + " - İçerik Tipi: \n" + contentType + "\n");
                if (Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition()) || bodyPart.getFileName() != null) {
-                   saveAttachment(bodyPart, i);
+                   saveAttachment(bodyPart);
                } else if (bodyPart.isMimeType("text/plain")) {
                    writer.write("Düz Metin İçerik: " + decodeContent(bodyPart.getContent()) + "\n");
                } else if (bodyPart.isMimeType("text/html")) {
@@ -184,8 +184,8 @@ import static org.example.Mail.*;
            }
        }
 
-       private static void saveAttachment(BodyPart bodyPart, int i) throws MessagingException, IOException {
-           File dir = new File("attachments/email_" + (i + 1));
+       private static void saveAttachment(BodyPart bodyPart) throws MessagingException, IOException {
+           File dir = new File("attachments");
            if (!dir.exists()) dir.mkdirs();
            String fileName = MimeUtility.decodeText(bodyPart.getFileName());
            File file = new File(dir, fileName);
