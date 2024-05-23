@@ -48,6 +48,7 @@ public class GUIMainScreen implements ActionListener{
 
     JScrollPane receivedScroll;
     JScrollPane sentScroll;
+    JScrollPane sendScroll;
     JScrollPane receivedContentScroll;
     JScrollPane sentContentScroll;
     JScrollPane sendContentScroll;
@@ -62,12 +63,22 @@ public class GUIMainScreen implements ActionListener{
     JTextArea sendMailContent;
     JTextField sendMailTo;
 
-    //Toolbars & Popup Menus and menu items
-    JToolBar mainScreenToolbar;
+    //Toolbars & Menus & Popup Menus and menu items
+    JMenuBar mainScreenMenubar;
     JPopupMenu receivedMailPopupMenu;
     JMenuItem receivedMailDelete;
     JPopupMenu sentMailPopupMenu;
     JMenuItem sentMailDelete;
+    JMenu mailSearchOptions;
+    JMenu receivedMailSearchOptions;
+    JMenu sentMailSearchOptions;
+    JMenuItem searchReceivedSubject;
+    JMenuItem searchSender;
+    JMenuItem searchReceivedContent;
+    JMenuItem searchSentSubject;
+    JMenuItem searchSentTo;
+    JMenuItem searchSentContent;
+
     //Labels
 
     JLabel sendMailTo1;
@@ -84,6 +95,8 @@ public class GUIMainScreen implements ActionListener{
     JTable receivedMailTable;
     DefaultTableModel sentMailTableModel;
     JTable sentMailTable;
+    DefaultTableModel sendMailTableModel;
+    JTable sendMailTable;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo){
 
@@ -96,10 +109,9 @@ public class GUIMainScreen implements ActionListener{
         mainScreen.setLocationRelativeTo(null);
         mainScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainScreen.getContentPane().setBackground(new Color(33, 33, 33));
-        mainScreenToolbar=new JToolBar();
 
-        mainScreenToolbar.setFloatable(false);
-        mainScreenToolbar.setBackground(new Color(33, 33, 33));
+        mainScreenMenubar=new JMenuBar();
+        mainScreenMenubar.setBackground(new Color(33, 33, 33));
         illusionPanel3=new JPanel(new CardLayout());
         illusionPanel3.setBackground(new Color(33, 33, 33));
         refreshButton = new JButton("Refresh");
@@ -115,14 +127,45 @@ public class GUIMainScreen implements ActionListener{
         sentMailSearchbar.setBackground(new Color(45, 52, 54));
         sentMailSearchbar.setForeground(Color.WHITE);
         illusionLabel1=new JLabel();
-        mainScreenToolbar.add(refreshButton);
-        mainScreenToolbar.add(illusionPanel3);
+
+        mailSearchOptions=new JMenu("Search Options");
+        mailSearchOptions.setForeground(Color.WHITE);
+        searchReceivedSubject=new JMenuItem("Subject");
+        searchReceivedSubject.addActionListener(this);
+        searchSender=new JMenuItem("Sender");
+        searchSender.addActionListener(this);
+        searchReceivedContent=new JMenuItem("Content");
+        searchReceivedContent.addActionListener(this);
+        searchSentSubject=new JMenuItem("Subject");
+        searchSentSubject.addActionListener(this);
+        searchSentTo=new JMenuItem("To");
+        searchSentTo.addActionListener(this);
+        searchSentContent=new JMenuItem("Content");
+        searchSentContent.addActionListener(this);
+
+        mailSearchOptions.add(searchReceivedSubject);
+        mailSearchOptions.add(searchSender);
+        mailSearchOptions.add(searchReceivedContent);
+        mailSearchOptions.add(searchSentSubject);
+        mailSearchOptions.add(searchSentTo);
+        mailSearchOptions.add(searchSentContent);
+        mailSearchOptions.setVisible(false);
+        searchReceivedSubject.setVisible(false);
+        searchSender.setVisible(false);
+        searchReceivedContent.setVisible(false);
+        searchSentSubject.setVisible(false);
+        searchSentTo.setVisible(false);
+        searchSentContent.setVisible(false);
+
+        mainScreenMenubar.add(refreshButton);
+        mainScreenMenubar.add(mailSearchOptions);
+        mainScreenMenubar.add(illusionPanel3);
         illusionPanel3.add(illusionLabel1);
         illusionPanel3.add(receivedMailSearchBar);
         illusionPanel3.add(sentMailSearchbar);
         receivedMailSearchBar.setVisible(false);
         sentMailSearchbar.setVisible(false);
-        mainScreenToolbar.add(Box.createHorizontalGlue());
+        mainScreenMenubar.add(Box.createHorizontalGlue());
         JLabel profilePicture = new JLabel(resizeIcon(new ImageIcon(accountInfo.get("Image")), 50, 50));
         JLabel nameLabel = new JLabel(accountInfo.get("Name"));
         nameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -133,13 +176,12 @@ public class GUIMainScreen implements ActionListener{
         signOutButton.setBackground(new Color(33, 33, 33));
         signOutButton.setForeground(Color.WHITE);
         signOutButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        mainScreenToolbar.add(profilePicture);
-        mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
-        mainScreenToolbar.add(nameLabel);
-        mainScreenToolbar.add(Box.createRigidArea(new Dimension(10, 0)));
-        mainScreenToolbar.add(signOutButton);
-        mainScreen.add(mainScreenToolbar, BorderLayout.NORTH);
-
+        mainScreenMenubar.add(profilePicture);
+        mainScreenMenubar.add(Box.createRigidArea(new Dimension(10, 0)));
+        mainScreenMenubar.add(nameLabel);
+        mainScreenMenubar.add(Box.createRigidArea(new Dimension(10, 0)));
+        mainScreenMenubar.add(signOutButton);
+        mainScreen.add(mainScreenMenubar, BorderLayout.NORTH);
         //Maillerin ve mail gönderme yerinin gözükeceği panel
 
         mailPanel=new JPanel();
@@ -320,11 +362,11 @@ public class GUIMainScreen implements ActionListener{
         for(Map<String, String> email : sentEmails){
             sentMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
         }
+        mailPanel.add(sentScroll);
+        sentScroll.setVisible(false);
         showSentMailsPanel=new JPanel(new BorderLayout());
         showSentMailsPanel.setBackground(new Color(33, 33, 33));
         showMailPanel.add(showSentMailsPanel);
-        mailPanel.add(sentScroll);
-        sentScroll.setVisible(false);
         sentContent=new JTextArea();
         sentContent.setBackground(new Color(33, 33, 33));
         sentContent.setForeground(Color.WHITE);
@@ -401,6 +443,30 @@ public class GUIMainScreen implements ActionListener{
 
         //E-posta gönderme paneli
 
+        String[] sendMailColumns = {"To", "Subject"};
+        sendMailTableModel=new DefaultTableModel(sendMailColumns,0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        sendMailTable=new JTable(sendMailTableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    component.setBackground(row % 2 == 0 ? new Color(45, 52, 54) : new Color(60, 63, 65));
+                }
+                return component;
+            }
+        };
+        sendMailTable.getTableHeader().setReorderingAllowed(false);
+        sendScroll=new JScrollPane(sendMailTable);
+        for(Map<String, String> email : sentEmails){
+            sendMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
+        }
+        mailPanel.add(sendScroll);
+        sendScroll.setVisible(false);
         sendMailPanel=new JPanel(new BorderLayout());
         showMailPanel.add(sendMailPanel);
         sendMailTopPanel=new JPanel(new FlowLayout());
@@ -452,11 +518,53 @@ public class GUIMainScreen implements ActionListener{
         sendMailContent.setWrapStyleWord(true);
         mailSendButton.addActionListener(this);
         mailSaveButton.addActionListener(this);
+        for(int i=0;i<sendMailTable.getColumnModel().getColumnCount();i++){
+            sendMailTable.getColumnModel().getColumn(i).setResizable(false);
+        }
+        sendMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        sendMailTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow=sendMailTable.getSelectedRow();
+            if(selectedRow!=-1) {
+                illusionPanel2.setVisible(false);
+                showSentMailsPanel.setVisible(false);
+                showReceivedMailsPanel.setVisible(false);
+                sendMailPanel.setVisible(true);
+                String subject = sentEmails.get(selectedRow).get("Konu");
+                String content = sentEmails.get(selectedRow).get("İçerik");
+                String to = sentEmails.get(selectedRow).get("Gönderen");
+                sendMailSubject.setText(subject);
+                sendMailContent.setText(content);
+                sendMailTo.setText(to);
+            }
+        });
+        sendMailTable.setFillsViewportHeight(true);
+        sendMailTable.setBackground(new Color(33, 33, 33));
+        sendMailTable.setForeground(Color.WHITE);
+        sendMailTable.setSelectionBackground(new Color(99, 110, 114));
+        sendMailTable.setSelectionForeground(Color.BLACK);
+        sendMailTable.setGridColor(new Color(45, 52, 54));
+        sendScroll.getViewport().setBackground(new Color(33, 33, 33));
+
         mainScreen.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 deleteFilesInDirectory("emails/inbox");
                 deleteFilesInDirectory("emails/sent");
+            }
+        });
+
+
+        receivedMailSearchBar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                forResearchThing(receivedEmails,receivedMailSearchBar.getText());
+            }
+        });
+
+        sentMailSearchbar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                forResearchThing(sentEmails,sentMailSearchbar.getText());
             }
         });
     }
@@ -466,24 +574,51 @@ public class GUIMainScreen implements ActionListener{
         if(e.getSource()==received){
             illusionPanel1.setVisible(false);
             sentScroll.setVisible(false);
+            sendScroll.setVisible(false);
             illusionLabel1.setVisible(false);
             sentMailSearchbar.setVisible(false);
             receivedMailSearchBar.setVisible(true);
+            receivedMailSearchBar.setText("Search in received mails");
+            mailSearchOptions.setVisible(true);
+            mailSearchOptions.setText("Search Options");
+            searchSentSubject.setVisible(false);
+            searchSentTo.setVisible(false);
+            searchSentContent.setVisible(false);
+            searchReceivedSubject.setVisible(true);
+            searchSender.setVisible(true);
+            searchReceivedContent.setVisible(true);
             receivedScroll.setVisible(true);
         }
         if(e.getSource()==sent){
             illusionPanel1.setVisible(false);
             receivedScroll.setVisible(false);
+            sendScroll.setVisible(false);
             illusionLabel1.setVisible(false);
             receivedMailSearchBar.setVisible(false);
             sentMailSearchbar.setVisible(true);
+            sentMailSearchbar.setText("Search in sent mails");
+            mailSearchOptions.setVisible(true);
+            mailSearchOptions.setText("Search Options");
+            searchReceivedSubject.setVisible(false);
+            searchSender.setVisible(false);
+            searchReceivedContent.setVisible(false);
+            searchSentSubject.setVisible(true);
+            searchSentTo.setVisible(true);
+            searchSentContent.setVisible(true);
             sentScroll.setVisible(true);
         }
         if(e.getSource()==sendMail){
+            illusionPanel1.setVisible(false);
+            receivedScroll.setVisible(false);
+            sentScroll.setVisible(false);
             illusionPanel2.setVisible(false);
             showReceivedMailsPanel.setVisible(false);
             showSentMailsPanel.setVisible(false);
+            sendScroll.setVisible(true);
             sendMailPanel.setVisible(true);
+            sendMailSubject.setText("");
+            sendMailContent.setText("");
+            sendMailTo.setText("");
         }
         if(e.getSource()==mailSendButton){
             MailManagement aa = new MailManagement();
@@ -515,6 +650,24 @@ public class GUIMainScreen implements ActionListener{
         if (e.getSource()==mailSaveButton){
 
         }
+        if (e.getSource()==searchReceivedSubject){
+            mailSearchOptions.setText("Subject");
+        }
+        if (e.getSource()==searchSender){
+            mailSearchOptions.setText("Sender");
+        }
+        if (e.getSource()==searchReceivedContent){
+            mailSearchOptions.setText("Content");
+        }
+        if (e.getSource()==searchSentSubject){
+            mailSearchOptions.setText("Subject");
+        }
+        if (e.getSource()==searchSentTo){
+            mailSearchOptions.setText("To");
+        }
+        if (e.getSource()==searchSentContent){
+            mailSearchOptions.setText("Content");
+        }
     }
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
         Image image = icon.getImage();
@@ -533,5 +686,28 @@ public class GUIMainScreen implements ActionListener{
                 }
             }
         }
+    }
+    public void forResearchThing(List<Map<String, String>> emails, String input) {
+        input = input.toLowerCase();
+        for (Map<String, String> email : emails) {
+            if (mailSearchOptions.getText()=="Subject"){
+                if (email.get("Konu").toLowerCase().contains(input))
+                    takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            }
+            if (mailSearchOptions.getText()=="Sender"){
+                if (email.get("Gönderen").toLowerCase().contains(input))
+                    takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            }
+            if (mailSearchOptions.getText()=="Content"){}{
+                if(email.get("İçerik").toLowerCase().contains(input))
+                    takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            }
+            if (mailSearchOptions.getText()=="To"){
+                takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            }
+        }
+    }
+    public void takeSearchResult(String sender,String subject, String content){
+        System.out.println("Subject\n"+subject+"\nsender\n"+sender+"\n\nContent\n\n"+content+"\n\n\n");
     }
 }
