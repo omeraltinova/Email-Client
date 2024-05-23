@@ -16,10 +16,11 @@ import java.util.List;
 import java.util.Map;
 
 public class AccountSelectionScreen {
-    private JFrame accountSelectionFrame;
-    private List<Account> accounts;
-    private JPanel accountsPanel;
+    static JFrame accountSelectionFrame;
+    static List<Account> accounts;
+    JPanel accountsPanel;
     static int i=1;
+    static Map<String, String> accountInfo;
 
     public AccountSelectionScreen(List<Account> accounts) {
         this.accounts = accounts != null ? accounts : new ArrayList<>();
@@ -79,8 +80,6 @@ public class AccountSelectionScreen {
         accountsPanel.revalidate();
         accountsPanel.repaint();
     }
-
-
     private JPanel createAccountPanel(Account account) {
         JPanel accountPanel = new JPanel(new BorderLayout());
         accountPanel.setPreferredSize(new Dimension(100, 100));
@@ -105,13 +104,11 @@ public class AccountSelectionScreen {
 
         accountPanel.add(accountImageLabel, BorderLayout.CENTER);
         accountPanel.add(textPanel, BorderLayout.SOUTH);
-        Map<String, String> accountInfo = new HashMap<>();
+        accountInfo = new HashMap<>();
         // Click listener for account panel
         accountPanel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                // Display email address of the clicked account
-//Map<String,
                 File accountSelection = new File("Accounts");
                 File[] files = accountSelection.listFiles();
 
@@ -162,9 +159,9 @@ public class AccountSelectionScreen {
                             MailManagement mm = new MailManagement();
                             mm.fetchEmails("","inbox");
                             mm.fetchEmails("","sent");
-                       //     Map<String, String> accountInfo = EmailReader.readEmails("Accounts");
                             List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
                             List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");
+                            List<Map<String, String>> draftEmails = EmailReader.readEmails("emails/draft/"+MailManagement.getUSERNAME());
                             if(receivedEmails.size()==0){
                                 JOptionPane.showMessageDialog(accountSelectionFrame, "Hatalı şifre girdiniz\nHesap silindi tekrar giriş yapın");
                                 File silici = new File("Accounts/"+account.getEmail()+".txt");
@@ -174,14 +171,12 @@ public class AccountSelectionScreen {
                             }
                             else{
                                 //Ana ekranı çağırmak için
-                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails,(Map<String,String>) accountInfo);
+                                GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails,(Map<String,String>) accountInfo,(List<Map<String, String>>) draftEmails);
                                 accountSelectionFrame.dispose();
-
                             }
                         }
                     }
                 }
-
             }
         });
 
@@ -291,14 +286,6 @@ public class AccountSelectionScreen {
         File silici = new File("Accounts/"+email+".txt");
         silici.delete();
     }
-//    public static void main(String[] args) {
-//        // Read account information from files
-//        List<Account> accounts = readAccountsFromFile();
-//
-//        // Start the account selection screen
-//        new AccountSelectionScreen(accounts);
-//    }
-
     public static List<Account> readAccountsFromFile() {
         List<Account> accounts = new ArrayList<>();
         File folder = new File("accounts");

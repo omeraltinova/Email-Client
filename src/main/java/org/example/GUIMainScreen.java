@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.AccountSelectionScreen.accountInfo;
 import static org.example.AccountSelectionScreen.readAccountsFromFile;
 
 public class GUIMainScreen implements ActionListener{
@@ -98,7 +99,12 @@ public class GUIMainScreen implements ActionListener{
     DefaultTableModel sendMailTableModel;
     JTable sendMailTable;
 
-    GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo){
+    List<Map<String, String>> draftEmailsReset;
+
+    static int j=0;
+
+    GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo,List<Map<String, String>> draftEmails){
+
 
         //Pencerenin genel özellikleri
 
@@ -182,6 +188,13 @@ public class GUIMainScreen implements ActionListener{
         mainScreenMenubar.add(Box.createRigidArea(new Dimension(10, 0)));
         mainScreenMenubar.add(signOutButton);
         mainScreen.add(mainScreenMenubar, BorderLayout.NORTH);
+        refreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                refrestMainScreen();
+            }
+        });
+
         //Maillerin ve mail gönderme yerinin gözükeceği panel
 
         mailPanel=new JPanel();
@@ -460,11 +473,11 @@ public class GUIMainScreen implements ActionListener{
                 return component;
             }
         };
-        sendMailTable.getTableHeader().setReorderingAllowed(false);
-        sendScroll=new JScrollPane(sendMailTable);
-        for(Map<String, String> email : sentEmails){
+        for(Map<String, String> email : draftEmails){
             sendMailTableModel.addRow(new Object[]{email.get("Gönderen"), email.get("Konu")});
         }
+        sendMailTable.getTableHeader().setReorderingAllowed(false);
+        sendScroll=new JScrollPane(sendMailTable);
         mailPanel.add(sendScroll);
         sendScroll.setVisible(false);
         sendMailPanel=new JPanel(new BorderLayout());
@@ -517,21 +530,30 @@ public class GUIMainScreen implements ActionListener{
         sendMailContent.setLineWrap(true);
         sendMailContent.setWrapStyleWord(true);
         mailSendButton.addActionListener(this);
-        mailSaveButton.addActionListener(this);
+        mailSaveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                MailManagement saver = new MailManagement();
+                saver.draftSaver(Mail.getUSERNAME(),sendMailTo.getText(),sendMailSubject.getText(),sendMailContent.getText());
+                sendMailSubject.setText("");
+                sendMailContent.setText("");
+                sendMailTo.setText("");
+            }
+        });
         for(int i=0;i<sendMailTable.getColumnModel().getColumnCount();i++){
             sendMailTable.getColumnModel().getColumn(i).setResizable(false);
         }
         sendMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sendMailTable.getSelectionModel().addListSelectionListener(e -> {
-            int selectedRow=sendMailTable.getSelectedRow();
-            if(selectedRow!=-1) {
+            int selectedRow = sendMailTable.getSelectedRow();
+            if (selectedRow != -1) {
                 illusionPanel2.setVisible(false);
                 showSentMailsPanel.setVisible(false);
                 showReceivedMailsPanel.setVisible(false);
                 sendMailPanel.setVisible(true);
-                String subject = sentEmails.get(selectedRow).get("Konu");
-                String content = sentEmails.get(selectedRow).get("İçerik");
-                String to = sentEmails.get(selectedRow).get("Gönderen");
+                String subject = draftEmails.get(selectedRow).get("Konu");
+                String content = draftEmails.get(selectedRow).get("İçerik");
+                String to = draftEmails.get(selectedRow).get("Gönderen");
                 sendMailSubject.setText(subject);
                 sendMailContent.setText(content);
                 sendMailTo.setText(to);
@@ -614,6 +636,11 @@ public class GUIMainScreen implements ActionListener{
             illusionPanel2.setVisible(false);
             showReceivedMailsPanel.setVisible(false);
             showSentMailsPanel.setVisible(false);
+            illusionLabel1.setVisible(false);
+            receivedMailSearchBar.setVisible(false);
+            sentMailSearchbar.setVisible(false);
+            sentMailSearchbar.setText("Search in sent mails");
+            mailSearchOptions.setVisible(false);
             sendScroll.setVisible(true);
             sendMailPanel.setVisible(true);
             sendMailSubject.setText("");
@@ -647,9 +674,11 @@ public class GUIMainScreen implements ActionListener{
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
             new AccountSelectionScreen(accounts);
         }
-        if (e.getSource()==mailSaveButton){
-
-        }
+//        if (e.getSource()==mailSaveButton){
+//            MailManagement saver = new MailManagement();
+//            saver.draftSaver(Mail.getUSERNAME(),sendMailTo.getText(),sendMailSubject.getText(),sendMailContent.getText());
+//            sendMailTableModel.setRowCount(0);
+//        }
         if (e.getSource()==searchReceivedSubject){
             mailSearchOptions.setText("Subject");
         }
@@ -709,5 +738,15 @@ public class GUIMainScreen implements ActionListener{
     }
     public void takeSearchResult(String sender,String subject, String content){
         System.out.println("Subject\n"+subject+"\nsender\n"+sender+"\n\nContent\n\n"+content+"\n\n\n");
+    }
+    public void refrestMainScreen(){
+        mainScreen.dispose();
+        MailManagement mm = new MailManagement();
+        mm.fetchEmails("","inbox");
+        mm.fetchEmails("","sent");
+        List<Map<String, String>> receivedEmails = EmailReader.readEmails("emails/inbox");
+        List<Map<String, String>> sentEmails = EmailReader.readEmails("emails/sent");
+        List<Map<String, String>> draftEmails = EmailReader.readEmails("emails/draft/"+MailManagement.getUSERNAME());
+        GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails,(Map<String,String>) accountInfo,(List<Map<String, String>>) draftEmails);
     }
 }
