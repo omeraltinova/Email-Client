@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.example.Mail.*;
 
@@ -71,7 +73,7 @@ import static org.example.Mail.*;
            else if (boxName.equalsIgnoreCase("SENT") && host.equals("imap.gmail.com")) {
                emailDir = new File("emails/sent");
                boxName = "[Gmail]/Sent Mail"; // IMAP sunucusu için doğru klasör ismi
-           } else if (boxName.equalsIgnoreCase("SENT") && host.equals("imap-mail.outlook.com")) {
+           } else if (boxName.equalsIgnoreCase("SENT") && host.equals("outlook.office365.com")) {
                emailDir = new File("emails/sent");
                boxName = "Sent Items"; // IMAP sunucusu için doğru klasör ismi
            }
@@ -297,34 +299,49 @@ import static org.example.Mail.*;
            return txtFileNames;
        }
 
-       public static void draftSaver(String from, String to, String subject, String message){
+       public static boolean draftSaver(String from, String to, String subject, String message){
            String path = "emails/draft/"+from+"/"+subject+".txt";
 
-           String[] content = { "Konu: "+ subject,
-                   from,
-                   "Gönderen: "+ to,
-                   "İçerik: "+ message};
-           try{
-               File saver = new File(path);
-               saver.getParentFile().mkdirs();
-               System.out.println(saver.getName() + " adlı dosya oluşturuldu.");
-               FileWriter fw = new FileWriter(path);
-               BufferedWriter bw = new BufferedWriter(fw);
+           String patternString = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
 
-               for(String line: content){
-                   bw.write(line);
-                   bw.newLine();
+           Pattern pattern = Pattern.compile(patternString);
+           Matcher matcher = pattern.matcher(to);
+
+           if (matcher.matches()) {
+               String[] content = { "Konu: "+ subject,
+                       from,
+                       "Gönderen: "+ to,
+                       "İçerik: "+ message};
+               try{
+                   File saver = new File(path);
+                   saver.getParentFile().mkdirs();
+                   System.out.println(saver.getName() + " adlı dosya oluşturuldu.");
+                   FileWriter fw = new FileWriter(path);
+                   BufferedWriter bw = new BufferedWriter(fw);
+
+                   for(String line: content){
+                       bw.write(line);
+                       bw.newLine();
+                   }
+                   bw.flush();
+                   bw.close();
+                   return true;
+
+
                }
-               bw.flush();
-               bw.close();
+               catch (Exception e){
+                   System.out.println("Gönderilen dosya kaydedilemedi.");
+                   e.printStackTrace();
+               }
 
 
            }
-           catch (Exception e){
-               System.out.println("Gönderilen dosya kaydedilemedi.");
-               e.printStackTrace();
+           else{
+               return false;
            }
 
+
+           return false;
        }
        
    }
