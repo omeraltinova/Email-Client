@@ -6,6 +6,7 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,7 @@ public class GUIMainScreen implements ActionListener{
     JButton sendMailClose;
     JButton signOutButton;
     JButton refreshButton;
+    JButton downloadableContentButton;
 
     //Scrollbars
 
@@ -74,8 +76,6 @@ public class GUIMainScreen implements ActionListener{
     JPopupMenu sentMailPopupMenu;
     JMenuItem sentMailDelete;
     JMenu mailSearchOptions;
-    JMenu receivedMailSearchOptions;
-    JMenu sentMailSearchOptions;
     JMenuItem searchReceivedSubject;
     JMenuItem searchSender;
     JMenuItem searchReceivedContent;
@@ -88,10 +88,6 @@ public class GUIMainScreen implements ActionListener{
     JLabel sendMailTo1;
     JLabel sendMailSubject1;
     JLabel illusionLabel1;
-    JLabel illusionLabel2;
-    JLabel illusionLabel3;
-    JLabel illusionLabel4;
-    JLabel illusionLabel5;
 
     //Tables and models
 
@@ -109,7 +105,6 @@ public class GUIMainScreen implements ActionListener{
     static String senderOrTo;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo,List<Map<String, String>> draftEmails){
-
 
         //Pencerenin genel özellikleri
 
@@ -229,9 +224,11 @@ public class GUIMainScreen implements ActionListener{
         received=new JButton("E-mail Inbox");
         sent=new JButton("Sent Mails");
         sendMail=new JButton("Send a mail");
+        downloadableContentButton=new JButton("Attachments");
         selectMenu1.add(received);
         selectMenu1.add(sent);
         selectMenu1.add(sendMail);
+        selectMenu1.add(downloadableContentButton);
         selectMenu1.setLayout(null);
         received.setBounds(10,150,200,30);
         received.addActionListener(this); //tıklayınca açılması için
@@ -248,6 +245,11 @@ public class GUIMainScreen implements ActionListener{
         sendMail.setBackground(new Color(45, 52, 54));
         sendMail.setForeground(Color.WHITE);
         sendMail.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        downloadableContentButton.addActionListener(this);
+        downloadableContentButton.setBounds(10,400,200,30);
+        downloadableContentButton.setBackground(new Color(45, 52, 54));
+        downloadableContentButton.setForeground(Color.WHITE);
+        downloadableContentButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         //Alınan e-postaların gözükeceği yer
 
@@ -746,11 +748,6 @@ public class GUIMainScreen implements ActionListener{
             List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
             new AccountSelectionScreen(accounts);
         }
-//        if (e.getSource()==mailSaveButton){
-//            MailManagement saver = new MailManagement();
-//            saver.draftSaver(Mail.getUSERNAME(),sendMailTo.getText(),sendMailSubject.getText(),sendMailContent.getText());
-//            sendMailTableModel.setRowCount(0);
-//        }
         if (e.getSource()==searchReceivedSubject){
             mailSearchOptions.setText("Subject");
             receivedMailSearchBar.setText("");
@@ -774,6 +771,13 @@ public class GUIMainScreen implements ActionListener{
         if (e.getSource()==searchSentContent){
             mailSearchOptions.setText("Content");
             sentMailSearchbar.setText("");
+        }
+        if (e.getSource()==downloadableContentButton){
+            try {
+                Desktop.getDesktop().open(new File("attachments"));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
