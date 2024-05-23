@@ -6,6 +6,8 @@ import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,7 @@ public class GUIMainScreen implements ActionListener{
     JScrollPane receivedScroll;
     JScrollPane sentScroll;
     JScrollPane sendScroll;
+    JScrollPane searchScroll;
     JScrollPane receivedContentScroll;
     JScrollPane sentContentScroll;
     JScrollPane sendContentScroll;
@@ -98,10 +101,12 @@ public class GUIMainScreen implements ActionListener{
     JTable sentMailTable;
     DefaultTableModel sendMailTableModel;
     JTable sendMailTable;
+    DefaultTableModel searchTableModel;
+    JTable searchTable;
 
     List<Map<String, String>> draftEmailsReset;
-
-    static int j=0;
+    List<Map<String, String>> resultList;
+    static String senderOrTo;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo,List<Map<String, String>> draftEmails){
 
@@ -567,6 +572,37 @@ public class GUIMainScreen implements ActionListener{
         sendMailTable.setGridColor(new Color(45, 52, 54));
         sendScroll.getViewport().setBackground(new Color(33, 33, 33));
 
+
+        String[] searchMailColumns = {senderOrTo, "Subject"};
+        searchTableModel=new DefaultTableModel(searchMailColumns,0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        searchTable=new JTable(searchTableModel) {
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+                Component component = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    component.setBackground(row % 2 == 0 ? new Color(45, 52, 54) : new Color(60, 63, 65));
+                }
+                return component;
+            }
+        };
+        searchTable.getTableHeader().setReorderingAllowed(false);
+        searchScroll=new JScrollPane(searchTable);
+        mailPanel.add(searchScroll);
+        searchScroll.setVisible(false);
+        searchTable.setFillsViewportHeight(true);
+        searchTable.setBackground(new Color(33, 33, 33));
+        searchTable.setForeground(Color.WHITE);
+        searchTable.setSelectionBackground(new Color(99, 110, 114));
+        searchTable.setSelectionForeground(Color.BLACK);
+        searchTable.setGridColor(new Color(45, 52, 54));
+        searchScroll.getViewport().setBackground(new Color(33, 33, 33));
+
+
         mainScreen.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -574,19 +610,53 @@ public class GUIMainScreen implements ActionListener{
                 deleteFilesInDirectory("emails/sent");
             }
         });
-
-
+        resultList = new ArrayList<>();
         receivedMailSearchBar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                forResearchThing(receivedEmails,receivedMailSearchBar.getText());
+                senderOrTo="Sender";
+                resultList=forResearchThing(receivedEmails,receivedMailSearchBar.getText());
+                illusionPanel1.setVisible(false);
+                sendScroll.setVisible(false);
+                receivedScroll.setVisible(false);
+                receivedMailSearchBar.setText("Search in received mails");
+                mailSearchOptions.setText("Search Options");
+                System.out.println(resultList);
+                for(Map<String, String> searchResult : resultList){
+                    searchTableModel.addRow(new Object[]{searchResult.get("Gönderen"), searchResult.get("Konu")});
+                }
+                searchScroll.setVisible(true);
             }
         });
-
         sentMailSearchbar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                forResearchThing(sentEmails,sentMailSearchbar.getText());
+                senderOrTo="To";
+                resultList=forResearchThing(sentEmails,sentMailSearchbar.getText());
+                illusionPanel1.setVisible(false);
+                sendScroll.setVisible(false);
+                receivedScroll.setVisible(false);
+                receivedMailSearchBar.setText("Search in received mails");
+                mailSearchOptions.setText("Search Options");
+                System.out.println(resultList);
+                for(Map<String, String> searchResult : resultList){
+                    searchTableModel.addRow(new Object[]{searchResult.get("Gönderen"), searchResult.get("Konu")});
+                }
+                searchScroll.setVisible(true);
+            }
+        });
+        searchTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        searchTable.getSelectionModel().addListSelectionListener(e -> {
+            int selectedRow = searchTable.getSelectedRow();
+            if (selectedRow != -1) {
+                illusionPanel2.setVisible(false);
+                sendMailPanel.setVisible(false);
+                showSentMailsPanel.setVisible(false);
+                showReceivedMailsPanel.setVisible(true);
+                String subject = resultList.get(selectedRow).get("Konu");
+                String content = resultList.get(selectedRow).get("İçerik");
+                String toOrSender = resultList.get(selectedRow).get("Gönderen");
+                receivedContent.setText("Subject:  " + subject + "\nSender:  " + toOrSender + "\n\nContent:\n" + content);
             }
         });
     }
@@ -716,28 +786,39 @@ public class GUIMainScreen implements ActionListener{
             }
         }
     }
-    public void forResearchThing(List<Map<String, String>> emails, String input) {
+    public List<Map<String, String>> forResearchThing(List<Map<String, String>> emails, String input) {
         input = input.toLowerCase();
+        List<Map<String, String>> resultList = new ArrayList<>();
         for (Map<String, String> email : emails) {
-            if (mailSearchOptions.getText()=="Subject"){
-                if (email.get("Konu").toLowerCase().contains(input))
-                    takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            Map<String, String> resultData = new HashMap<>();
+            if (mailSearchOptions.getText()=="Subject" && email.get("Konu").toLowerCase().contains(input)){
+                resultData.put("Gönderen",email.get("Gönderen"));
+                resultData.put("Konu",email.get("Konu"));
+                resultData.put("İçerik",email.get("İçerik"));
+                resultList.add(resultData);
             }
-            if (mailSearchOptions.getText()=="Sender"){
-                if (email.get("Gönderen").toLowerCase().contains(input))
-                    takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            if (mailSearchOptions.getText()=="Sender" && email.get("Gönderen").toLowerCase().contains(input)){
+
+                resultData.put("Gönderen",email.get("Gönderen"));
+                resultData.put("Konu",email.get("Konu"));
+                resultData.put("İçerik",email.get("İçerik"));
+                resultList.add(resultData);
             }
-            if (mailSearchOptions.getText()=="Content"){}{
-                if(email.get("İçerik").toLowerCase().contains(input))
-                    takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            if (mailSearchOptions.getText()=="Content" && email.get("İçerik").toLowerCase().contains(input)){
+                resultData.put("Gönderen",email.get("Gönderen"));
+                resultData.put("Konu",email.get("Konu"));
+                resultData.put("İçerik",email.get("İçerik"));
+                resultList.add(resultData);
             }
-            if (mailSearchOptions.getText()=="To"){
-                takeSearchResult(email.get("Gönderen"), email.get("Konu"), email.get("İçerik"));
+            if (mailSearchOptions.getText()=="To" && email.get("Gönderen").toLowerCase().contains(input)){
+                //hata olabilir
+                resultData.put("Gönderen",email.get("Gönderen"));
+                resultData.put("Konu",email.get("Konu"));
+                resultData.put("İçerik",email.get("İçerik"));
+                resultList.add(resultData);
             }
         }
-    }
-    public void takeSearchResult(String sender,String subject, String content){
-        System.out.println("Subject\n"+subject+"\nsender\n"+sender+"\n\nContent\n\n"+content+"\n\n\n");
+        return resultList;
     }
     public void refrestMainScreen(){
         mainScreen.dispose();
