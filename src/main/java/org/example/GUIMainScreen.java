@@ -573,7 +573,7 @@ public class GUIMainScreen implements ActionListener{
         sendScroll.getViewport().setBackground(new Color(33, 33, 33));
 
 
-        String[] searchMailColumns = {senderOrTo, "Subject"};
+        String[] searchMailColumns = {"Sender or To", "Subject"};
         searchTableModel=new DefaultTableModel(searchMailColumns,0){
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -614,14 +614,15 @@ public class GUIMainScreen implements ActionListener{
         receivedMailSearchBar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                senderOrTo="Sender";
                 resultList=forResearchThing(receivedEmails,receivedMailSearchBar.getText());
                 illusionPanel1.setVisible(false);
+                sentScroll.setVisible(false);
                 sendScroll.setVisible(false);
                 receivedScroll.setVisible(false);
                 receivedMailSearchBar.setText("Search in received mails");
                 mailSearchOptions.setText("Search Options");
                 System.out.println(resultList);
+                searchTableModel.setRowCount(0);
                 for(Map<String, String> searchResult : resultList){
                     searchTableModel.addRow(new Object[]{searchResult.get("Gönderen"), searchResult.get("Konu")});
                 }
@@ -631,14 +632,15 @@ public class GUIMainScreen implements ActionListener{
         sentMailSearchbar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                senderOrTo="To";
                 resultList=forResearchThing(sentEmails,sentMailSearchbar.getText());
                 illusionPanel1.setVisible(false);
+                sentScroll.setVisible(false);
                 sendScroll.setVisible(false);
                 receivedScroll.setVisible(false);
                 receivedMailSearchBar.setText("Search in received mails");
                 mailSearchOptions.setText("Search Options");
                 System.out.println(resultList);
+                searchTableModel.setRowCount(0);
                 for(Map<String, String> searchResult : resultList){
                     searchTableModel.addRow(new Object[]{searchResult.get("Gönderen"), searchResult.get("Konu")});
                 }
@@ -751,21 +753,27 @@ public class GUIMainScreen implements ActionListener{
 //        }
         if (e.getSource()==searchReceivedSubject){
             mailSearchOptions.setText("Subject");
+            receivedMailSearchBar.setText("");
         }
         if (e.getSource()==searchSender){
             mailSearchOptions.setText("Sender");
+            receivedMailSearchBar.setText("");
         }
         if (e.getSource()==searchReceivedContent){
             mailSearchOptions.setText("Content");
+            receivedMailSearchBar.setText("");
         }
         if (e.getSource()==searchSentSubject){
             mailSearchOptions.setText("Subject");
+            sentMailSearchbar.setText("");
         }
         if (e.getSource()==searchSentTo){
             mailSearchOptions.setText("To");
+            sentMailSearchbar.setText("");
         }
         if (e.getSource()==searchSentContent){
             mailSearchOptions.setText("Content");
+            sentMailSearchbar.setText("");
         }
     }
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
