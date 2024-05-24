@@ -44,3 +44,4 @@ build/
 /emails/*.txt
 /emails/inbox/*.txt
 /emails/sent/*
+/emails/draft/*

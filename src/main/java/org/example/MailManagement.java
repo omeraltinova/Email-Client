@@ -52,7 +52,8 @@ import static org.example.Mail.*;
             Transport.send(msg);
             File ahmediSilen = new File("emails/draft/"+from+"/"+subject+".txt");
             ahmediSilen.delete();
-            System.out.println("Taslak silindi mi? " + ahmediSilen.delete());
+            System.out.println("Taslak varsa silindi mi? " + ahmediSilen.delete());
+            JOptionPane.showMessageDialog(null,"Mesaj sunucuya teslim edildi!","Uçuşa geçtik!",JOptionPane.INFORMATION_MESSAGE);
 
         } catch (MessagingException mex) {
             mex.printStackTrace();
@@ -60,6 +61,8 @@ import static org.example.Mail.*;
             if (ex != null) {
                 ex.printStackTrace();
             }
+            JOptionPane.showMessageDialog(null,"Mesaj sunucuya teslim edilemedi","Geldik yoktunuz.",JOptionPane.ERROR_MESSAGE);
+
         }
     }
        public void fetchEmails(String sub, String boxName) {
@@ -155,6 +158,7 @@ import static org.example.Mail.*;
                            writer.write("İçerik: " + decodeContent(content) + "\n");
                        }
                    } catch (IOException | MessagingException e) {
+                       JOptionPane.showMessageDialog(null,"Mesajlar sunucudan alınırken bir sorun oluştu.","Kapıyı açar mısınız?",JOptionPane.ERROR_MESSAGE);
                        e.printStackTrace();
                    }
                }
@@ -343,6 +347,7 @@ import static org.example.Mail.*;
 
            }
            else{
+               JOptionPane.showMessageDialog(null,"Girdiğiniz mail adresi geçersiz!","Hay Allah! Karıştırdınız herhalde?",JOptionPane.ERROR_MESSAGE);
                return false;
            }
 
