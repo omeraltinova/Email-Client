@@ -5,6 +5,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -328,11 +329,12 @@ import static org.example.Mail.*;
                    }
                    bw.flush();
                    bw.close();
+                   JOptionPane.showMessageDialog(null, "Taslak kaydedildi!\nEkranı yenileyin!");
                    return true;
-
 
                }
                catch (Exception e){
+                   JOptionPane.showMessageDialog(null, "Taslak kaydetme başarısız oldu. :(","Hata",JOptionPane.ERROR_MESSAGE);
                    System.out.println("Gönderilen dosya kaydedilemedi.");
                    e.printStackTrace();
                }
