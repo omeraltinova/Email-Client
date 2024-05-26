@@ -30,7 +30,6 @@
                                 Map<String, String> emailData = new HashMap<>();
                                 String line;
                                 StringBuilder contentBuilder = new StringBuilder();
-                                StringBuilder names = new StringBuilder();
 
                                 while ((line = reader.readLine()) != null) {
                                     // "Konu: " ile başlayan satır varsa, konu başlığını al
@@ -54,12 +53,11 @@
                                             contentBuilder.append(line).append("\n");
                                         }
                                     }else if(line.contains("name=")){
-                                            names.append(line.substring(line.indexOf("name="))).append("\n");
+                                            contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
                                     }
                                 }
                                 // İçeriği tamamlayıp içeriğe ekle
                                 emailData.put("İçerik", contentBuilder.toString());
-                                emailData.put("Names",names.toString());
                                 // E-posta bilgilerini listeye ekle
                                 emailList.add(emailData);
                             } catch (IOException e) {
@@ -75,8 +73,11 @@
             List<String> nameList = new ArrayList<>();
             // nameList.length ile sayıları alınacak
             String[] lines = names.split("\n");
+
             for(String line : lines){
-                nameList.add(line.substring(5));
+                if (line.startsWith("name=")) {
+                    nameList.add(line.substring(5));
+                }
             }
             return nameList;
         }

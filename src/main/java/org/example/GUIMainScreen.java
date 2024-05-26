@@ -36,6 +36,8 @@ public class GUIMainScreen implements ActionListener{
     JPanel sentMailClosePanel;
     JPanel sendMailTopPanel;
     JPanel sendMailBottomPanel;
+    JPanel receivedAttachmentsPanel;
+    JPanel sentAttachmentsPanel;
 
     //Buttons
 
@@ -103,9 +105,10 @@ public class GUIMainScreen implements ActionListener{
     DefaultTableModel searchTableModel;
     JTable searchTable;
 
-    //String
+    //Array
 
     List<Map<String, String>> resultList;
+    List<String> nameList;
 
     GUIMainScreen(List<Map<String, String>> receivedEmails,List<Map<String, String>> sentEmails,Map<String, String> accountInfo,List<Map<String, String>> draftEmails){
 
@@ -302,7 +305,9 @@ public class GUIMainScreen implements ActionListener{
         receivedMailClosePanel.add(showReceivedClose);
         showReceivedMailsPanel.add(receivedContentScroll,BorderLayout.CENTER);
         showReceivedClose.addActionListener(this);
-
+        receivedAttachmentsPanel=new JPanel(new FlowLayout());
+        showReceivedMailsPanel.add(receivedAttachmentsPanel,BorderLayout.SOUTH);
+        receivedAttachmentsPanel.setBackground(new Color(33,33,33));
         receivedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         receivedMailTable.getSelectionModel().addListSelectionListener(e -> {
             int selectedRow=receivedMailTable.getSelectedRow();
@@ -314,8 +319,30 @@ public class GUIMainScreen implements ActionListener{
                 String subject = receivedEmails.get(selectedRow).get("Konu");
                 String content = receivedEmails.get(selectedRow).get("İçerik");
                 String sender = receivedEmails.get(selectedRow).get("Gönderen");
+                EmailReader er = new EmailReader();
+                nameList = new ArrayList<>();
+                nameList.clear();
+                receivedAttachmentsPanel.removeAll();
+                receivedAttachmentsPanel.revalidate();
+                receivedAttachmentsPanel.repaint();
+                nameList=er.attachmentsInfo(content);
+                for (String attachments : nameList) {
+                    JButton attachmentsButton = new JButton(attachments);
+                    attachmentsButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                er.findInAttachments(attachments);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                    attachmentsButton.setBackground(new Color(45, 52, 54));
+                    attachmentsButton.setForeground(Color.WHITE);
+                    receivedAttachmentsPanel.add(attachmentsButton);
+                }
                 receivedContent.setText("Subject:  " + subject + "\nSender:  " + sender + "\n\nContent:\n" + content);
-
             }
         });
 
@@ -412,6 +439,9 @@ public class GUIMainScreen implements ActionListener{
         for(int i=0;i<sentMailTable.getColumnModel().getColumnCount();i++){
             sentMailTable.getColumnModel().getColumn(i).setResizable(false);
         }
+        sentAttachmentsPanel=new JPanel(new FlowLayout());
+        showSentMailsPanel.add(sentAttachmentsPanel,BorderLayout.SOUTH);
+        sentAttachmentsPanel.setBackground(new Color(33,33,33));
         sentMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sentMailTable.getSelectionModel().addListSelectionListener(e -> {
             int selectedRow=sentMailTable.getSelectedRow();
@@ -423,6 +453,29 @@ public class GUIMainScreen implements ActionListener{
                 String subject = sentEmails.get(selectedRow).get("Konu");
                 String content = sentEmails.get(selectedRow).get("İçerik");
                 String to = sentEmails.get(selectedRow).get("Gönderen");
+                EmailReader er = new EmailReader();
+                nameList = new ArrayList<>();
+                nameList.clear();
+                sentAttachmentsPanel.removeAll();
+                sentAttachmentsPanel.revalidate();
+                sentAttachmentsPanel.repaint();
+                nameList=er.attachmentsInfo(content);
+                for (String attachments : nameList) {
+                    JButton attachmentsButton = new JButton(attachments);
+                    attachmentsButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            try {
+                                er.findInAttachments(attachments);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                    });
+                    attachmentsButton.setBackground(new Color(45, 52, 54));
+                    attachmentsButton.setForeground(Color.WHITE);
+                    sentAttachmentsPanel.add(attachmentsButton);
+                }
                 sentContent.setText("Subject:  " + subject + "\nTo:  " + to + "\n\nContent:\n" + content);
             }
         });
