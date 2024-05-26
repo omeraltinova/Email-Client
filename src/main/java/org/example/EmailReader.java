@@ -1,8 +1,10 @@
     package org.example;
 
+    import java.awt.*;
     import java.io.*;
     import java.nio.charset.StandardCharsets;
     import java.util.*;
+    import java.util.List;
 
     public class EmailReader {
 
@@ -12,6 +14,7 @@
             File emailDir = new File(directoryPath);
             // E-posta bilgilerini saklayacak bir liste oluştur
             List<Map<String, String>> emailList = new ArrayList<>();
+
 
             // emails dizini varsa ve bu dizin gerçekten bir dizin ise
             if (emailDir.exists() && emailDir.isDirectory()) {
@@ -27,6 +30,7 @@
                                 Map<String, String> emailData = new HashMap<>();
                                 String line;
                                 StringBuilder contentBuilder = new StringBuilder();
+                                StringBuilder names = new StringBuilder();
 
                                 while ((line = reader.readLine()) != null) {
                                     // "Konu: " ile başlayan satır varsa, konu başlığını al
@@ -50,11 +54,12 @@
                                             contentBuilder.append(line).append("\n");
                                         }
                                     }else if(line.contains("name=")){
-                                            contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
+                                            names.append(line.substring(line.indexOf("name="))).append("\n");
                                     }
                                 }
                                 // İçeriği tamamlayıp içeriğe ekle
                                 emailData.put("İçerik", contentBuilder.toString());
+                                emailData.put("Names",names.toString());
                                 // E-posta bilgilerini listeye ekle
                                 emailList.add(emailData);
                             } catch (IOException e) {
@@ -65,6 +70,24 @@
                 }
             }
             return emailList;
+        }
+        public List<String> attachmentsInfo(String names){
+            List<String> nameList = new ArrayList<>();
+            // nameList.length ile sayıları alınacak
+            String[] lines = names.split("\n");
+            for(String line : lines){
+                nameList.add(line.substring(5));
+            }
+            return nameList;
+        }
+        public void findInAttachments(String name) throws IOException {
+            File attachments = new File("attachments");
+            File[] files = attachments.listFiles();
+            for(File file : files){
+                if(file.getName().toString().equals(name)){
+                    Desktop.getDesktop().open(new File("attachments/" + name));
+                }
+            }
         }
 
     }

@@ -2,6 +2,7 @@ package org.example;
 
 import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.Map;
 import static org.example.AccountSelectionScreen.readAccountsFromFile;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         // Hesap seçme ekranını başlat
         List<AccountSelectionScreen.Account> accounts = readAccountsFromFile();
         new AccountSelectionScreen(accounts);

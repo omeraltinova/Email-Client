@@ -453,7 +453,7 @@ public class GUIMainScreen implements ActionListener{
             public void actionPerformed(ActionEvent e) {
                 int row = sentMailTable.getSelectedRow();
                 MailManagement mm = new MailManagement();
-                String sub = receivedEmails.get(row).get("Konu");
+                String sub = sentEmails.get(row).get("Konu");
                 if (row != -1) {
                     showSentMailsPanel.setVisible(false);
                     illusionPanel2.setVisible(true);
@@ -847,4 +847,5 @@ public class GUIMainScreen implements ActionListener{
         List<Map<String, String>> draftEmails = EmailReader.readEmails("emails/draft/"+MailManagement.getUSERNAME());
         GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails,(Map<String,String>) accountInfo,(List<Map<String, String>>) draftEmails);
     }
+
 }

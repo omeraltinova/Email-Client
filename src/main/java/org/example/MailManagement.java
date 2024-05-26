@@ -6,6 +6,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
 import java.io.*;
+import javax.mail.search.SubjectTerm;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,8 +77,7 @@ import static org.example.Mail.*;
            if (boxName.equalsIgnoreCase("INBOX")) {
                emailDir = new File("emails/inbox");
                boxName = "INBOX"; // IMAP sunucusu için doğru klasör ismi
-           }
-           else if (boxName.equalsIgnoreCase("SENT") && host.equals("imap.gmail.com")) {
+           } else if (boxName.equalsIgnoreCase("SENT") && host.equals("imap.gmail.com")) {
                emailDir = new File("emails/sent");
                boxName = "[Gmail]/Sent Mail"; // IMAP sunucusu için doğru klasör ismi
            } else if (boxName.equalsIgnoreCase("SENT") && host.equals("outlook.office365.com")) {
@@ -110,64 +110,73 @@ import static org.example.Mail.*;
                Folder inbox = store.getFolder(boxName);
                inbox.open(Folder.READ_WRITE);
 
-               Message[] messages = inbox.getMessages();
+               if (!sub.equals("")) {
+                   Message[] messages = inbox.search(new SubjectTerm(sub));
 
-               for (int i = 0; i < messages.length; i++) {
-                   Message message = messages[i];
-                   // Eğer subject parametresi doluysa ve mesajın konusu verilen subject ile eşleşiyorsa, mesajı sil
-                    if ( message.getSubject().equals(sub)) {
+                   for (int i = 0; i < messages.length; i++) {
+                       Message message = messages[i];
+
+                       if (message.getSubject().equals(sub)) {
                            message.setFlag(Flags.Flag.DELETED, true);
                            System.out.println("Mesaj silindi: " + message.getSubject());
                            break;
-                    }
+                       }
+                   }
+               } else {
+                   Message[] messages = inbox.getMessages();
 
-                   File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
+                   for (int i = 0; i < messages.length; i++) {
+                       Message message = messages[i];
+                       File emailFile = new File(emailDir, "email_" + (i + 1) + ".txt");
 
-                   try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
-                       String subject = MimeUtility.decodeText(message.getSubject());
-                       writer.write("Konu: " + subject + "\n");
-                       if(boxName.equalsIgnoreCase("INBOX")){
-                           Address[] fromAddresses = message.getFrom();
+                       try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emailFile)))) {
+                           String subject = MimeUtility.decodeText(message.getSubject());
+                           writer.write("Konu: " + subject + "\n");
+                           if (boxName.equalsIgnoreCase("INBOX")) {
+                               Address[] fromAddresses = message.getFrom();
 
-                           if (fromAddresses != null && fromAddresses.length > 0) {
-                               InternetAddress from = (InternetAddress) fromAddresses[0];
-                               String senderName = from.getPersonal(); // Gönderenin adını al
-                               String senderEmail = from.getAddress(); // Gönderenin e-posta adresini al
-                               writer.write("Gönderen: " + senderName + " <" + senderEmail + ">\n");
-                           }
-                       }else {
-                           Address[] toAddresses = message.getRecipients(Message.RecipientType.TO);
+                               if (fromAddresses != null && fromAddresses.length > 0) {
+                                   InternetAddress from = (InternetAddress) fromAddresses[0];
+                                   String senderName = from.getPersonal(); // Gönderenin adını al
+                                   String senderEmail = from.getAddress(); // Gönderenin e-posta adresini al
+                                   writer.write("Gönderen: " + senderName + " <" + senderEmail + ">\n");
+                               }
+                           } else {
+                               Address[] toAddresses = message.getRecipients(Message.RecipientType.TO);
 
-                           if (toAddresses != null && toAddresses.length > 0) {
-                               for (Address address : toAddresses) {
-                                   InternetAddress to = (InternetAddress) address;
-                                   String recipientName = to.getPersonal(); // Alıcının adını al
-                                   String recipientEmail = to.getAddress(); // Alıcının e-posta adresini al
-                                   writer.write("Gönderen: " + (recipientName != null ? recipientName : "") + " <" + recipientEmail + ">\n");
+                               if (toAddresses != null && toAddresses.length > 0) {
+                                   for (Address address : toAddresses) {
+                                       InternetAddress to = (InternetAddress) address;
+                                       String recipientName = to.getPersonal(); // Alıcının adını al
+                                       String recipientEmail = to.getAddress(); // Alıcının e-posta adresini al
+                                       writer.write("Gönderen: " + (recipientName != null ? recipientName : "") + " <" + recipientEmail + ">\n");
+                                   }
                                }
                            }
-                       }
 
 //                       writer.write("Gönderen: " + message.getFrom()[0] + "\n");
-                       Object content = message.getContent();
-                       if (content instanceof String) {
-                           writer.write("İçerik: " + (String) content + "\n");
-                       } else if (content instanceof Multipart) {
-                           handleMultipart((Multipart) content, writer);
-                       } else {
-                           writer.write("İçerik: " + decodeContent(content) + "\n");
+                           Object content = message.getContent();
+                           if (content instanceof String) {
+                               writer.write("İçerik: " + (String) content + "\n");
+                           } else if (content instanceof Multipart) {
+                               handleMultipart((Multipart) content, writer);
+                           } else {
+                               writer.write("İçerik: " + decodeContent(content) + "\n");
+                           }
+                       } catch (IOException | MessagingException e) {
+                           JOptionPane.showMessageDialog(null, "Mesajlar sunucudan alınırken bir sorun oluştu.", "Kapıyı açar mısınız?", JOptionPane.ERROR_MESSAGE);
+                           e.printStackTrace();
                        }
-                   } catch (IOException | MessagingException e) {
-                       JOptionPane.showMessageDialog(null,"Mesajlar sunucudan alınırken bir sorun oluştu.","Kapıyı açar mısınız?",JOptionPane.ERROR_MESSAGE);
-                       e.printStackTrace();
                    }
+
+                   inbox.expunge();
+                   store.close();
+               }
+               } catch(Exception e){
+                   e.printStackTrace();
                }
 
-               inbox.expunge();
-               store.close();
-           } catch (Exception e) {
-               e.printStackTrace();
-           }
+
        }
 
        private static void handleMultipart(Multipart multipart, BufferedWriter writer) throws MessagingException, IOException {
