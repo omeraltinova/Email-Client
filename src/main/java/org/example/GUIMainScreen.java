@@ -51,7 +51,6 @@ public class GUIMainScreen implements ActionListener{
     JButton sendMailClose;
     JButton signOutButton;
     JButton refreshButton;
-    JButton downloadableContentButton;
 
     //Scrollbars
 
@@ -230,11 +229,9 @@ public class GUIMainScreen implements ActionListener{
         received=new JButton("E-mail Inbox");
         sent=new JButton("Sent Mails");
         sendMail=new JButton("Send a mail");
-        downloadableContentButton=new JButton("Attachments");
         selectMenu1.add(received);
         selectMenu1.add(sent);
         selectMenu1.add(sendMail);
-        selectMenu1.add(downloadableContentButton);
         selectMenu1.setLayout(null);
         received.setBounds(10,150,200,30);
         received.addActionListener(this); //tıklayınca açılması için
@@ -251,11 +248,6 @@ public class GUIMainScreen implements ActionListener{
         sendMail.setBackground(new Color(45, 52, 54));
         sendMail.setForeground(Color.WHITE);
         sendMail.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-        downloadableContentButton.addActionListener(this);
-        downloadableContentButton.setBounds(10,400,200,30);
-        downloadableContentButton.setBackground(new Color(45, 52, 54));
-        downloadableContentButton.setForeground(Color.WHITE);
-        downloadableContentButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
         //Alınan e-postaların gözükeceği yer
 
@@ -829,13 +821,6 @@ public class GUIMainScreen implements ActionListener{
         if (e.getSource()==searchSentContent){
             mailSearchOptions.setText("Content");
             sentMailSearchbar.setText("");
-        }
-        if (e.getSource()==downloadableContentButton){
-            try {
-                Desktop.getDesktop().open(new File("attachments"));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
         }
     }
     private ImageIcon resizeIcon(ImageIcon icon, int width, int height) {
