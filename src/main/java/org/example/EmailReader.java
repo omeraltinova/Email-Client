@@ -40,6 +40,13 @@
                                         emailData.put("Gönderen", line.substring(10));
                                     }else if(line.startsWith("İçerik: ")){
                                         contentBuilder.append(line.substring(8));
+                                        while ((line = reader.readLine()) != null) {
+                                            // "Parça" ile başlayan satıra kadar olan satırları kontrol edin
+                                            if (line.startsWith("Parça")) {
+                                                break; // "Parça" ile başlayan satıra ulaşıldığında döngüyü sonlandırın
+                                            }
+                                            contentBuilder.append(line).append("\n");
+                                        }
                                     }
                                     else if (line.startsWith("Düz Metin İçerik: ")) {
                                         // "Düz Metin İçerik: " ile başlayan satır varsa, içeriği al ve geri kalan tüm satırları da içeriğe ekle

@@ -61,6 +61,8 @@ public class GUIMainScreen implements ActionListener{
     JScrollPane receivedContentScroll;
     JScrollPane sentContentScroll;
     JScrollPane sendContentScroll;
+    JScrollPane receivedAttachmentsScroll;
+    JScrollPane sentAttachmentsScroll;
 
     //Text Fields and Areas
 
@@ -298,7 +300,10 @@ public class GUIMainScreen implements ActionListener{
         showReceivedMailsPanel.add(receivedContentScroll,BorderLayout.CENTER);
         showReceivedClose.addActionListener(this);
         receivedAttachmentsPanel=new JPanel(new FlowLayout());
-        showReceivedMailsPanel.add(receivedAttachmentsPanel,BorderLayout.SOUTH);
+//        showReceivedMailsPanel.add(receivedAttachmentsPanel,BorderLayout.SOUTH);
+        receivedAttachmentsScroll=new JScrollPane(receivedAttachmentsPanel);
+        showReceivedMailsPanel.add(receivedAttachmentsScroll,BorderLayout.SOUTH);
+        receivedAttachmentsScroll.setPreferredSize(new Dimension(400,60));
         receivedAttachmentsPanel.setBackground(new Color(33,33,33));
         receivedMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         receivedMailTable.getSelectionModel().addListSelectionListener(e -> {
@@ -432,8 +437,11 @@ public class GUIMainScreen implements ActionListener{
             sentMailTable.getColumnModel().getColumn(i).setResizable(false);
         }
         sentAttachmentsPanel=new JPanel(new FlowLayout());
-        showSentMailsPanel.add(sentAttachmentsPanel,BorderLayout.SOUTH);
+//        showSentMailsPanel.add(sentAttachmentsPanel,BorderLayout.SOUTH);
         sentAttachmentsPanel.setBackground(new Color(33,33,33));
+        sentAttachmentsScroll=new JScrollPane(sentAttachmentsPanel);
+        showSentMailsPanel.add(sentAttachmentsScroll,BorderLayout.SOUTH);
+        sentAttachmentsScroll.setPreferredSize(new Dimension(400,60));
         sentMailTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sentMailTable.getSelectionModel().addListSelectionListener(e -> {
             int selectedRow=sentMailTable.getSelectedRow();
