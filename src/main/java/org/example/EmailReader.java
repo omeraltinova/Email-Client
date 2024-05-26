@@ -53,7 +53,9 @@
                                             contentBuilder.append(line).append("\n");
                                         }
                                     }else if(line.contains("name=")){
-                                            contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
+                                        line = line.replace("\"","");
+                                        line = line.replace(";","");
+                                        contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
                                     }
                                 }
                                 // İçeriği tamamlayıp içeriğe ekle
