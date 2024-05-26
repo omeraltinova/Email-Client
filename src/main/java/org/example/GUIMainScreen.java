@@ -317,7 +317,7 @@ public class GUIMainScreen implements ActionListener{
                 receivedAttachmentsPanel.removeAll();
                 receivedAttachmentsPanel.revalidate();
                 receivedAttachmentsPanel.repaint();
-                nameList=er.attachmentsInfo(content);
+                nameList = er.attachmentsInfo(content);
                 for (String attachments : nameList) {
                     JButton attachmentsButton = new JButton(attachments);
                     attachmentsButton.addActionListener(new ActionListener() {

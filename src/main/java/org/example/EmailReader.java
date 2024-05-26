@@ -56,6 +56,8 @@
                                         line = line.replace("\"","");
                                         line = line.replace(";","");
                                         contentBuilder.append(line.substring(line.indexOf("name="))).append("\n");
+                                    }else if(line.contains("name*0=")){
+                                        contentBuilder.append(line.substring(line.indexOf("name*0="))).append("\n");
                                     }
                                 }
                                 // İçeriği tamamlayıp içeriğe ekle
@@ -79,6 +81,9 @@
             for(String line : lines){
                 if (line.startsWith("name=")) {
                     nameList.add(line.substring(5));
+                }else if(line.contains("name*0=")){
+                    nameList.add(line.substring(line.indexOf("name*0=") + 8));
+                    System.out.println(line.substring(line.indexOf("name*0=") + 8));
                 }
             }
             return nameList;
@@ -87,8 +92,8 @@
             File attachments = new File("attachments");
             File[] files = attachments.listFiles();
             for(File file : files){
-                if(file.getName().toString().equals(name)){
-                    Desktop.getDesktop().open(new File("attachments/" + name));
+                if(file.getName().toString().contains(name)){
+                    Desktop.getDesktop().open(file);
                 }
             }
         }
