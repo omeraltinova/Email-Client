@@ -229,7 +229,7 @@ public class Mail{
             System.out.println("Klasör bulunamadı: " + "Accounts");
         }
 
-        return (counter-1);
+        return (counter);
     }
 
 }

@@ -227,12 +227,12 @@ public class AccountSelectionScreen {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String name=textName.getText();
-                String eposta = textEposta.getText();
+                String eposta = textEposta.getText().trim();
                 char[] passwordChars = password.getPassword();
                 String sifre = new String(passwordChars);
                 MailManagement.setNAME(name);
                 MailManagement ts1 = new MailManagement();
-                boolean check = ts1.isEmailLegal(eposta,sifre);
+                boolean check = ts1.isEmailLegal(eposta.trim(),sifre);
 
                 if(!check){
                     System.out.println("Name:" + name);
@@ -254,11 +254,13 @@ public class AccountSelectionScreen {
                 else{
                     System.out.println("Geçersiz domain adresi.");
                     JOptionPane.showMessageDialog(f1, "Desteklenmeyen domain girdiniz" );
+                    readAccountsFromFile();
                 }
 
 
 
                 updateAccountsPanel();
+                readAccountsFromFile();
                 f1.dispose();
                 accountSelectionFrame.setVisible(true);
             }
@@ -286,6 +288,9 @@ public class AccountSelectionScreen {
     public static List<Account> readAccountsFromFile() {
         List<Account> accounts = new ArrayList<>();
         File folder = new File("accounts");
+        if(!folder.exists()){
+            folder.mkdirs();
+        }
         File[] files = folder.listFiles();
 
         if (files != null) {
