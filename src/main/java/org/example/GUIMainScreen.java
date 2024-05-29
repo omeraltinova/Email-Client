@@ -17,7 +17,7 @@ import static org.example.AccountSelectionScreen.readAccountsFromFile;
 
 public class GUIMainScreen implements ActionListener{
 
-    //Main frame
+    //Frames
 
     JFrame mainScreen;
 
@@ -51,6 +51,7 @@ public class GUIMainScreen implements ActionListener{
     JButton sendMailClose;
     JButton signOutButton;
     JButton refreshButton;
+    JButton respondButton;
 
     //Scrollbars
 
@@ -74,7 +75,7 @@ public class GUIMainScreen implements ActionListener{
     JTextArea sendMailContent;
     JTextField sendMailTo;
 
-    //Toolbars & Menus & Popup Menus and menu items
+    //Menus & Popup Menus and menu items
 
     JMenuBar mainScreenMenubar;
     JPopupMenu receivedMailPopupMenu;
@@ -296,11 +297,33 @@ public class GUIMainScreen implements ActionListener{
         receivedMailClosePanel=new JPanel(new FlowLayout(FlowLayout.RIGHT));
         receivedMailClosePanel.setBackground(new Color(33, 33, 33));
         showReceivedMailsPanel.add(receivedMailClosePanel,BorderLayout.NORTH);
+        respondButton=new JButton("Respond");
+        respondButton.setBackground(new Color(45, 52, 54));
+        respondButton.setForeground(Color.WHITE);
+        respondButton.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        respondButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showReceivedMailsPanel.setVisible(false);
+                sendMailPanel.setVisible(true);
+                sendMailSubject.setEditable(false);
+                sendMailSubject.setText("");
+                sendMailContent.setText("");
+                sendMailTo.setText("");
+                sendMailSubject.setText("Re:"+receivedEmails.get(receivedMailTable.getSelectedRow()).get("Konu"));
+                sendMailTo.setEditable(false);
+                String fullSender=receivedEmails.get(receivedMailTable.getSelectedRow()).get("Gönderen");
+                int start=fullSender.lastIndexOf("<");
+                int end=fullSender.lastIndexOf(">");
+                String senderMail=fullSender.substring(start+1, end);
+                sendMailTo.setText(senderMail);
+            }
+        });
+        receivedMailClosePanel.add(respondButton);
         receivedMailClosePanel.add(showReceivedClose);
         showReceivedMailsPanel.add(receivedContentScroll,BorderLayout.CENTER);
         showReceivedClose.addActionListener(this);
         receivedAttachmentsPanel=new JPanel(new FlowLayout());
-//        showReceivedMailsPanel.add(receivedAttachmentsPanel,BorderLayout.SOUTH);
         receivedAttachmentsScroll=new JScrollPane(receivedAttachmentsPanel);
         showReceivedMailsPanel.add(receivedAttachmentsScroll,BorderLayout.SOUTH);
         receivedAttachmentsScroll.setPreferredSize(new Dimension(400,60));
@@ -437,7 +460,6 @@ public class GUIMainScreen implements ActionListener{
             sentMailTable.getColumnModel().getColumn(i).setResizable(false);
         }
         sentAttachmentsPanel=new JPanel(new FlowLayout());
-//        showSentMailsPanel.add(sentAttachmentsPanel,BorderLayout.SOUTH);
         sentAttachmentsPanel.setBackground(new Color(33,33,33));
         sentAttachmentsScroll=new JScrollPane(sentAttachmentsPanel);
         showSentMailsPanel.add(sentAttachmentsScroll,BorderLayout.SOUTH);
@@ -721,7 +743,6 @@ public class GUIMainScreen implements ActionListener{
             }
         });
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==received){
@@ -730,6 +751,8 @@ public class GUIMainScreen implements ActionListener{
             sendScroll.setVisible(false);
             illusionLabel1.setVisible(false);
             sentMailSearchbar.setVisible(false);
+            sendMailPanel.setVisible(false);
+            showSentMailsPanel.setVisible(false);
             receivedMailSearchBar.setVisible(true);
             receivedMailSearchBar.setText("Search in received mails");
             mailSearchOptions.setVisible(true);
@@ -748,6 +771,8 @@ public class GUIMainScreen implements ActionListener{
             sendScroll.setVisible(false);
             illusionLabel1.setVisible(false);
             receivedMailSearchBar.setVisible(false);
+            sendMailPanel.setVisible(false);
+            showReceivedMailsPanel.setVisible(false);
             sentMailSearchbar.setVisible(true);
             sentMailSearchbar.setText("Search in sent mails");
             mailSearchOptions.setVisible(true);
@@ -769,11 +794,15 @@ public class GUIMainScreen implements ActionListener{
             showSentMailsPanel.setVisible(false);
             illusionLabel1.setVisible(false);
             receivedMailSearchBar.setVisible(false);
+            showReceivedMailsPanel.setVisible(false);
+            showSentMailsPanel.setVisible(false);
             sentMailSearchbar.setVisible(false);
             sentMailSearchbar.setText("Search in sent mails");
             mailSearchOptions.setVisible(false);
             sendScroll.setVisible(true);
             sendMailPanel.setVisible(true);
+            sendMailSubject.setEditable(true);
+            sendMailTo.setEditable(true);
             sendMailSubject.setText("");
             sendMailContent.setText("");
             sendMailTo.setText("");
@@ -785,6 +814,9 @@ public class GUIMainScreen implements ActionListener{
             System.out.println("Content:"+sendContent+"\n");
             System.out.println("To:"+sendTo);
             aa.sendPlainTextEmail(Mail.getUSERNAME(),sendTo,sendSubject,sendContent,true);
+            sendMailSubject.setText("");
+            sendMailContent.setText("");
+            sendMailTo.setText("");
         }
         if (e.getSource()==showReceivedClose){
             showReceivedMailsPanel.setVisible(false);
@@ -893,5 +925,4 @@ public class GUIMainScreen implements ActionListener{
         List<Map<String, String>> draftEmails = EmailReader.readEmails("emails/draft/"+MailManagement.getUSERNAME());
         GUIMainScreen anaEkran = new GUIMainScreen((List<Map<String, String>>) receivedEmails,(List<Map<String, String>>) sentEmails,(Map<String,String>) accountInfo,(List<Map<String, String>>) draftEmails);
     }
-
 }
