@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.example.AccountSelectionScreen.accountInfo;
-import static org.example.AccountSelectionScreen.readAccountsFromFile;
+import static org.example.AccountSelectionScreen.*;
 
 public class GUIMainScreen implements ActionListener{
 
@@ -199,7 +198,7 @@ public class GUIMainScreen implements ActionListener{
         refreshButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                refrestMainScreen();
+                showProgressDialog();
             }
         });
 
@@ -312,6 +311,7 @@ public class GUIMainScreen implements ActionListener{
                 sendMailTo.setText("");
                 sendMailSubject.setText("Re:"+receivedEmails.get(receivedMailTable.getSelectedRow()).get("Konu"));
                 sendMailTo.setEditable(false);
+                mailSaveButton.setVisible(false);
                 String fullSender=receivedEmails.get(receivedMailTable.getSelectedRow()).get("Gönderen");
                 int start=fullSender.lastIndexOf("<");
                 int end=fullSender.lastIndexOf(">");
@@ -794,6 +794,7 @@ public class GUIMainScreen implements ActionListener{
             showSentMailsPanel.setVisible(false);
             illusionLabel1.setVisible(false);
             receivedMailSearchBar.setVisible(false);
+            mailSaveButton.setVisible(true);
             showReceivedMailsPanel.setVisible(false);
             showSentMailsPanel.setVisible(false);
             sentMailSearchbar.setVisible(false);
@@ -817,6 +818,9 @@ public class GUIMainScreen implements ActionListener{
             sendMailSubject.setText("");
             sendMailContent.setText("");
             sendMailTo.setText("");
+            mailSaveButton.setVisible(true);
+            sendMailSubject.setEditable(true);
+            sendMailTo.setEditable(true);
         }
         if (e.getSource()==showReceivedClose){
             showReceivedMailsPanel.setVisible(false);
@@ -915,7 +919,30 @@ public class GUIMainScreen implements ActionListener{
         }
         return resultList;
     }
-    public void refrestMainScreen(){
+    private void showProgressDialog() {
+        JDialog progressDialog = new JDialog(accountSelectionFrame, "Fetching Data", true);
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setIndeterminate(true);
+        progressDialog.add(BorderLayout.CENTER, progressBar);
+        progressDialog.setSize(300, 75);
+        progressDialog.setLocationRelativeTo(accountSelectionFrame);
+
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                refreshMainScreen();
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                progressDialog.dispose();
+            }
+        };
+        worker.execute();
+        progressDialog.setVisible(true);
+    }
+    public void refreshMainScreen(){
         mainScreen.dispose();
         MailManagement mm = new MailManagement();
         mm.fetchEmails("","inbox");
