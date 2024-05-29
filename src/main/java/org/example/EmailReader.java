@@ -8,17 +8,16 @@
 
     public class EmailReader {
 
-        // emails dizinindeki e-posta dosyalarını okuyup içeriğini ayrıştırır ve bir liste olarak döner
-        public static List<Map<String, String>> readEmails(String directoryPath) {
-            // emails dizinine işaret eden bir File nesnesi oluştur
-            File emailDir = new File(directoryPath);
-            // E-posta bilgilerini saklayacak bir liste oluştur
-            List<Map<String, String>> emailList = new ArrayList<>();
 
+        public static List<Map<String, String>> readEmails(String directoryPath) {
+
+            File emailDir = new File(directoryPath);
+
+            List<Map<String, String>> emailList = new ArrayList<>();
 
             // emails dizini varsa ve bu dizin gerçekten bir dizin ise
             if (emailDir.exists() && emailDir.isDirectory()) {
-                // Dizindeki dosyaları al
+
                 File[] files = emailDir.listFiles();
                 if (files != null) {
                     // Her dosya için

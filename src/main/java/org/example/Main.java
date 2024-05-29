@@ -70,19 +70,6 @@ public class Main {
 
         return txtFileNames;
     }
-    private static void deleteFilesInDirectory(String directoryPath) {
-        File directory = new File(directoryPath);
-        if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
-                }
-            }
-        }
-    }
     public static void destroyerOfTheWorlds() {
         // Çalışma dizini
         String currentDir = System.getProperty("user.dir");
