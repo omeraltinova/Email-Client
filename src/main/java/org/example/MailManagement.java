@@ -73,19 +73,19 @@ import static org.example.Mail.*;
 
            File emailDir = null;
 
-           // Gelen klasör ismine göre dosya yolunu belirleyin ve büyük harflerle kontrol edin
+
            if (boxName.equalsIgnoreCase("INBOX")) {
                emailDir = new File("emails/inbox");
-               boxName = "INBOX"; // IMAP sunucusu için doğru klasör ismi
+               boxName = "INBOX";
            } else if (boxName.equalsIgnoreCase("SENT") && host.equals("imap.gmail.com")) {
                emailDir = new File("emails/sent");
-               boxName = "[Gmail]/Sent Mail"; // IMAP sunucusu için doğru klasör ismi
+               boxName = "[Gmail]/Sent Mail";
            } else if (boxName.equalsIgnoreCase("SENT") && host.equals("outlook.office365.com")) {
                emailDir = new File("emails/sent");
-               boxName = "Sent"; // IMAP sunucusu için doğru klasör ismi
+               boxName = "Sent";
            }
 
-           // Dosya yolunu kontrol edin ve gerekirse oluşturun
+
            if (emailDir != null && !emailDir.exists()) {
                emailDir.mkdirs();
 
@@ -137,8 +137,8 @@ import static org.example.Mail.*;
 
                                if (fromAddresses != null && fromAddresses.length > 0) {
                                    InternetAddress from = (InternetAddress) fromAddresses[0];
-                                   String senderName = from.getPersonal(); // Gönderenin adını al
-                                   String senderEmail = from.getAddress(); // Gönderenin e-posta adresini al
+                                   String senderName = from.getPersonal();
+                                   String senderEmail = from.getAddress();
                                    writer.write("Gönderen: " + senderName + " <" + senderEmail + ">\n");
                                }
                            } else {
@@ -147,14 +147,13 @@ import static org.example.Mail.*;
                                if (toAddresses != null && toAddresses.length > 0) {
                                    for (Address address : toAddresses) {
                                        InternetAddress to = (InternetAddress) address;
-                                       String recipientName = to.getPersonal(); // Alıcının adını al
-                                       String recipientEmail = to.getAddress(); // Alıcının e-posta adresini al
+                                       String recipientName = to.getPersonal();
+                                       String recipientEmail = to.getAddress();
                                        writer.write("Gönderen: " + (recipientName != null ? recipientName : "") + " <" + recipientEmail + ">\n");
                                    }
                                }
                            }
 
-//                       writer.write("Gönderen: " + message.getFrom()[0] + "\n");
                            Object content = message.getContent();
                            if (content instanceof String) {
                                writer.write("İçerik: " + (String) content + "\n");
@@ -264,57 +263,57 @@ import static org.example.Mail.*;
 
        }
 
-       public static void mailLister(String email){
-           String path = "emails/sent/"+email;
-           int i = 0;
-
-           try{
-               File lister = new File(path);
-
-               if(!lister.exists()){
-                   System.out.println("Gönderilmiş bir mail yok!");
-                   return;
-               }
-               File[] txtFiles = lister.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
-
-               if(txtFiles!=null && txtFiles.length>0){
-                   System.out.println("Bulunan dosyalar: ");
-                   for(File dosya : txtFiles){
-                       System.out.println((i+1) + ". gönderilen mail");
-                       System.out.println(dosya.getName());
-                       i++;
-                   }
-
-               }
-               else{
-                   System.out.println("Gönderilen bir mail bulunamadı");
-               }
-
-
-           }
-           catch (Exception e){
-               System.out.println("Dosya bulunamadı");
-           }
-
-       }
-       public static List<String> listDraftFiles() {
-           File folder = new File("emails/draft/"+getUSERNAME());
-           List<String> txtFileNames = new ArrayList<>();
-
-           if (folder.exists() && folder.isDirectory()) {
-               File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
-
-               if (files != null) {
-                   for (File file : files) {
-                       txtFileNames.add(file.getName());
-                   }
-               }
-           } else {
-               System.out.println("Klasör bulunamadı: ");
-           }
-
-           return txtFileNames;
-       }
+//       public static void mailLister(String email){
+//           String path = "emails/sent/"+email;
+//           int i = 0;
+//
+//           try{
+//               File lister = new File(path);
+//
+//               if(!lister.exists()){
+//                   System.out.println("Gönderilmiş bir mail yok!");
+//                   return;
+//               }
+//               File[] txtFiles = lister.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+//
+//               if(txtFiles!=null && txtFiles.length>0){
+//                   System.out.println("Bulunan dosyalar: ");
+//                   for(File dosya : txtFiles){
+//                       System.out.println((i+1) + ". gönderilen mail");
+//                       System.out.println(dosya.getName());
+//                       i++;
+//                   }
+//
+//               }
+//               else{
+//                   System.out.println("Gönderilen bir mail bulunamadı");
+//               }
+//
+//
+//           }
+//           catch (Exception e){
+//               System.out.println("Dosya bulunamadı");
+//           }
+//
+//       }
+//       public static List<String> listDraftFiles() {
+//           File folder = new File("emails/draft/"+getUSERNAME());
+//           List<String> txtFileNames = new ArrayList<>();
+//
+//           if (folder.exists() && folder.isDirectory()) {
+//               File[] files = folder.listFiles((dir, name) -> name.toLowerCase().endsWith(".txt"));
+//
+//               if (files != null) {
+//                   for (File file : files) {
+//                       txtFileNames.add(file.getName());
+//                   }
+//               }
+//           } else {
+//               System.out.println("Klasör bulunamadı: ");
+//           }
+//
+//           return txtFileNames;
+//       }
 
        public static boolean draftSaver(String from, String to, String subject, String message){
            String path = "emails/draft/"+from+"/"+subject+".txt";

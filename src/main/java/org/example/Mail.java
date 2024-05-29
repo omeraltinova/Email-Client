@@ -89,13 +89,6 @@ public class Mail{
         IMAP_HOST = imapHost;
     }
 
-    /*public void setValues(String USERNAME, String PASSWORD, String HOST, String PORT) {
-        Mail.USERNAME=USERNAME;
-        Mail.PASSWORD=PASSWORD;
-        Mail.HOST=HOST;
-        Mail.PORT=PORT;
-    }*/
-
     public boolean isEmailLegal(String email,String password)
     {
         String patternString = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";

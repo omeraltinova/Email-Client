@@ -70,24 +70,11 @@ public class Main {
 
         return txtFileNames;
     }
-    private static void deleteFilesInDirectory(String directoryPath) {
-        File directory = new File(directoryPath);
-        if (directory.exists() && directory.isDirectory()) {
-            File[] files = directory.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile()) {
-                        file.delete();
-                    }
-                }
-            }
-        }
-    }
     public static void destroyerOfTheWorlds() {
-        // Çalışma dizinini alma
+        // Çalışma dizini
         String currentDir = System.getProperty("user.dir");
 
-        // Oluşturmak istediğiniz klasörlerin isimlerini belirtin
+        // Oluşturulacak klasörlerin isimleri
         String[] directories = {"/Accounts", "attachments", "emails", "emails/draft","emails/inbox","emails/sent","profile-photos"};
 
         for (String dir : directories) {
@@ -97,10 +84,10 @@ public class Main {
             try {
                 // Klasörü oluştur
                 Files.createDirectories(path);
-                System.out.println("Directory created: " + path.toString());
+                System.out.println(path.toString() + " adlı klasör oluşturuldu.");
             } catch (IOException e) {
                 // Hata durumunda mesaj yazdır
-                System.err.println("Failed to create directory: " + path.toString());
+                System.err.println(path.toString()+ " adlı klasör oluşturulurken bir sorun oluştu.");
                 e.printStackTrace();
             }
         }
