@@ -8,6 +8,10 @@ import javax.mail.internet.MimeUtility;
 import java.io.*;
 import javax.mail.search.SubjectTerm;
 import javax.swing.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -199,17 +203,29 @@ import static org.example.Mail.*;
 
        private static void saveAttachment(BodyPart bodyPart) throws MessagingException, IOException {
            File dir = new File("attachments");
-           if (!dir.exists()) dir.mkdirs();
+           if (!dir.exists()) {
+               if (!dir.mkdirs()) {
+                   throw new IOException("Attachment directory cannot be created: " + dir.getAbsolutePath());
+               }
+           }
+
            String fileName = MimeUtility.decodeText(bodyPart.getFileName());
            File file = new File(dir, fileName);
-           try (InputStream is = bodyPart.getInputStream();
-                FileOutputStream fos = new FileOutputStream(file)) {
-               byte[] buf = new byte[4096];
+
+           try (InputStream is = new BufferedInputStream(bodyPart.getInputStream());
+                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+               byte[] buf = new byte[3*1024*1024];
                int bytesRead;
                while ((bytesRead = is.read(buf)) != -1) {
-                   fos.write(buf, 0, bytesRead);
+                   bos.write(buf, 0, bytesRead);
                }
-               System.out.println("Ek kaydedildi: " + file.getAbsolutePath());
+               System.out.println("Attachment saved: " + file.getAbsolutePath());
+           } catch (FileNotFoundException e) {
+               System.err.println("File not found: " + e.getMessage());
+               e.printStackTrace();
+           } catch (IOException e) {
+               System.err.println("I/O error: " + e.getMessage());
+               e.printStackTrace();
            }
        }
 
