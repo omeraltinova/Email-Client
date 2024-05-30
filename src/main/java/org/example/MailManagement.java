@@ -127,7 +127,14 @@ import static org.example.Mail.*;
                        }
                    }
                } else {
-                   Message[] messages = inbox.getMessages();
+                   int messageCount = inbox.getMessageCount();
+                   Message[] messages;
+                   if (messageCount > 5) {
+                       messages = inbox.getMessages(messageCount - 4, messageCount);
+                   } else {
+                       messages = inbox.getMessages();
+                   }
+
 
                    for (int i = 0; i < messages.length; i++) {
                        Message message = messages[i];
