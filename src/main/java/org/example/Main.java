@@ -20,6 +20,16 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // Program dizini oluşturma ve gerekli dosyaları indirme
         destroyerOfTheWorlds();
+        try {
+            // MacOS için özel Look and Feel ayarları
+            if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } else {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // İndirilecek dosya URL'leri
         String[] fileURLs = {
